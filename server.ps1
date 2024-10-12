@@ -51,27 +51,27 @@ Start-PodeServer -Threads 4 {
 
         switch ($action) {
             "Walkin" { 
-                #Invoke-RestMethod -uri "http://$VDJIP/execute?script=pause" -Method get
+                Invoke-RestMethod -uri "http://$VDJIP/execute?script=pause" -Method get
                 $playlist =(Invoke-RestMethod -Uri "http://$apiIPPort/api/playlists/$pWalkin/items/0%3A100?columns=%25title%25,%25artist%25,%25album%2")
                 $index = Get-Random -Minimum 0 -Maximum $playlist.playlistItems.totalCount
                 Invoke-RestMethod -Uri "http://$apiIPPort/api/player/play/$pWalkin/$index" -Method Post
     
             }
             "startup" { 
-                #Invoke-RestMethod -uri "http://$VDJIP/execute?script=pause" -Method get
+                Invoke-RestMethod -uri "http://$VDJIP/execute?script=pause" -Method get
                 $playlist =(Invoke-RestMethod -Uri "http://$apiIPPort/api/playlists/$pStartup/items/0%3A100?columns=%25title%25,%25artist%25,%25album%2")
                 $index = Get-Random -Minimum 0 -Maximum $playlist.playlistItems.totalCount
                 Invoke-RestMethod -Uri "http://$apiIPPort/api/player/play/$pStartup/$index" -Method Post
 
         }
             "Inbetween" {
-                #Invoke-RestMethod -uri "http://$VDJIP/execute?script=pause" -Method get
+                Invoke-RestMethod -uri "http://$VDJIP/execute?script=pause" -Method get
                 $playlist = Invoke-RestMethod -Uri "http://$apiIPPort/api/playlists/$pInbetween/items/0%3A100?columns=%25title%25,%25artist%25,%25album%2"
                 $index = Get-Random -Minimum 0 -Maximum $playlist.playlistItems.totalCount
                 Invoke-RestMethod -Uri "http://$apiIPPort/api/player/play/$pInbetween/$index" -Method Post
         }
             "TeamIntro" {
-                #Invoke-RestMethod -uri "http://$VDJIP/execute?script=pause" -Method get
+                Invoke-RestMethod -uri "http://$VDJIP/execute?script=pause" -Method get
                 $playlist = Invoke-RestMethod -Uri "http://$apiIPPort/api/playlists/$pTeamIntro/items/0%3A100?columns=%25title%25,%25artist%25,%25album%2"
                 $index = Get-Random -Minimum 0 -Maximum $playlist.playlistItems.totalCount
                 Invoke-RestMethod -Uri "http://$apiIPPort/api/player/play/$pTeamIntro/$index" -Method Post  
@@ -92,7 +92,7 @@ Start-PodeServer -Threads 4 {
                 
             }
             "WalkOut" {
-                #Invoke-RestMethod -uri "http://$VDJIP/execute?script=pause" -Method get
+                Invoke-RestMethod -uri "http://$VDJIP/execute?script=pause" -Method get
                 $playlist =(Invoke-RestMethod -Uri "http://$apiIPPort/api/playlists/$pWalkOut/items/0%3A100?columns=%25title%25,%25artist%25,%25album%2")
                 $index = Get-Random -Minimum 0 -Maximum $playlist.playlistItems.totalCount
                 Invoke-RestMethod -Uri "http://$apiIPPort/api/player/play/$pWalkOut/$index" -Method Post
@@ -101,14 +101,14 @@ Start-PodeServer -Threads 4 {
             }
             "CrowdRally" {
                 $index = $Webevent.Data.Crowdrallysong
-                #Invoke-RestMethod -uri "http://$VDJIP/execute?script=pause" -Method get
+                Invoke-RestMethod -uri "http://$VDJIP/execute?script=pause" -Method get
                 Invoke-RestMethod -Uri "http://$apiIPPort/api/player/play/$pCrowdRally/$index" -Method Post  
 
             }
             "pauseAll" {
                 Invoke-RestMethod -Uri "http://$apiIPPort/api/player/pause" -Method Post
         
-                #Invoke-RestMethod -uri "http://$VDJIP/execute?script=pause" -Method get
+                Invoke-RestMethod -uri "http://$VDJIP/execute?script=pause" -Method get
                     }
             Default {}
         }
