@@ -1,8 +1,7 @@
 Import-Module -Name Pode -MaximumVersion 2.99.99
 
-$apiState = @{}
-$playerStatus = ""
-$MPIP = 'localhost'
+
+$MPIP = '172.16.1.111'
 $musicPort = "8880"
 $MusicPlayerIP= $MPIP+":"+$musicPort
 
@@ -26,16 +25,12 @@ Start-PodeServer -Threads 4 {
         Write-PodeViewResponse -Path "index"
     }
     Add-PodeRoute -Method get -Path "/Music" -ScriptBlock {
+        $playlistIDs = $using:PlayerIndex
+        $rallyid = $playlistIDs.CrowdRally
         $apiIPPort = $using:MusicPlayerIP
-        $playlist =Invoke-RestMethod -Uri "http://$apiIPPort/api/playlists/p7/items/0%3A100?columns=%25title%25,%25artist%25,%25album%2"
+        $playlist =Invoke-RestMethod -Uri "http://$apiIPPort/api/playlists/$rallyid/items/0%3A100?columns=%25title%25,%25artist%25,%25album%2"
 
         Write-PodeViewResponse -Path "MusicControl" -Data @{"payload" = $playlist.playlistItems.items;}
-    }
-    Add-PodeRoute -Method get -Path "/api/Music" -ScriptBlock {
-            $payload = Get-Item -Path "./data/currentlyplaying.json"
-
-        Write-PodeJsonResponse -Value $payload
-
     }
 
     Add-PodeRoute -Method Post -Path '/change-song' -ScriptBlock {
@@ -43,28 +38,32 @@ Start-PodeServer -Threads 4 {
         $VDJIP = $using:DJIP
         $Pindex = $using:PlayerIndex
         $pWalkin = $Pindex.'WalkIn'
-        $pStartup = $Pindex.'Startup'
+        $pStartup = $Pindex.'Gamestartup'
         $pCrowdRally = $Pindex.'CrowdRally'
         $pInbetween = $Pindex.'Inbetween'
         $pWalkout = $Pindex.'Walkout'
         $pTeamIntro = $Pindex.'TeamIntro'
 
-        $WebEvent.Data |ConvertTo-Json | Out-File -FilePath "./data/currentlyplaying.json" -Force
-        $action = $WebEvent.Data.player 
+#        $WebEvent.Data |ConvertTo-Json | Out-File -FilePath "./data/currentlyplaying.json" -Force
+        $action = $WebEvent.Data.Player 
+        $payload = New-Object -TypeName psobject
+
 
         switch ($action) {
             "Walkin" { 
-                #Invoke-RestMethod -uri "http://$VDJIP/execute?script=pause" -Method get
+                Invoke-RestMethod -uri "http://$VDJIP/execute?script=pause" -Method get
                 $playlist =(Invoke-RestMethod -Uri "http://$apiIPPort/api/playlists/$pWalkin/items/0%3A100?columns=%25title%25,%25artist%25,%25album%2")
                 $index = Get-Random -Minimum 0 -Maximum $playlist.playlistItems.totalCount
                 Invoke-RestMethod -Uri "http://$apiIPPort/api/player/play/$pWalkin/$index" -Method Post
+                $payload | Add-Member -MemberType NoteProperty -Name playlistID -Value $pWalkin
     
             }
-            "startup" { 
-               # Invoke-RestMethod -uri "http://$VDJIP/execute?script=pause" -Method get
+            "Startup" { 
+                Invoke-RestMethod -uri "http://$VDJIP/execute?script=pause" -Method get
                 $playlist =(Invoke-RestMethod -Uri "http://$apiIPPort/api/playlists/$pStartup/items/0%3A100?columns=%25title%25,%25artist%25,%25album%2")
                 $index = Get-Random -Minimum 0 -Maximum $playlist.playlistItems.totalCount
                 Invoke-RestMethod -Uri "http://$apiIPPort/api/player/play/$pStartup/$index" -Method Post
+                $payload | Add-Member -MemberType NoteProperty -Name playlistID -Value $pStartup
 
         }
             "Inbetween" {
@@ -72,12 +71,14 @@ Start-PodeServer -Threads 4 {
                 $playlist = Invoke-RestMethod -Uri "http://$apiIPPort/api/playlists/$pInbetween/items/0%3A100?columns=%25title%25,%25artist%25,%25album%2"
                 $index = Get-Random -Minimum 0 -Maximum $playlist.playlistItems.totalCount
                 Invoke-RestMethod -Uri "http://$apiIPPort/api/player/play/$pInbetween/$index" -Method Post
+                $payload | Add-Member -MemberType NoteProperty -Name playlistID -Value $pInbetween
         }
             "TeamIntro" {
                 Invoke-RestMethod -uri "http://$VDJIP/execute?script=pause" -Method get
                 $playlist = Invoke-RestMethod -Uri "http://$apiIPPort/api/playlists/$pTeamIntro/items/0%3A100?columns=%25title%25,%25artist%25,%25album%2"
                 $index = Get-Random -Minimum 0 -Maximum $playlist.playlistItems.totalCount
-                Invoke-RestMethod -Uri "http://$apiIPPort/api/player/play/$pTeamIntro/$index" -Method Post  
+                Invoke-RestMethod -Uri "http://$apiIPPort/api/player/play/$pTeamIntro/$index" -Method Post 
+                $payload | Add-Member -MemberType NoteProperty -Name playlistID -Value $pTeamIntro 
 
             }
             "Gameon" {
@@ -88,7 +89,7 @@ Start-PodeServer -Threads 4 {
                 Invoke-RestMethod -uri "http://$VDJIP/execute?script=automix_skip" -Method Get
 
                 $VDJStem = Invoke-RestMethod -uri "http://$VDJIP/query?script=stem%20Vocal" -Method Get
-                
+                $payload | Add-Member -MemberType NoteProperty -Name playlistID -Value "VDJ"
                 if ($VDJStem -ne 0) {
                     Invoke-RestMethod -uri "http://$VDJIP/execute?script=stem%20Vocal%200"                }
 
@@ -99,6 +100,7 @@ Start-PodeServer -Threads 4 {
                 $playlist =(Invoke-RestMethod -Uri "http://$apiIPPort/api/playlists/$pWalkOut/items/0%3A100?columns=%25title%25,%25artist%25,%25album%2")
                 $index = Get-Random -Minimum 0 -Maximum $playlist.playlistItems.totalCount
                 Invoke-RestMethod -Uri "http://$apiIPPort/api/player/play/$pWalkOut/$index" -Method Post
+                $payload | Add-Member -MemberType NoteProperty -Name playlistID -Value $pWalkout
     
 
             }
@@ -106,24 +108,64 @@ Start-PodeServer -Threads 4 {
                 $index = $Webevent.Data.Crowdrallysong
                 Invoke-RestMethod -uri "http://$VDJIP/execute?script=pause" -Method get
                 Invoke-RestMethod -Uri "http://$apiIPPort/api/player/play/$pCrowdRally/$index" -Method Post  
+                $payload | Add-Member -MemberType NoteProperty -Name playlistID -Value $pCrowdRally
 
             }
             "pauseAll" {
                 Invoke-RestMethod -Uri "http://$apiIPPort/api/player/pause" -Method Post
         
                 Invoke-RestMethod -uri "http://$VDJIP/execute?script=pause" -Method get
+                $payload | Add-Member -MemberType NoteProperty -Name playlistID -Value "Paused"
                     }
-            Default {}
-
-            
+            Default {}  
         }        
         Write-PodeJsonResponse -Value $payload
     }
-        Add-PodeRoute -Method get -Path '/api/home' -ContentType 'application/json' -ScriptBlock {
-            Write-PodeJsonResponse -Value $Using:apiState
-    
-        }
-#        Add-PodeRoute -Method Post -Path '/api/home/update' -ContentType 'application/json' -ScriptBlock{}
 
+    Add-PodeRouteGroup -Path '/api' -Routes  {
+        Add-PodeRoute -Method get -Path '/home' -ContentType 'application/json' -ScriptBlock {
+            $apiHomeState =  Get-Content -Path ".\data\workstations.json" | ConvertFrom-Json 
+            Write-PodeJsonResponse -Value $:apiHomeState
+        }
+        Add-PodeRoute -Method Post -Path '/home/update' -ContentType 'application/json' -ScriptBlock{ 
+            $apiHomeState =  Get-Content -Path ".\data\workstations.json" | ConvertFrom-Json 
+            $workstation = $WebEvent.data.ComputerName
+            
+            if (!$apiHomeState.$workstation) {
+                $roleadd = New-Object -TypeName psobject
+                $roleadd | Add-Member -MemberType NoteProperty -Name "monitor" -Value $WebEvent.data."NDI Studio"
+                $roleadd | Add-Member -MemberType NoteProperty -Name "obs" -Value $WebEvent.data.obs
+                $roleadd | Add-Member -MemberType NoteProperty -Name "MusicPlayer" -Value $WebEvent.data.MusicPlayer
+                $roleadd | Add-Member -MemberType NoteProperty -Name "VDJ" -Value $WebEvent.data.VDJ
+    
+                $computeradd = New-Object -TypeName psobject
+                $computeradd | Add-Member -MemberType NoteProperty -Name "role" -Value $roleadd
+                $computeradd | Add-Member -MemberType NoteProperty -Name "notes" -Value $WebEvent.data.notes
+                $computeradd | Add-Member -MemberType NoteProperty -Name "LocalIP" -Value $WebEvent.data.LocalAddress
+                $computeradd | Add-Member -MemberType NoteProperty -Name "tailscale" -Value $WebEvent.data.TailscaleAddress
+                $computeradd | Add-Member -MemberType NoteProperty -Name "hostname" -Value $workstation
+                $apiHomeState | Add-Member -MemberType NoteProperty  -Name $workstation -Value $computeradd   
+            }else {
+                $apiHomeState.$workstation.role.monitor = $WebEvent.data."NDI Studio"
+                $apiHomeState.$workstation.role.obs = $WebEvent.data.obs
+                $apiHomeState.$workstation.role.MusicPlayer = $WebEvent.data.MusicPlayer
+                $apiHomeState.$workstation.role.VDJ =  $WebEvent.data.VDJ
+                $apiHomeState.$workstation.notes = $WebEvent.data.notes
+                $apiHomeState.$workstation.LocalIP = $WebEvent.data.LocalAddress
+                $apiHomeState.$workstation.tailscale = $WebEvent.data.TailscaleAddress
+                $apiHomeState.$workstation.hostname + $workstation
+
+            }
+            
+            $apiHomeState | Convertto-Json | out-file -path .\data\workstations.json -Force
+            Write-PodeJsonResponse -Value $apiHomeState
+
+
+        }
+        Add-PodeRoute -Method get -Path "/Music" -ScriptBlock {
+            $payload = Get-content -Path "./data/currentlyplaying.json"
+            Write-PodeJsonResponse -Value $payload
+        }
+    }
 
 }

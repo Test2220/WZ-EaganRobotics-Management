@@ -7,7 +7,7 @@
 <div id="mainview">
     <table>
         <tr>
-        <td> <a href="./Music"> Music Control</a></td>
+        <td> <a href="./music"> Music Control</a></td>
         </tr>
         
         <tr>
@@ -21,7 +21,7 @@
         <td> <a href="./OBS">OBS Control</a></td>
         </tr>
         <tr>
-        <td> <a href="./home">Workstations List</a></td>
+        <td> <a href="./api/home">Workstations List</a></td>
         </tr>
     </table>
 </div>
