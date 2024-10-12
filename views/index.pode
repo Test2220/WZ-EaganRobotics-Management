@@ -2,75 +2,28 @@
 <head>
     <link rel="stylesheet" href="style.css" />
     <script src="https://ajax.googleapis.com/ajax/libs/jquery/3.7.1/jquery.min.js"></script>
-    <script type="application/javascript">
-
-    
-    function PlaylistChange (ELT){
-
-    // Creating a XHR object
-    let xhr = new XMLHttpRequest();
-    let url = "./change-song";
-
-    // open a connection
-    xhr.open("POST", url, true);
-
-    // Set the request header i.e. which type of content you are sending
-    xhr.setRequestHeader("Content-Type", "application/json");
-
-
-    // Converting JSON data to string
-    if (ELT =="CrowdRally") {
-
-        selectElement = document.querySelector('#SongChoice');
-        var SongID = selectElement.value;
-        var data = JSON.stringify({ "Player": ELT, "Crowdrallysong": SongID });
-    } else {
-        var data = JSON.stringify({ "Player": ELT });
-        
-    }
-    
-
-    // Sending data with the request
-    xhr.send(data);
-}
-
-var getJSON = function(url, callback) {
-    var xhr = new XMLHttpRequest();
-    xhr.open('GET', url, true);
-    xhr.responseType = 'json';
-    xhr.onload = function() {
-      var status = xhr.status;
-      if (status === 200) {
-        callback(null, xhr.response);
-      } else {
-        callback(status, xhr.response);
-      }
-    };
-    xhr.send();
-};
-
-</script>
 </head>
 <body>
 <div id="mainview">
     <table>
         <tr>
-            <td><button type="button" id="WalkIn" onclick="PlaylistChange(this.id)">WalkIn Playlist</button></td>
-            <td><button type="button" id="Inbetween" onclick="PlaylistChange(this.id)">Inbetween Playlist</button></td>
-            <td><button type="button" id="Startup" onclick="PlaylistChange(this.id)">Game Startup Playlist</button></td>
-            <td><button type="button" id="TeamIntro" onclick="PlaylistChange(this.id)">Team Intro Playlist</button></td>
-            <td><button type="button" id="Gameon" onclick="PlaylistChange(this.id)">Game On Playlist</button></td>
-            <td><button type="button" id="CrowdRally" onclick="PlaylistChange(this.id)">Crowd Rally Playlist</button></td>
-            <td><button type="button" id="WalkOut" onclick="PlaylistChange(this.id)">Walkout Playlist</button></td>
-            <td><button type="button" id="PauseAll" onclick="PlaylistChange(this.id)">Stop all Music</button></td>
+        <td> <a href="./Music"> Music Control</a></td>
+        </tr>
+        
+        <tr>
+        <td> <a href="./FMS"> FMS Field Status</a></td>
+        </tr>
+        
+        <tr>
+        <td> <a href="./Audiance-Display">Audiance-Control</a></td>
+        </tr>
+        <tr>
+        <td> <a href="./OBS">OBS Control</a></td>
+        </tr>
+        <tr>
+        <td> <a href="./home">Workstations List</a></td>
         </tr>
     </table>
-    <button type="button" id="CrowdRally" onclick="PlaylistChange(this.id)">Play Selected Crowd Rally Song</button>
-
-
-
-
-    
 </div>
 </body>
 </html>

@@ -1,6 +1,7 @@
 Import-Module -Name Pode -MaximumVersion 2.99.99
 
 $apiState = @{}
+$playerStatus = ""
 $MPIP = 'localhost'
 $musicPort = "8880"
 $MusicPlayerIP= $MPIP+":"+$musicPort
@@ -24,15 +25,16 @@ Start-PodeServer -Threads 4 {
 
         Write-PodeViewResponse -Path "index"
     }
-    Add-PodeRoute -Method get -Path "/CrowdRally" -ScriptBlock {
+    Add-PodeRoute -Method get -Path "/Music" -ScriptBlock {
         $apiIPPort = $using:MusicPlayerIP
         $playlist =Invoke-RestMethod -Uri "http://$apiIPPort/api/playlists/p7/items/0%3A100?columns=%25title%25,%25artist%25,%25album%2"
 
-        Write-PodeViewResponse -Path "CrowdRally" -Data @{"payload" = $playlist.playlistItems.items;}
+        Write-PodeViewResponse -Path "MusicControl" -Data @{"payload" = $playlist.playlistItems.items;}
     }
+    Add-PodeRoute -Method get -Path "/api/Music" -ScriptBlock {
+            $payload = Get-Item -Path "./data/currentlyplaying.json"
 
-    Add-PodeRoute -Method get -Path '/api/home' -ContentType 'application/json' -ScriptBlock {
-        Write-PodeJsonResponse -Value $Using:apiState
+        Write-PodeJsonResponse -Value $payload
 
     }
 
@@ -47,18 +49,19 @@ Start-PodeServer -Threads 4 {
         $pWalkout = $Pindex.'Walkout'
         $pTeamIntro = $Pindex.'TeamIntro'
 
-        $action = $WebEvent.Data.player
+        $WebEvent.Data |ConvertTo-Json | Out-File -FilePath "./data/currentlyplaying.json" -Force
+        $action = $WebEvent.Data.player 
 
         switch ($action) {
             "Walkin" { 
-                Invoke-RestMethod -uri "http://$VDJIP/execute?script=pause" -Method get
+                #Invoke-RestMethod -uri "http://$VDJIP/execute?script=pause" -Method get
                 $playlist =(Invoke-RestMethod -Uri "http://$apiIPPort/api/playlists/$pWalkin/items/0%3A100?columns=%25title%25,%25artist%25,%25album%2")
                 $index = Get-Random -Minimum 0 -Maximum $playlist.playlistItems.totalCount
                 Invoke-RestMethod -Uri "http://$apiIPPort/api/player/play/$pWalkin/$index" -Method Post
     
             }
             "startup" { 
-                Invoke-RestMethod -uri "http://$VDJIP/execute?script=pause" -Method get
+               # Invoke-RestMethod -uri "http://$VDJIP/execute?script=pause" -Method get
                 $playlist =(Invoke-RestMethod -Uri "http://$apiIPPort/api/playlists/$pStartup/items/0%3A100?columns=%25title%25,%25artist%25,%25album%2")
                 $index = Get-Random -Minimum 0 -Maximum $playlist.playlistItems.totalCount
                 Invoke-RestMethod -Uri "http://$apiIPPort/api/player/play/$pStartup/$index" -Method Post
@@ -111,10 +114,16 @@ Start-PodeServer -Threads 4 {
                 Invoke-RestMethod -uri "http://$VDJIP/execute?script=pause" -Method get
                     }
             Default {}
-        }
 
-
+            
+        }        
+        Write-PodeJsonResponse -Value $payload
     }
+        Add-PodeRoute -Method get -Path '/api/home' -ContentType 'application/json' -ScriptBlock {
+            Write-PodeJsonResponse -Value $Using:apiState
+    
+        }
+#        Add-PodeRoute -Method Post -Path '/api/home/update' -ContentType 'application/json' -ScriptBlock{}
 
 
 }
