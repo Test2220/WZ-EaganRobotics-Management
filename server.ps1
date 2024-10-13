@@ -33,6 +33,7 @@ Start-PodeServer -Threads 4 {
         Write-PodeViewResponse -Path "MusicControl" -Data @{"payload" = $playlist.playlistItems.items;}
     }
 
+
     Add-PodeRoute -Method Post -Path '/change-song' -ScriptBlock {
         $apiIPPort = $using:MusicPlayerIP
         $VDJIP = $using:DJIP
@@ -44,7 +45,7 @@ Start-PodeServer -Threads 4 {
         $pWalkout = $Pindex.'Walkout'
         $pTeamIntro = $Pindex.'TeamIntro'
 
-#        $WebEvent.Data |ConvertTo-Json | Out-File -FilePath "./data/currentlyplaying.json" -Force
+        $WebEvent.Data |ConvertTo-Json | Out-File -FilePath "./data/currentlyplaying.json" -Force
         $action = $WebEvent.Data.Player 
         $payload = New-Object -TypeName psobject
 
@@ -121,9 +122,49 @@ Start-PodeServer -Threads 4 {
         }        
         Write-PodeJsonResponse -Value $payload
     }
+    Add-PodeRouteGroup -Path "/home" -Routes {
+            Add-PodeRoute -Method get -Path "/list" -ScriptBlock {
+                $apiHomeState =  Get-Content -Path ".\data\workstations.json" | ConvertFrom-Json    
+                Write-PodeViewResponse -Path "phonehome" -Data @{"payload" = $apiHomeState;}
+            }
+            Add-PodeRoute -Method Get -Path "/add" -ScriptBlock {
+                Write-PodeViewResponse -Path "ManualHomeAdd"
+            }
+            Add-PodeRoute -Method Post -Path "/post" -ScriptBlock {
+                $apiHomeState =  Get-Content -Path ".\data\workstations.json" | ConvertFrom-Json 
+                $workstation = $WebEvent.data.hostname
+                if (!$apiHomeState.$workstation) {
+                    $computeradd = New-Object -TypeName psobject
+                    $computeradd | Add-Member -MemberType NoteProperty -Name "monitor" -Value $WebEvent.data."NDI Studio"
+                    $computeradd | Add-Member -MemberType NoteProperty -Name "obs" -Value $WebEvent.data.obs
+                    $computeradd | Add-Member -MemberType NoteProperty -Name "MusicPlayer" -Value $WebEvent.data.MusicPlayer
+                    $computeradd | Add-Member -MemberType NoteProperty -Name "VDJ" -Value $WebEvent.data.VDJ
+                    $computeradd | Add-Member -MemberType NoteProperty -Name "notes" -Value $WebEvent.data.notes
+                    $computeradd | Add-Member -MemberType NoteProperty -Name "LocalIP" -Value $WebEvent.data.LocalAddress
+                    $computeradd | Add-Member -MemberType NoteProperty -Name "tailscale" -Value $WebEvent.data.TailscaleAddress
+                    $computeradd | Add-Member -MemberType NoteProperty -Name "hostname" -Value $workstation
+                    $apiHomeState | Add-Member -MemberType NoteProperty  -Name $workstation -Value $computeradd   
+                    $payload = $computeradd
+                }else {
+                    $apiHomeState.$workstation.monitor = $WebEvent.data."NDI Studio"
+                    $apiHomeState.$workstation.obs = $WebEvent.data.obs
+                    $apiHomeState.$workstation.MusicPlayer = $WebEvent.data.MusicPlayer
+                    $apiHomeState.$workstation.VDJ =  $WebEvent.data.VDJ
+                    $apiHomeState.$workstation.notes = $WebEvent.data.notes
+                    $apiHomeState.$workstation.LocalIP = $WebEvent.data.LocalAddress
+                    $apiHomeState.$workstation.tailscale = $WebEvent.data.TailscaleAddress
+                    $apiHomeState.$workstation.hostname + $workstation
+                    $payload= $apiHomeState.$workstation
+                }
 
+
+                $apiHomeState | Convertto-Json | out-file -path .\data\workstations.json -Force
+
+                Write-PodeJsonResponse -Value $payload
+            }
+    }
     Add-PodeRouteGroup -Path '/api' -Routes  {
-        Add-PodeRoute -Method get -Path '/home' -ContentType 'application/json' -ScriptBlock {
+        Add-PodeRoute -Method Get -Path '/home' -ContentType 'application/json' -ScriptBlock {
             $apiHomeState =  Get-Content -Path ".\data\workstations.json" | ConvertFrom-Json 
             Write-PodeJsonResponse -Value $:apiHomeState
         }
@@ -132,24 +173,21 @@ Start-PodeServer -Threads 4 {
             $workstation = $WebEvent.data.ComputerName
             
             if (!$apiHomeState.$workstation) {
-                $roleadd = New-Object -TypeName psobject
-                $roleadd | Add-Member -MemberType NoteProperty -Name "monitor" -Value $WebEvent.data."NDI Studio"
-                $roleadd | Add-Member -MemberType NoteProperty -Name "obs" -Value $WebEvent.data.obs
-                $roleadd | Add-Member -MemberType NoteProperty -Name "MusicPlayer" -Value $WebEvent.data.MusicPlayer
-                $roleadd | Add-Member -MemberType NoteProperty -Name "VDJ" -Value $WebEvent.data.VDJ
-    
                 $computeradd = New-Object -TypeName psobject
-                $computeradd | Add-Member -MemberType NoteProperty -Name "role" -Value $roleadd
+                $computeradd | Add-Member -MemberType NoteProperty -Name "monitor" -Value $WebEvent.data."NDI Studio"
+                $computeradd | Add-Member -MemberType NoteProperty -Name "obs" -Value $WebEvent.data.obs
+                $computeradd | Add-Member -MemberType NoteProperty -Name "MusicPlayer" -Value $WebEvent.data.MusicPlayer
+                $computeradd | Add-Member -MemberType NoteProperty -Name "VDJ" -Value $WebEvent.data.VDJ
                 $computeradd | Add-Member -MemberType NoteProperty -Name "notes" -Value $WebEvent.data.notes
                 $computeradd | Add-Member -MemberType NoteProperty -Name "LocalIP" -Value $WebEvent.data.LocalAddress
                 $computeradd | Add-Member -MemberType NoteProperty -Name "tailscale" -Value $WebEvent.data.TailscaleAddress
                 $computeradd | Add-Member -MemberType NoteProperty -Name "hostname" -Value $workstation
                 $apiHomeState | Add-Member -MemberType NoteProperty  -Name $workstation -Value $computeradd   
             }else {
-                $apiHomeState.$workstation.role.monitor = $WebEvent.data."NDI Studio"
-                $apiHomeState.$workstation.role.obs = $WebEvent.data.obs
-                $apiHomeState.$workstation.role.MusicPlayer = $WebEvent.data.MusicPlayer
-                $apiHomeState.$workstation.role.VDJ =  $WebEvent.data.VDJ
+                $apiHomeState.$workstation.monitor = $WebEvent.data."NDI Studio"
+                $apiHomeState.$workstation.obs = $WebEvent.data.obs
+                $apiHomeState.$workstation.MusicPlayer = $WebEvent.data.MusicPlayer
+                $apiHomeState.$workstation.VDJ =  $WebEvent.data.VDJ
                 $apiHomeState.$workstation.notes = $WebEvent.data.notes
                 $apiHomeState.$workstation.LocalIP = $WebEvent.data.LocalAddress
                 $apiHomeState.$workstation.tailscale = $WebEvent.data.TailscaleAddress

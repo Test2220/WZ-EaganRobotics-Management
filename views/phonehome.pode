@@ -1,0 +1,30 @@
+ <html>
+ <head>
+<style>
+table, th, td {
+  border: 1px solid black;
+  border-collapse: collapse;
+}
+</style>
+<link rel="stylesheet" href="style.css" />
+</head>
+
+<body>
+    <table>
+    <tr><td>Host Name</td><td>TailScale</td><td>Local Address</td><td>NDI</td><td>OBS</td><td>Music Player</td><td>Virtual DJ</td><td>Notes</td></tr>
+
+$($names = $data.payload.PSObject.properties.value.hostname;
+foreach( $workstation in $names){
+            "<tr><td>$($data.payload.$workstation.hostname)</td><td>$($data.payload.$workstation.tailscale)</td><td>$($data.payload.$workstation.LocalIP)</td><td>$($data.payload.$workstation.NDI)
+            </td><td>$($data.payload.$workstation.obs)
+            </td><td>$($data.payload.$workstation.music)
+            </td><td>$($data.payload.$workstation.VDJ)
+            </td><td>$($data.payload.$workstation.notes)</td></tr>";
+
+})
+
+          </table>
+</body>
+
+
+</html>

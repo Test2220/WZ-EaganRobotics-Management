@@ -1,0 +1,47 @@
+<html>
+<head>
+
+    <link rel="stylesheet" href="style.css" />
+    <script src="https://ajax.googleapis.com/ajax/libs/jquery/3.7.1/jquery.min.js"></script>
+</head>
+<body>
+<div id="mainview">
+<form action="./post" id="ManualIPAdd" method="post">
+<h2>Manual add</h2>
+    <div class="form-row'>
+        <label for="hostname">hostname</label>
+        <input type="text" class="input-text input-text-block" id="hostname" name="hostname"/>
+    </div>
+    <div class="form-row'>
+        <label for="LocalAddress">LocalAddress</label>
+        <input type="text" class="input-text input-text-block" id="LocalAddress" name="LocalAddress"/>
+    </div>
+    <div class="form-row'>
+        <label for="NDI Studio">NDI Studio</label>
+        <input type="checkbox" class="input-text input-text-block" id="NDI Studio" name="NDI Studio"/>
+    </div>
+    <div class="form-row'>
+        <label for="obs">obs</label>
+        <input type="checkbox" class="input-text input-text-block" id="obs" name="obs"/>
+    </div>
+    <div class="form-row'>
+        <label for="MusicPlayer">MusicPlayer</label>
+        <input type="checkbox" class="input-text input-text-block" id="MusicPlayer" name="MusicPlayer"/>
+    </div>
+    <div class="form-row'>
+        <label for="VDJ">VDJ</label>
+        <input type="checkbox" class="input-text input-text-block" id="VDJ" name="VDJ"/>
+    </div>
+    <div class="form-row'>
+        <label for="notes">notes</label>
+        <input type="text" class="input-text input-text-block" id="notes" name="notes"/>
+    </div>
+    <div class="form-row mx-auto">
+        <input type="submit" class="btn-submit" id="btn-submit" />
+    </div>
+
+
+</form>
+</div>
+</body>
+</html>
