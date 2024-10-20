@@ -1,7 +1,7 @@
 Import-Module -Name Pode -MaximumVersion 2.99.99
 
 
-$MPIP = '172.16.1.111'
+$MPIP = 'localhost'
 $musicPort = "8880"
 $MusicPlayerIP= $MPIP+":"+$musicPort
 
@@ -27,9 +27,11 @@ Start-PodeServer -Threads 4 {
     Set-PodeState -Name 'currentlyplaying' -Value @{ 'currentplayer' = "none"; } | Out-Null
     Set-PodeState -Name 'FMSArenaStatus' -Value @{ 'values' = @(); } | Out-Null
     Set-PodeState -Name "workstations"
+    Set-PodeState -Name 'AutomationStatus' -Value @{ 'automation' = $true } | Out-Null
     New-PodeLockable -Name 'workstationLock'
     New-PodeLockable -Name 'FMSArenaStatusLock'
-    New-PodeLockable -Name 'currentlyplayingLock' 
+    New-PodeLockable -Name 'currentlyplayingLock'
+    New-PodeLockable -Name 'PlayerAutomationLock'
     Restore-PodeState -Path ".\data\state.json"
 
     Add-PodeRoute -Method get -Path "/" -ScriptBlock{
@@ -44,105 +46,117 @@ Start-PodeServer -Threads 4 {
 
         Write-PodeViewResponse -Path "MusicControl" -Data @{"payload" = $playlist.playlistItems.items;}
     }
+    Add-PodeRouteGroup -Path "/music" -Routes {
 
+        Add-PodeRoute -Method Post -Path '/change-song' -ScriptBlock {
+            $apiIPPort = $using:MusicPlayerIP
+            $VDJIP = $using:DJIP
+            $Pindex = $using:PlayerIndex
+            $pWalkin = $Pindex.'WalkIn'
+            $pStartup = $Pindex.'Gamestartup'
+            $pCrowdRally = $Pindex.'CrowdRally'
+            $pInbetween = $Pindex.'Inbetween'
+            $pWalkout = $Pindex.'Walkout'
+            $pTeamIntro = $Pindex.'TeamIntro'
 
-    Add-PodeRoute -Method Post -Path '/change-song' -ScriptBlock {
-        $apiIPPort = $using:MusicPlayerIP
-        $VDJIP = $using:DJIP
-        $Pindex = $using:PlayerIndex
-        $pWalkin = $Pindex.'WalkIn'
-        $pStartup = $Pindex.'Gamestartup'
-        $pCrowdRally = $Pindex.'CrowdRally'
-        $pInbetween = $Pindex.'Inbetween'
-        $pWalkout = $Pindex.'Walkout'
-        $pTeamIntro = $Pindex.'TeamIntro'
-
-        Lock-PodeObject -Name "currentlyplayingLock" -CheckGlobal -ScriptBlock{
-            $player = $webevent.data.Player
-            Set-PodeState -Name 'currentlyplaying' -Value @{"Player" = $player;}
-        }
-        $action = $WebEvent.Data.Player 
-        $payload = New-Object -TypeName psobject
-
-
-        switch ($action) {
-            "Walkin" { 
-                Invoke-RestMethod -uri "http://$VDJIP/execute?script=pause" -Method get
-                $playlist =(Invoke-RestMethod -Uri "http://$apiIPPort/api/playlists/$pWalkin/items/0%3A100?columns=%25title%25,%25artist%25,%25album%2")
-                $index = Get-Random -Minimum 0 -Maximum $playlist.playlistItems.totalCount
-                Invoke-RestMethod -Uri "http://$apiIPPort/api/player/play/$pWalkin/$index" -Method Post
-                $payload | Add-Member -MemberType NoteProperty -Name playlistID -Value $pWalkin
-    
+            Lock-PodeObject -Name "currentlyplayingLock" -CheckGlobal -ScriptBlock{
+                $player = $webevent.data.Player
+                Set-PodeState -Name 'currentlyplaying' -Value @{"Player" = $player;}
             }
-            "Startup" { 
-                Invoke-RestMethod -uri "http://$VDJIP/execute?script=pause" -Method get
-                $playlist =(Invoke-RestMethod -Uri "http://$apiIPPort/api/playlists/$pStartup/items/0%3A100?columns=%25title%25,%25artist%25,%25album%2")
-                $index = Get-Random -Minimum 0 -Maximum $playlist.playlistItems.totalCount
-                Invoke-RestMethod -Uri "http://$apiIPPort/api/player/play/$pStartup/$index" -Method Post
-                $payload | Add-Member -MemberType NoteProperty -Name playlistID -Value $pStartup
+            $action = $WebEvent.Data.Player 
+            $payload = New-Object -TypeName psobject
 
-        }
-            "Inbetween" {
-                Invoke-RestMethod -uri "http://$VDJIP/execute?script=pause" -Method get
-                $playlist = Invoke-RestMethod -Uri "http://$apiIPPort/api/playlists/$pInbetween/items/0%3A100?columns=%25title%25,%25artist%25,%25album%2"
-                $index = Get-Random -Minimum 0 -Maximum $playlist.playlistItems.totalCount
-                Invoke-RestMethod -Uri "http://$apiIPPort/api/player/play/$pInbetween/$index" -Method Post
-                $payload | Add-Member -MemberType NoteProperty -Name playlistID -Value $pInbetween
-        }
-            "TeamIntro" {
-                Invoke-RestMethod -uri "http://$VDJIP/execute?script=pause" -Method get
-                $playlist = Invoke-RestMethod -Uri "http://$apiIPPort/api/playlists/$pTeamIntro/items/0%3A100?columns=%25title%25,%25artist%25,%25album%2"
-                $index = Get-Random -Minimum 0 -Maximum $playlist.playlistItems.totalCount
-                Invoke-RestMethod -Uri "http://$apiIPPort/api/player/play/$pTeamIntro/$index" -Method Post 
-                $payload | Add-Member -MemberType NoteProperty -Name playlistID -Value $pTeamIntro 
 
-            }
-            "Gameon" {
-                
-
-                Invoke-RestMethod -Uri "http://$apiIPPort/api/player/pause" -Method Post  
-
-                Invoke-RestMethod -uri "http://$VDJIP/execute?script=automix_skip" -Method Get
-
-                $VDJStem = Invoke-RestMethod -uri "http://$VDJIP/query?script=stem%20Vocal" -Method Get
-                $payload | Add-Member -MemberType NoteProperty -Name playlistID -Value "VDJ"
-                if ($VDJStem -ne 0) {
-                    Invoke-RestMethod -uri "http://$VDJIP/execute?script=stem%20Vocal%200"                }
-
-                
-            }
-            "WalkOut" {
-                Invoke-RestMethod -uri "http://$VDJIP/execute?script=pause" -Method get
-                $playlist =(Invoke-RestMethod -Uri "http://$apiIPPort/api/playlists/$pWalkOut/items/0%3A100?columns=%25title%25,%25artist%25,%25album%2")
-                $index = Get-Random -Minimum 0 -Maximum $playlist.playlistItems.totalCount
-                Invoke-RestMethod -Uri "http://$apiIPPort/api/player/play/$pWalkOut/$index" -Method Post
-                $payload | Add-Member -MemberType NoteProperty -Name playlistID -Value $pWalkout
-    
-
-            }
-            "CrowdRally" {
-                $index = $Webevent.Data.Crowdrallysong
-                Invoke-RestMethod -uri "http://$VDJIP/execute?script=pause" -Method get
-                Invoke-RestMethod -Uri "http://$apiIPPort/api/player/play/$pCrowdRally/$index" -Method Post  
-                $payload | Add-Member -MemberType NoteProperty -Name playlistID -Value $pCrowdRally
-
-            }
-            "pauseAll" {
-                Invoke-RestMethod -Uri "http://$apiIPPort/api/player/pause" -Method Post
+            switch ($action) {
+                "Walkin" { 
+                    Invoke-RestMethod -uri "http://$VDJIP/execute?script=pause" -Method get
+                    $playlist =(Invoke-RestMethod -Uri "http://$apiIPPort/api/playlists/$pWalkin/items/0%3A100?columns=%25title%25,%25artist%25,%25album%2")
+                    $index = Get-Random -Minimum 0 -Maximum $playlist.playlistItems.totalCount
+                    Invoke-RestMethod -Uri "http://$apiIPPort/api/player/play/$pWalkin/$index" -Method Post
+                    $payload | Add-Member -MemberType NoteProperty -Name playlistID -Value $pWalkin
         
-                Invoke-RestMethod -uri "http://$VDJIP/execute?script=pause" -Method get
-                $payload | Add-Member -MemberType NoteProperty -Name playlistID -Value "Paused"
-                    }
-            Default {}  
-        }        
-        Write-PodeJsonResponse -Value $payload
+                }
+                "Startup" { 
+                    Invoke-RestMethod -uri "http://$VDJIP/execute?script=pause" -Method get
+                    $playlist =(Invoke-RestMethod -Uri "http://$apiIPPort/api/playlists/$pStartup/items/0%3A100?columns=%25title%25,%25artist%25,%25album%2")
+                    $index = Get-Random -Minimum 0 -Maximum $playlist.playlistItems.totalCount
+                    Invoke-RestMethod -Uri "http://$apiIPPort/api/player/play/$pStartup/$index" -Method Post
+                    $payload | Add-Member -MemberType NoteProperty -Name playlistID -Value $pStartup
+
+            }
+                "Inbetween" {
+                    Invoke-RestMethod -uri "http://$VDJIP/execute?script=pause" -Method get
+                    $playlist = Invoke-RestMethod -Uri "http://$apiIPPort/api/playlists/$pInbetween/items/0%3A100?columns=%25title%25,%25artist%25,%25album%2"
+                    $index = Get-Random -Minimum 0 -Maximum $playlist.playlistItems.totalCount
+                    Invoke-RestMethod -Uri "http://$apiIPPort/api/player/play/$pInbetween/$index" -Method Post
+                    $payload | Add-Member -MemberType NoteProperty -Name playlistID -Value $pInbetween
+            }
+                "TeamIntro" {
+                    Invoke-RestMethod -uri "http://$VDJIP/execute?script=pause" -Method get
+                    $playlist = Invoke-RestMethod -Uri "http://$apiIPPort/api/playlists/$pTeamIntro/items/0%3A100?columns=%25title%25,%25artist%25,%25album%2"
+                    $index = Get-Random -Minimum 0 -Maximum $playlist.playlistItems.totalCount
+                    Invoke-RestMethod -Uri "http://$apiIPPort/api/player/play/$pTeamIntro/$index" -Method Post 
+                    $payload | Add-Member -MemberType NoteProperty -Name playlistID -Value $pTeamIntro 
+
+                }
+                "Gameon" {
+                    $VDJState = invoke-restmethod -Uri "http://$VDJIP/query?script=automix"
+                    
+                    if ($VDJState -match "no") {
+                        Invoke-RestMethod -uri "http://$VDJIP/execute?script=automix%20on" -method get
+                    }else {Invoke-RestMethod -uri "http://$VDJIP/execute?script=automix_skip" -Method Get}
+
+                    Invoke-RestMethod -Uri "http://$apiIPPort/api/player/pause" -Method Post  
+
+                    
+
+                    $VDJStem = Invoke-RestMethod -uri "http://$VDJIP/query?script=stem%20Vocal" -Method Get
+                    $payload | Add-Member -MemberType NoteProperty -Name playlistID -Value "VDJ"
+                    if ($VDJStem -ne 0) {
+                        Invoke-RestMethod -uri "http://$VDJIP/execute?script=stem%20Vocal%200"                }
+
+                    
+                }
+                "WalkOut" {
+                    Invoke-RestMethod -uri "http://$VDJIP/execute?script=pause" -Method get
+                    $playlist =(Invoke-RestMethod -Uri "http://$apiIPPort/api/playlists/$pWalkOut/items/0%3A100?columns=%25title%25,%25artist%25,%25album%2")
+                    $index = Get-Random -Minimum 0 -Maximum $playlist.playlistItems.totalCount
+                    Invoke-RestMethod -Uri "http://$apiIPPort/api/player/play/$pWalkOut/$index" -Method Post
+                    $payload | Add-Member -MemberType NoteProperty -Name playlistID -Value $pWalkout
+        
+
+                }
+                "CrowdRally" {
+                    $index = $Webevent.Data.Crowdrallysong
+                    Invoke-RestMethod -uri "http://$VDJIP/execute?script=pause" -Method get
+                    Invoke-RestMethod -Uri "http://$apiIPPort/api/player/play/$pCrowdRally/$index" -Method Post  
+                    $payload | Add-Member -MemberType NoteProperty -Name playlistID -Value $pCrowdRally
+
+                }
+                "pauseAll" {
+                    Invoke-RestMethod -Uri "http://$apiIPPort/api/player/pause" -Method Post
+            
+                    Invoke-RestMethod -uri "http://$VDJIP/execute?script=pause" -Method get
+                    $payload | Add-Member -MemberType NoteProperty -Name playlistID -Value "Paused"
+                        }
+                Default {}  
+            }        
+            Write-PodeJsonResponse -Value $payload
+        }
+        Add-PodeRoute -Method Post -path "/update-automation" -ScriptBlock {
+            Lock-PodeObject -Name "PlayerAutomationLock" -CheckGlobal -ScriptBlock {
+                $autostatus = $webevent.data.automation
+                Set-PodeState -name "AutomationStatus" -Value @{"automation" = $autostatus}
+
+            }
+        }
     }
-    Add-PodeRouteGroup -Path "FMS" -Routes {
+    Add-PodeRouteGroup -Path "/FMS" -Routes {
         Add-PodeRoute -Path "/status" -Method Get -ScriptBlock{
             Write-PodeViewResponse -Path "FMSStatus"
         }
         Add-PodeRoute -Method get -Path "/queue" -ScriptBlock {
-            Write-PodeJsonResponse -Value $using:FMSJsonQueue
+            Write-PodeJsonResponse -Value $FMSJsonQueue
         }
 
     }
@@ -246,8 +260,17 @@ Start-PodeServer -Threads 4 {
                 Write-PodeJsonResponse -Value $payload
             }
         }
+        Add-PodeRoute -Method get -Path "/Music/automation" -ScriptBlock {
+            Lock-PodeObject -Name "PlayerAutomationLock" -CheckGlobal -ScriptBlock{
+                $payload = Get-PodeState -Name "AutomationStatus" 
+                Write-PodeJsonResponse -Value $payload
+            }
+        }
 
         Add-PodeRoute -Method Get -Path "/save" -ScriptBlock {
+            if(!(Test-Path ./data/)){
+                mkdir ./data
+            }
             Lock-PodeObject -ScriptBlock {
                 Save-PodeState -Path './data/state.json'
             }
