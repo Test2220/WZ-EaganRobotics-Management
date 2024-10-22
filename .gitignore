@@ -4,3 +4,5 @@ testcode.ps1
 /data
 /data/*
 .vscode
+qualification.csv
+logs.txt

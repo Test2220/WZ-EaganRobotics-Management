@@ -1,21 +1,9 @@
 Import-Module -Name Pode -MaximumVersion 2.99.99
 
 
-$MPIP = 'localhost'
-$musicPort = "8880"
-$MusicPlayerIP= $MPIP+":"+$musicPort
-
-$DJIP = $MPIP
-$playlistIDs =Invoke-RestMethod -Uri "http://$MusicPlayerIP/api/playlists/"
-$PlayerIndex = @{}
-foreach ($player in $playlistIDs.playlists){
-
-    $PlayerIndex.Add($player.title,$player.id)
-
-}
-
 
 Start-PodeServer -Threads 4 {
+
     # attach to port 8080 for http
     Add-PodeEndpoint -Address localhost -Port 8080 -Protocol Http
 
@@ -24,16 +12,46 @@ Start-PodeServer -Threads 4 {
     
 
     #init the podestate and lock table
+    Restore-PodeState -Path ".\data\state.json"
     Set-PodeState -Name 'currentlyplaying' -Value @{ 'currentplayer' = "none"; } | Out-Null
     Set-PodeState -Name 'FMSArenaStatus' -Value @{ 'values' = @(); } | Out-Null
-    Set-PodeState -Name "workstations"
     Set-PodeState -Name 'AutomationStatus' -Value @{ 'automation' = $true } | Out-Null
+    Set-PodeState -Name 'FMSArenapoints' -value @{"blueEndgame"= 0;"blueAuto"= 0;"redEndgame"=0;"redAuto"= 0;"redTeleop"= 0;"blueTeleop"= 0} | Out-Null
+    New-PodeLockable -Name 'FMSArenapointsLock'
+
     New-PodeLockable -Name 'workstationLock'
     New-PodeLockable -Name 'FMSArenaStatusLock'
     New-PodeLockable -Name 'currentlyplayingLock'
     New-PodeLockable -Name 'PlayerAutomationLock'
-    Restore-PodeState -Path ".\data\state.json"
+    New-PodeLockable -Name 'ConfigStateLock'
+    
+    if (Test-Path -Path "./data/config.json") {
+        $playerconfig = Get-Content -Path "./data/config.json" -ErrorAction SilentlyContinue | ConvertFrom-Json
+        $MPIP = $playerconfig.MusicPlayerIP 
+        $musicPort = $playerconfig.MusicPort
+        $MusicPlayerIP= $MPIP+":"+$musicPort
+        $DJIP = $playerconfig.DJIP
+    }
+    else {
+        #assume players is in local mode
+        $MPIP = "localhost" 
+        $musicPort = "8880"
+        $MusicPlayerIP= $MPIP+":"+$musicPort
+        $DJIP = "localhost"
+    }    
 
+
+
+    
+    $DJIP = $playerconfig.DJIP
+    $playlistIDs =Invoke-RestMethod -Uri "http://$MusicPlayerIP/api/playlists/"
+    $PlayerIndex = @{}
+    foreach ($player in $playlistIDs.playlists){
+    
+        $PlayerIndex.Add($player.title,$player.id)
+    
+    }
+    Start-Process powershell {.\WSClient.ps1}
     Add-PodeRoute -Method get -Path "/" -ScriptBlock{
 
         Write-PodeViewResponse -Path "index"
@@ -65,6 +83,7 @@ Start-PodeServer -Threads 4 {
             }
             $action = $WebEvent.Data.Player 
             $payload = New-Object -TypeName psobject
+            $payload | Add-Member -MemberType NoteProperty -Name Player -Value $action
 
 
             switch ($action) {
@@ -265,6 +284,122 @@ Start-PodeServer -Threads 4 {
                 $payload = Get-PodeState -Name "AutomationStatus" 
                 Write-PodeJsonResponse -Value $payload
             }
+        }
+
+        Add-PodeRoute -Method Get,Post -Path "/arena" -ContentType 'application/json' -ScriptBlock {
+            if ($webevent.method -eq "post") {
+                Lock-PodeObject -Name "FMSArenaStatusLock" -CheckGlobal -ScriptBlock {
+                    Set-PodeState -Name "FMSArenaStatus" -Value $webevent.data 
+                    Write-PodeJsonResponse -Value $webevent.data
+                }
+                
+            }else{
+                Lock-PodeObject -Name "FMSArenaStatusLock" -CheckGlobal -ScriptBlock {
+                    $arenaPayload = Get-PodeState -Name "FMSArenaStatus" 
+                    Write-PodeJsonResponse -Value $arenaPayload
+                }
+
+            }
+
+        }
+        Add-PodeRoute -Method Get,Post -Path "/arena/points" -ContentType 'application/json' -ScriptBlock {
+            
+
+            if ($webevent.method -eq "post") {
+                Lock-PodeObject -Name "FMSArenapointsLock" -CheckGlobal -ScriptBlock {
+                    
+                    $datahash = @{
+                   "blueAuto" = $webevent.Data.blueAuto ;
+                   "redAuto" = $webevent.Data.redAuto;
+                   "blueTeleop" = $webevent.Data.blueTeleop;
+                   "redTeleop" =$webevent.Data.redTeleop;
+                   "blueEndgame"= $webevent.Data.blueEndgame;
+                   "redEndgame" = $webevent.Data.redEndgame;
+                }
+                $hash = @{
+                    "type"= "updateRealtimeScore";
+                    "data" = $datahash
+                }
+
+
+                    Set-PodeState -Name "FMSArenapoints" -Value $hash
+                    Write-PodeJsonResponse -Value $hash
+                }
+                
+            }else{
+                Lock-PodeObject -Name "FMSArenapointsLock" -CheckGlobal -ScriptBlock {
+                    $arenaPayload = Get-PodeState -Name "FMSArenapoints" 
+                    Write-PodeJsonResponse -Value $arenaPayload
+                }
+
+            }
+
+        }
+        Add-PodeRoute -Method Get,Post -Path "/arena/points/reset" -ContentType 'application/json' -ScriptBlock {
+            
+
+            if ($webevent.method -eq "post") {
+                Lock-PodeObject -Name "FMSArenapointsLock" -CheckGlobal -ScriptBlock {
+                    
+                    $datahash = @{
+                   "blueAuto" = 0 ;
+                   "redAuto" = 0;
+                   "blueTeleop" = 0;
+                   "redTeleop" =0;
+                   "blueEndgame"= 0;
+                   "redEndgame" = 0;
+                }
+                $hash = @{
+                    "type"= "updateRealtimeScore";
+                    "data" = $datahash
+                }
+
+
+                    Set-PodeState -Name "FMSArenapoints" -Value $hash
+                    Write-PodeJsonResponse -Value $hash
+                }
+                
+            }else{
+                Lock-PodeObject -Name "FMSArenapointsLock" -CheckGlobal -ScriptBlock {
+                    $arenaPayload = Get-PodeState -Name "FMSArenapoints" 
+                    Write-PodeJsonResponse -Value $arenaPayload
+                }
+
+            }
+
+        }
+        Add-PodeRoute -Method Get,Post -Path "/arena/points/random" -ContentType 'application/json' -ScriptBlock {
+            
+
+            if ($webevent.method -eq "post") {
+                Lock-PodeObject -Name "FMSArenapointsLock" -CheckGlobal -ScriptBlock {
+                    
+                    $datahash = @{
+                   "blueAuto" = (Get-Random -Minimum 0 -Maximum 30) ;
+                   "redAuto" = (Get-Random -Minimum 0 -Maximum 30);
+                   "blueTeleop" = (Get-Random -Minimum 0 -Maximum 30);
+                   "redTeleop" =(Get-Random -Minimum 0 -Maximum 30);
+                   "blueEndgame"= (Get-Random -Minimum 0 -Maximum 30);
+                   "redEndgame" = (Get-Random -Minimum 0 -Maximum 30);
+                }
+                $hash = @{
+                    "type"= "updateRealtimeScore";
+                    "data" = $datahash
+                }
+
+
+                    Set-PodeState -Name "FMSArenapoints" -Value $hash
+                    Write-PodeJsonResponse -Value $hash
+                }
+                
+            }else{
+                Lock-PodeObject -Name "FMSArenapointsLock" -CheckGlobal -ScriptBlock {
+                    $arenaPayload = Get-PodeState -Name "FMSArenapoints" 
+                    Write-PodeJsonResponse -Value $arenaPayload
+                }
+
+            }
+
         }
 
         Add-PodeRoute -Method Get -Path "/save" -ScriptBlock {
