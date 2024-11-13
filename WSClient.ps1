@@ -4,6 +4,8 @@ References:
     - https://github.com/poshbotio/PoshBot/blob/master/PoshBot/Implementations/Slack/SlackConnection.ps1
     - https://www.leeholmes.com/blog/2018/09/05/producer-consumer-parallelism-in-powershell/
 #>
+
+$ProgressPreference = "SilentlyContinue"
 function out-TerminalLog {
     param (
         [string]$msg  
@@ -13,19 +15,19 @@ function out-TerminalLog {
     Write-Host $date $msg 
 }
 if (!(Test-Path -Path .\qualification.csv)) {
-    $data = Invoke-WebRequest -Uri "http://172.16.20.5:8080/reports/csv/schedule/qualification" 
+    $data = Invoke-WebRequest -Uri "http://localhost:8080/reports/csv/schedule/qualification" 
     $data.Content | Out-File .\qualification.csv
 }
 $verboselogging = $false
 #$quals = $data.Content
 
-$APIIP = "172.16.20.30"
-$APIPort = "8080"
+$APIIP = "127.0.0.1"
+$APIPort = "8081"
 $APIAddress = $APIIP + ":" + $APIPort
 $companionIP = "172.16.20.20"
 $companionPort = "8000"
 $companionAddress = $companionIP + ":" + $companionPort
-$CompanionActive = $true
+$CompanionActive = $false
 $playerAuotmationFlag = Invoke-RestMethod -uri "http://$APIAddress/api/music/automation"
 
 
@@ -40,7 +42,7 @@ $cts = New-Object Threading.CancellationTokenSource
 $ct = New-Object Threading.CancellationToken($false)
 
 out-TerminalLog -msg "Connecting..."
-$connectTask = $ws.ConnectAsync("ws://172.16.20.5:8080/match_play/websocket", $cts.Token)
+$connectTask = $ws.ConnectAsync("ws://localhost:8080/match_play/websocket", $cts.Token)
 do { Start-Sleep(1) }
 until ($connectTask.IsCompleted)
 out-TerminalLog -msg "Connected!"
@@ -341,6 +343,7 @@ try {
                         $oldpayload = $payload
                     }
                 }
+
                 $oldMatchState = $psobject.data.MatchState
             }
             elseif ($psobject.type -eq "audienceDisplayMode") {
@@ -350,6 +353,8 @@ try {
                 else {
                     #insert code to remove Sponsor in Mini
                 }
+                $Value =$psobject.data
+                #Invoke-WebRequest -uri "http://$companionAddress/api/custom-variable/audienceDisplayMode/value?value=$Value" -Method Post -ErrorAction SilentlyContinue | Out-Null
             }
             elseif ($psobject.type -eq "matchTime") {
 
@@ -396,7 +401,7 @@ try {
 
                 out-TerminalLog -msg $msg
             }
-
+            
 
         }
         } until ($ws.State -ne [Net.WebSockets.WebSocketState]::Open)
