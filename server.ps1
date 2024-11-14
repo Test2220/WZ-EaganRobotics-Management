@@ -198,15 +198,6 @@ Start-PodeServer -Threads 4 {
             }
         }
     }
-    Add-PodeRouteGroup -Path "/FMS" -Routes {
-        Add-PodeRoute -Path "/status" -Method Get -ScriptBlock{
-            Write-PodeViewResponse -Path "FMSStatus"
-        }
-        Add-PodeRoute -Method get -Path "/queue" -ScriptBlock {
-            Write-PodeJsonResponse -Value $FMSJsonQueue
-        }
-
-    }
     Add-PodeRouteGroup -Path "/home" -Routes {
             Add-PodeRoute -Method get -Path "/list" -ScriptBlock {
                 Lock-PodeObject -Name "workstationLock" -CheckGlobal -ScriptBlock {
@@ -331,20 +322,57 @@ Start-PodeServer -Threads 4 {
         }
         add-poderoute -Method get,post -Path "/arena/queue" -ContentType 'application/json' -ScriptBlock{
             if ($webevent.method -eq "post") {
-                Lock-PodeObject -Name "arenaQueueLock" -CheckGlobal -ScriptBlock {
-                    Set-PodeState -Name "arenaQueue" -Value $webevent.data 
-                    Write-PodeJsonResponse -Value $webevent.data
-                }
+                    try{
+                        $queue = Get-Content -Path "./data/queue.json" -erroraction Stop| ConvertFrom-Json
+                    }Catch{$queue = New-Object -TypeName PSObject}
+                    if($null -eq $queue.1 ){
+                        $queue = New-Object -TypeName PSObject
+                    }
+                
+                    $queueindex = $queue.psobject.Properties.name.count + 1
+                    $queue |Add-Member -MemberType NoteProperty -Name $queueindex -Value $webevent.data 
+                    
+
+                    $output = $queue | convertto-json 
+                    $output |Out-File -FilePath './data/queue.json'
+                    write-PodeJsonResponse -Value $Output
+                
                 
             }else{
-                Lock-PodeObject -Name "arenaQueueLock" -CheckGlobal -ScriptBlock {
-                    $arenaPayload = Get-PodeState -Name "arenaQueue" 
-                    Write-PodeJsonResponse -Value $arenaPayload
-                }
-
+                Write-PodeJsonResponse -Path "./data/queue.json"
+                
             }
         }
+        add-poderoute -Method get -Path "/arena/queue/read" -ContentType 'application/json' -ScriptBlock{
+            
+            $queue = Get-Content -Path "./data/queue.json" -ErrorAction Stop| ConvertFrom-Json
+
+            if($null -eq $queue.1 ){
+                $payload = '{"type":"queueEmpty"}'
+            }else{
+                $payload = $queue.1 | ConvertTo-Json
+                    $tempqueue = $queue | Select-Object -Property * -ExcludeProperty 1
+                    $newqueue = New-Object -TypeName PSObject
         
+                    foreach ($data in $tempqueue.PSObject.Properties.Value){
+                        $newequeueIndex = $newqueue.psobject.Properties.Name.count + 1
+                        $newqueue | Add-Member -MemberType NoteProperty -Name $newequeueIndex -Value $data
+                    }
+                    $newqueuecount = $newqueue.psobject.Properties.Name.count
+
+                    if ($newqueuecount -eq 0){
+                        "{}" |Out-File -FilePath './data/queue.json'
+                    }else{
+
+                        $output = $newqueue | convertto-json
+
+                        $output |Out-File -FilePath './data/queue.json'
+                    }
+            }
+            Write-PodeJsonResponse -Value $payload
+            
+}
+        }
 
         Add-PodeRoute -Method Get -Path "/save" -ScriptBlock {
             if(!(Test-Path ./data/)){
@@ -357,4 +385,3 @@ Start-PodeServer -Threads 4 {
         }
     }
 
-}

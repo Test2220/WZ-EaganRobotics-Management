@@ -1,1 +1,0 @@
-$invokepract =Invoke-WebRequest -Uri http://172.16.20.5:8080/reports/csv/schedule/practice

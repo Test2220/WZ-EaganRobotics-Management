@@ -145,33 +145,13 @@ try {
                         out-TerminalLog -msg "Pulling data from Server"
                     }
                         
-                    
-                    if (($psobject.data.MatchState -ge 1) -or ($psobject.data.MatchState -le 6) ) {
-
-                        $pullfromStatus = Invoke-RestMethod -Uri "http://$APIAddress/api/arena/points"
-                        $payload = @{
-                                "type" = "updateRealtimeScore";
-                                "data" = @{
-                                    "blueAuto" = $pullfromStatus.data.blueAuto;
-                                    "redAuto" = $pullfromStatus.data.redAuto;
-                                    "blueTeleop" =$pullfromStatus.data.blueTeleop;
-                                    "redTeleop" = $pullfromStatus.data.redTeleop;
-                                    "blueEndgame" =$pullfromStatus.data.blueEndgame;
-                                    "redEndgame" = $pullfromStatus.data.redEndgame;}
-
-                                
-                            }
-                            if ((($oldpayload.data.blueAuto -ne $payload.data.blueAuto) -or ($oldpayload.data.redAuto -ne $payload.data.redAuto) -or ($oldpayload.data.blueTeleop -ne $payload.data.blueTeleop) -or($oldpayload.data.redTeleop -ne $payload.data.redTeleop) -or($oldpayload.data.blueEndgame -ne $payload.data.blueEndgame) -or($oldpayload.data.redEndgame -ne $payload.data.redEndgame))) {
-                                $json = ConvertTo-Json $payload
-                                $send_queue.Enqueue($json)
-                                
-                                out-TerminalLog -msg "points do not match from global State updateing score"
-                            }
-                            $oldpayload = $payload
-                        }
-                    
                 }
-            
+                $queue = Invoke-RestMethod -uri "http://$APIAddress/api/arena/queue/read"
+                if($queue.type -notmatch "queueEmpty"){
+                    $json = ConvertTo-Json $queue
+                    $send_queue.Enqueue($json)
+                }
+
                 Invoke-RestMethod -Uri "http://$APIAddress/api/arena" -Method Post -Body $msg -ContentType "application/json" -ErrorAction SilentlyContinue | out-null  # reserving this invoke for passing JSON to the rest endpoint server.
 
     
