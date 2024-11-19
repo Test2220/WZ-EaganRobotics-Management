@@ -19,8 +19,10 @@ Start-PodeServer -Threads 4 {
     set-podestate -Name "arenaQueue" -Value @{} | Out-Null
     set-podestate -Name "PlayerConfig" |Out-Null
     set-podestate -Name "PlaylistConfig" |Out-Null
+    set-podestate -Name "Nexuslink" |Out-Null
 
     
+    New-PodeLockable -name "NexusLock"
     New-PodeLockable -name "playlistLock"
     New-PodeLockable -name "playerconfigLock"
     New-PodeLockable -Name 'workstationLock'
@@ -320,6 +322,8 @@ Start-PodeServer -Threads 4 {
             }
 
         }
+
+
         add-poderoute -Method get,post -Path "/arena/queue" -ContentType 'application/json' -ScriptBlock{
             if ($webevent.method -eq "post") {
                     try{
@@ -343,6 +347,7 @@ Start-PodeServer -Threads 4 {
                 
             }
         }
+
         add-poderoute -Method get -Path "/arena/queue/read" -ContentType 'application/json' -ScriptBlock{
             
             $queue = Get-Content -Path "./data/queue.json" -ErrorAction Stop| ConvertFrom-Json

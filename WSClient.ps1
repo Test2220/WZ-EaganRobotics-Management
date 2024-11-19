@@ -22,12 +22,12 @@ $verboselogging = $false
 #$quals = $data.Content
 
 $APIIP = "127.0.0.1"
-$APIPort = "8081"
+$APIPort = "8080"
 $APIAddress = $APIIP + ":" + $APIPort
 $companionIP = "172.16.20.20"
 $companionPort = "8000"
 $companionAddress = $companionIP + ":" + $companionPort
-$CompanionActive = $false
+$CompanionActive = $true
 $playerAuotmationFlag = Invoke-RestMethod -uri "http://$APIAddress/api/music/automation"
 
 
@@ -42,7 +42,7 @@ $cts = New-Object Threading.CancellationTokenSource
 $ct = New-Object Threading.CancellationToken($false)
 
 out-TerminalLog -msg "Connecting..."
-$connectTask = $ws.ConnectAsync("ws://localhost:8080/match_play/websocket", $cts.Token)
+$connectTask = $ws.ConnectAsync("ws://172.16.20.5:8080/match_play/websocket", $cts.Token)
 do { Start-Sleep(1) }
 until ($connectTask.IsCompleted)
 out-TerminalLog -msg "Connected!"
@@ -305,23 +305,6 @@ try {
                         $oldMatchState = $psobject.data.MatchState
     
                     }
-                    elseif (($psobject.data.MatchState -eq 0) -and ($oldMatchState -ne 0)) {
-                        Invoke-RestMethod -Uri "http://$APIAddress/api/arena/points/reset" -method post |Out-Null
-                        $pullfromStatus = Invoke-RestMethod -Uri "http://$APIAddress/api/arena/points"
-                        $payload = @{
-                                "type" = "updateRealtimeScore";
-                                "data" = @{
-                                    "blueAuto" = $pullfromStatus.data.blueAuto;
-                                    "redAuto" = $pullfromStatus.data.redAuto;
-                                    "blueTeleop" =$pullfromStatus.data.blueTeleop;
-                                    "redTeleop" = $pullfromStatus.data.redTeleop;
-                                    "blueEndgame" =$pullfromStatus.data.blueEndgame;
-                                    "redEndgame" = $pullfromStatus.data.redEndgame;}
-
-                                
-                            }
-                        $oldpayload = $payload
-                    }
                 }
 
                 $oldMatchState = $psobject.data.MatchState
@@ -334,7 +317,7 @@ try {
                     #insert code to remove Sponsor in Mini
                 }
                 $Value =$psobject.data
-                #Invoke-WebRequest -uri "http://$companionAddress/api/custom-variable/audienceDisplayMode/value?value=$Value" -Method Post -ErrorAction SilentlyContinue | Out-Null
+                Invoke-WebRequest -uri "http://$companionAddress/api/custom-variable/audienceDisplayMode/value?value=$Value" -Method Post -ErrorAction SilentlyContinue | Out-Null
             }
             elseif ($psobject.type -eq "matchTime") {
 
