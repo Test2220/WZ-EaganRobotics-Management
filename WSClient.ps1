@@ -14,13 +14,12 @@ function out-TerminalLog {
     $date = "[{0:MM/dd/yy} {0:HH:mm:ss}]" -f (Get-Date)
     Write-Host $date $msg 
 }
-if (!(Test-Path -Path .\qualification.csv)) {
-    $data = Invoke-WebRequest -Uri "http://localhost:8080/reports/csv/schedule/qualification" 
-    $data.Content | Out-File .\qualification.csv
-}
+
 $verboselogging = $false
 #$quals = $data.Content
-
+$FMSIP = "172.16.20.5"
+$FMSPort = "8080"
+$FMSAddress = $FMSIP + ":" + $FMSPort
 $APIIP = "127.0.0.1"
 $APIPort = "8080"
 $APIAddress = $APIIP + ":" + $APIPort
@@ -30,7 +29,10 @@ $companionAddress = $companionIP + ":" + $companionPort
 $CompanionActive = $true
 $playerAuotmationFlag = Invoke-RestMethod -uri "http://$APIAddress/api/music/automation"
 
-
+if (!(Test-Path -Path .\qualification.csv)) {
+    $data = Invoke-WebRequest -Uri "http://$FMSAddress/reports/csv/schedule/qualification" 
+    $data.Content | Out-File .\qualification.csv
+}
 
 $client_id = [System.GUID]::NewGuid()
 
@@ -42,7 +44,7 @@ $cts = New-Object Threading.CancellationTokenSource
 $ct = New-Object Threading.CancellationToken($false)
 
 out-TerminalLog -msg "Connecting..."
-$connectTask = $ws.ConnectAsync("ws://172.16.20.5:8080/match_play/websocket", $cts.Token)
+$connectTask = $ws.ConnectAsync("ws://$FMSAddress/match_play/websocket", $cts.Token)
 do { Start-Sleep(1) }
 until ($connectTask.IsCompleted)
 out-TerminalLog -msg "Connected!"
@@ -127,6 +129,24 @@ $arenareadyFlag = $false
 $gameonFlag = $false
 $PostgameFlag = $false
 $LastPull = Get-Date
+
+$StackLightRed = $false
+$StackLightBlue = $false
+$StackLightGreen = $false
+$StackLightWhite = $false
+$StackLightAmber = $false
+
+$B1Ready = $false
+$B2Ready = $false
+$B3Ready = $false
+
+$R1Ready = $false
+$R2Ready = $false
+$R3Ready = $false
+
+$OpenFieldLED = $false
+
+
 try {
     do {
         $msg = $null
@@ -196,12 +216,13 @@ try {
                             $PostgameFlag = $True
                         }
                     }
+                    <#Redo this section this will make a loop of enabling and crashing need to pull player and set for single play. 
                     if ($RallyStatusConfim -eq $True) { $RallyStatusConfim = $false }
                 
                     elseif (($playerstatus -eq "CrowdRally") -and ($RallyStatusConfim -eq $false)) {
                         write-host "Rally song is playing overwriting controls to play until song is over"
                         $RallyStatusConfim = $true
-                    }
+                    } #>
                     
                     if ($CompanionActive) {
                         if (($psobject.data.CanStartMatch -eq $true) -and ($oldMatchstartdata -ne $psobject.data.CanStartMatch) ) {
@@ -305,6 +326,39 @@ try {
                         $oldMatchState = $psobject.data.MatchState
     
                     }
+
+                    ##Start of PLC Section
+
+                    #get info from CA on Arena State
+                    if ($psobject.data.AllianceStations.B1.Bypass -eq $false){ #check if B1 is not in Bypass
+                        $B1Ready = (((!$null -eq $psobject.data.AllianceStations.B1.DsConn) -and ($psobject.data.AllianceStations.B1.Ethernet) -and ($psobject.data.TeamWifiStatuses.B1.RadioLinked)))
+                        #if so Check if DS is not Null, and Ethernet is conencted, and Radio is linked and set the restulting checks to the ready status.
+
+                    }elseif ($psobject.data.AllianceStations.B1.Bypass -eq $true) {
+                        $B1Ready = $True
+                    }
+
+
+
+                    ##Start of PLC Logic
+                    if ($R1Ready -and $R2Ready -and $R3Ready){
+
+                        $StackLightRed = $false
+                    }
+                    if ($B1Ready -and $B2Ready -and $B3Ready){
+
+                        $StackLightBlue = $false
+                    }
+
+                    #End of PLC Logic
+                    #Send to Stack
+
+
+
+
+
+
+                    #End of PLC Secttion 
                 }
 
                 $oldMatchState = $psobject.data.MatchState
