@@ -3,9 +3,43 @@ References:
     - https://docs.microsoft.com/en-us/dotnet/api/system.net.websockets.clientwebsocket?view=netframework-4.5
     - https://github.com/poshbotio/PoshBot/blob/master/PoshBot/Implementations/Slack/SlackConnection.ps1
     - https://www.leeholmes.com/blog/2018/09/05/producer-consumer-parallelism-in-powershell/
-#>
 
+
+    17 : {'name' : 'Red', 'state' : GPIO.HIGH},
+    27 : {'name' : 'Blue', 'state' : GPIO.HIGH},
+    22 : {'name' : 'Amber', 'state' : GPIO.HIGH},
+    23 : {'name' : 'White', 'state' : GPIO.HIGH},
+    24 : {'name' : 'Green', 'state' : GPIO.HIGH},
+    25 : {'name' : 'Buzzer', 'state' : GPIO.HIGH},
+    6 : {'name' : 'Aux1', 'state' : GPIO.HIGH},
+    12 : {'name' : 'Aux2', 'state' : GPIO.HIGH} 
+#>
 $ProgressPreference = "SilentlyContinue"
+function updatePinState {
+    param (
+        [int]$Pin,
+        [bool]$CoilState,
+        [bool]$invert = $false,
+        [string]$PLCIP,
+        [PSCustomObject[]]$LightState
+    )
+    if($invert){
+        if (($CoilState -eq $false)){
+            Invoke-RestMethod -Uri "http://$PLCIP/api/$Pin/off"|Out-Null
+        }elseif($CoilState -eq $true){
+            Invoke-RestMethod -Uri "http://$PLCIP/api/$Pin/on"|Out-Null
+        }
+    }else {
+        if (($CoilState -eq $false)){
+            Invoke-RestMethod -Uri "http://$PLCIP/api/$Pin/on"|Out-Null
+        }elseif($CoilState -eq $true){
+            Invoke-RestMethod -Uri "http://$PLCIP/api/$Pin/off"|Out-Null
+        }
+    }
+
+   # Write-Host "Pin is $Pin and relays are inverted is $Pininverted the state of the Pin is $pinStateCast"
+}
+
 function out-TerminalLog {
     param (
         [string]$msg  
@@ -28,6 +62,11 @@ $companionPort = "8000"
 $companionAddress = $companionIP + ":" + $companionPort
 $CompanionActive = $true
 $playerAuotmationFlag = Invoke-RestMethod -uri "http://$APIAddress/api/music/automation"
+$greenblink = $false
+
+
+$StackIP = "172.16.20.70"
+$Pininverted = $false
 
 if (!(Test-Path -Path .\qualification.csv)) {
     $data = Invoke-WebRequest -Uri "http://$FMSAddress/reports/csv/schedule/qualification" 
@@ -129,22 +168,8 @@ $arenareadyFlag = $false
 $gameonFlag = $false
 $PostgameFlag = $false
 $LastPull = Get-Date
+$greenBlinkTime = Get-Date
 
-$StackLightRed = $false
-$StackLightBlue = $false
-$StackLightGreen = $false
-$StackLightWhite = $false
-$StackLightAmber = $false
-
-$B1Ready = $false
-$B2Ready = $false
-$B3Ready = $false
-
-$R1Ready = $false
-$R2Ready = $false
-$R3Ready = $false
-
-$OpenFieldLED = $false
 
 
 try {
@@ -331,12 +356,49 @@ try {
 
                     #get info from CA on Arena State
                     if ($psobject.data.AllianceStations.B1.Bypass -eq $false){ #check if B1 is not in Bypass
-                        $B1Ready = (((!$null -eq $psobject.data.AllianceStations.B1.DsConn) -and ($psobject.data.AllianceStations.B1.Ethernet) -and ($psobject.data.TeamWifiStatuses.B1.RadioLinked)))
+                        $B1Ready = ((($null -ne $psobject.data.AllianceStations.B1.DsConn) -and ($psobject.data.AllianceStations.B1.Ethernet) -and ($psobject.data.TeamWifiStatuses.B1.RadioLinked)))
                         #if so Check if DS is not Null, and Ethernet is conencted, and Radio is linked and set the restulting checks to the ready status.
 
                     }elseif ($psobject.data.AllianceStations.B1.Bypass -eq $true) {
                         $B1Ready = $True
                     }
+                    if ($psobject.data.AllianceStations.B2.Bypass -eq $false){ #check if B2 is not in Bypass
+                        $B2Ready = ((($null -ne $psobject.data.AllianceStations.B2.DsConn) -and ($psobject.data.AllianceStations.B2.Ethernet) -and ($psobject.data.TeamWifiStatuses.B2.RadioLinked)))
+                        #if so Check if DS is not Null, and Ethernet is conencted, and Radio is linked and set the restulting checks to the ready status.
+
+                    }elseif ($psobject.data.AllianceStations.B2.Bypass -eq $true) {
+                        $B2Ready = $True
+                    }
+                    if ($psobject.data.AllianceStations.B3.Bypass -eq $false){ #check if B3 is not in Bypass
+                        $B3Ready = ((($null -ne $psobject.data.AllianceStations.B3.DsConn) -and ($psobject.data.AllianceStations.B3.Ethernet) -and ($psobject.data.TeamWifiStatuses.B3.RadioLinked)))
+                        #if so Check if DS is not Null, and Ethernet is conencted, and Radio is linked and set the restulting checks to the ready status.
+
+                    }elseif ($psobject.data.AllianceStations.B3.Bypass -eq $true) {
+                        $B3Ready = $True
+                    }
+
+                    if ($psobject.data.AllianceStations.R1.Bypass -eq $false){ #check if R1 is not in Bypass
+                        $R1Ready = ((($null -ne $psobject.data.AllianceStations.R1.DsConn) -and ($psobject.data.AllianceStations.R1.Ethernet) -and ($psobject.data.TeamWifiStatuses.R1.RadioLinked)))
+                        #if so Check if DS is not Null, and Ethernet is conencted, and Radio is linked and set the restulting checks to the ready status.
+
+                    }elseif ($psobject.data.AllianceStations.R1.Bypass -eq $true) {
+                        $R1Ready = $True
+                    }
+                    if ($psobject.data.AllianceStations.R2.Bypass -eq $false){ #check if R2 is not in Bypass
+                        $R2Ready = ((($null -ne $psobject.data.AllianceStations.R2.DsConn) -and ($psobject.data.AllianceStations.R2.Ethernet) -and ($psobject.data.TeamWifiStatuses.R2.RadioLinked)))
+                        #if so Check if DS is not Null, and Ethernet is conencted, and Radio is linked and set the restulting checks to the ready status.
+
+                    }elseif ($psobject.data.AllianceStations.R2.Bypass -eq $true) {
+                        $R2Ready = $True
+                    }
+                    if ($psobject.data.AllianceStations.R3.Bypass -eq $false){ #check if R3 is not in Bypass
+                        $B3Ready = ((($null -ne $psobject.data.AllianceStations.R3.DsConn) -and ($psobject.data.AllianceStations.R3.Ethernet) -and ($psobject.data.TeamWifiStatuses.R3.RadioLinked)))
+                        #if so Check if DS is not Null, and Ethernet is conencted, and Radio is linked and set the restulting checks to the ready status.
+
+                    }elseif ($psobject.data.AllianceStations.R3.Bypass -eq $true) {
+                        $B3Ready = $True
+                    }
+
 
 
 
@@ -344,14 +406,76 @@ try {
                     if ($R1Ready -and $R2Ready -and $R3Ready){
 
                         $StackLightRed = $false
+                    }else {
+                        $StackLightRed = $true
                     }
+
                     if ($B1Ready -and $B2Ready -and $B3Ready){
 
                         $StackLightBlue = $false
+                    }else {
+                        $StackLightBlue = $true
+                    }
+                    if ($psobject.data.CanStartMatch -eq $true){
+                        $greentimespan = New-TimeSpan -Start $greenBlinkTime -end $currenttime
+                        if ($greentimespan.Millisecond -ge 500) {
+                            $greenblink = !$greenblink
+                        }
+                        if ($greenblink) {
+                            $StackLightGreen = $true
+                        }elseif($greenblink){
+                            $StackLightGreen = $false    
+                        }
+
+
+
+                    }else {
+                        $StackLightGreen = $false
+                    }
+                    if (($psobject.data.MatchState -ge 1) -and ($psobject.data.MatchState -le 5)) {
+                        $StackLightGreen = $true
                     }
 
                     #End of PLC Logic
                     #Send to Stack
+
+                    $stackState = Invoke-RestMethod -uri http://$StackIP/api
+
+                    if($Pininverted){    
+                        if ($StackLightRed -eq !$stackState.'17'.state) {
+                            updatePinState -Pin 17 -Pininverted $true -CoilState $StackLightRed -PLCIP $StackIP
+                            Write-Host "Red Changed State"
+                        }
+                        if ($StackLightBlue -eq !$stackState.'27'.state) {
+                            updatePinState -Pin 27 -Pininverted $true -CoilState  $StackLightBlue -PLCIP $StackIP
+                            Write-Host "blue Changed State"
+                        }
+                        if ($StackLightOrange -eq !$stackState.'22'.state) {
+                            updatePinState -Pin 22 -Pininverted $true -CoilState  $StackLightOrange -PLCIP $StackIP
+                            Write-Host "Amber Changed State"
+                        }
+                        if ($StackLightGreen -eq !$stackState.'24'.state) {
+                            updatePinState -Pin 24 -Pininverted $true -CoilState  $StackLightGreen -PLCIP $StackIP
+                            Write-Host "green Changed State"
+                        }
+                    }else{
+                        if ($StackLightRed -eq $stackState.'17'.state) {
+                            updatePinState -Pin 17 -Pininverted $false -CoilState $StackLightRed -PLCIP $StackIP
+                            Write-Host "Red Changed State"
+                        }
+                        if ($StackLightBlue -eq $stackState.'27'.state) {
+                            updatePinState -Pin 27 -Pininverted $false -CoilState  $StackLightBlue -PLCIP $StackIP
+                            Write-Host "blue Changed State"
+                        }
+                        if ($StackLightOrange -eq $stackState.'22'.state) {
+                            updatePinState -Pin 22 -Pininverted $false -CoilState  $StackLightOrange -PLCIP $StackIP
+                            Write-Host "Amber Changed State"
+                        }
+                        if ($StackLightGreen -eq $stackState.'24'.state) {
+                            updatePinState -Pin 24 -Pininverted $false -CoilState  $StackLightGreen -PLCIP $StackIP
+                            Write-Host "green Changed State"
+                        }
+                    }
 
 
 
