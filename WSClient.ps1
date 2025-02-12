@@ -356,21 +356,21 @@ try {
 
                     #get info from CA on Arena State
                     if ($psobject.data.AllianceStations.B1.Bypass -eq $false){ #check if B1 is not in Bypass
-                        $B1Ready = ((($null -ne $psobject.data.AllianceStations.B1.DsConn) -and ($psobject.data.AllianceStations.B1.Ethernet) -and ($psobject.data.TeamWifiStatuses.B1.RadioLinked)))
+                        $B1Ready = ($null -ne $psobject.data.AllianceStations.B1.DsConn)
                         #if so Check if DS is not Null, and Ethernet is conencted, and Radio is linked and set the restulting checks to the ready status.
 
                     }elseif ($psobject.data.AllianceStations.B1.Bypass -eq $true) {
                         $B1Ready = $True
                     }
                     if ($psobject.data.AllianceStations.B2.Bypass -eq $false){ #check if B2 is not in Bypass
-                        $B2Ready = ((($null -ne $psobject.data.AllianceStations.B2.DsConn) -and ($psobject.data.AllianceStations.B2.Ethernet) -and ($psobject.data.TeamWifiStatuses.B2.RadioLinked)))
+                        $B2Ready = ($null -ne $psobject.data.AllianceStations.B2.DsConn) 
                         #if so Check if DS is not Null, and Ethernet is conencted, and Radio is linked and set the restulting checks to the ready status.
 
                     }elseif ($psobject.data.AllianceStations.B2.Bypass -eq $true) {
                         $B2Ready = $True
                     }
                     if ($psobject.data.AllianceStations.B3.Bypass -eq $false){ #check if B3 is not in Bypass
-                        $B3Ready = ((($null -ne $psobject.data.AllianceStations.B3.DsConn) -and ($psobject.data.AllianceStations.B3.Ethernet) -and ($psobject.data.TeamWifiStatuses.B3.RadioLinked)))
+                        $B3Ready = ($null -ne $psobject.data.AllianceStations.B3.DsConn) 
                         #if so Check if DS is not Null, and Ethernet is conencted, and Radio is linked and set the restulting checks to the ready status.
 
                     }elseif ($psobject.data.AllianceStations.B3.Bypass -eq $true) {
@@ -378,25 +378,25 @@ try {
                     }
 
                     if ($psobject.data.AllianceStations.R1.Bypass -eq $false){ #check if R1 is not in Bypass
-                        $R1Ready = ((($null -ne $psobject.data.AllianceStations.R1.DsConn) -and ($psobject.data.AllianceStations.R1.Ethernet) -and ($psobject.data.TeamWifiStatuses.R1.RadioLinked)))
+                        $R1Ready = ($null -ne $psobject.data.AllianceStations.R1.DsConn)
                         #if so Check if DS is not Null, and Ethernet is conencted, and Radio is linked and set the restulting checks to the ready status.
 
                     }elseif ($psobject.data.AllianceStations.R1.Bypass -eq $true) {
                         $R1Ready = $True
                     }
                     if ($psobject.data.AllianceStations.R2.Bypass -eq $false){ #check if R2 is not in Bypass
-                        $R2Ready = ((($null -ne $psobject.data.AllianceStations.R2.DsConn) -and ($psobject.data.AllianceStations.R2.Ethernet) -and ($psobject.data.TeamWifiStatuses.R2.RadioLinked)))
+                        $R2Ready = ($null -ne $psobject.data.AllianceStations.R2.DsConn) 
                         #if so Check if DS is not Null, and Ethernet is conencted, and Radio is linked and set the restulting checks to the ready status.
 
                     }elseif ($psobject.data.AllianceStations.R2.Bypass -eq $true) {
                         $R2Ready = $True
                     }
                     if ($psobject.data.AllianceStations.R3.Bypass -eq $false){ #check if R3 is not in Bypass
-                        $B3Ready = ((($null -ne $psobject.data.AllianceStations.R3.DsConn) -and ($psobject.data.AllianceStations.R3.Ethernet) -and ($psobject.data.TeamWifiStatuses.R3.RadioLinked)))
+                        $R3Ready = ($null -ne $psobject.data.AllianceStations.R3.DsConn)
                         #if so Check if DS is not Null, and Ethernet is conencted, and Radio is linked and set the restulting checks to the ready status.
 
                     }elseif ($psobject.data.AllianceStations.R3.Bypass -eq $true) {
-                        $B3Ready = $True
+                        $R3Ready = $True
                     }
 
 
@@ -416,17 +416,12 @@ try {
                     }else {
                         $StackLightBlue = $true
                     }
-                    if ($psobject.data.CanStartMatch -eq $true){
+                    if ($psobject.data.CanStartMatch){
                         $greentimespan = New-TimeSpan -Start $greenBlinkTime -end $currenttime
-                        if ($greentimespan.Millisecond -ge 500) {
-                            $greenblink = !$greenblink
+                        if ($greentimespan.Milliseconds -ge 500) {
+                            $StackLightGreen = !$StackLightGreen
                         }
-                        if ($greenblink) {
-                            $StackLightGreen = $true
-                        }elseif($greenblink){
-                            $StackLightGreen = $false    
-                        }
-
+                
 
 
                     }else {
@@ -439,7 +434,7 @@ try {
                     #End of PLC Logic
                     #Send to Stack
 
-                    $stackState = Invoke-RestMethod -uri http://$StackIP/api
+                    $stackState = Invoke-RestMethod -uri "http://$StackIP/api"
 
                     if($Pininverted){    
                         if ($StackLightRed -eq !$stackState.'17'.state) {
