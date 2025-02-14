@@ -1,11 +1,11 @@
 Import-Module -Name Pode -MaximumVersion 2.99.99
 
-$podeServer = 'localhost'
+$podeServer = '0.0.0.0'
 
 Start-PodeServer -Threads 4 {
 
-    # attach to port 8080 for http
-    Add-PodeEndpoint -Address $podeServer -Port 8080 -Protocol Http
+    # attach to port 80 for http
+    Add-PodeEndpoint -Address $podeServer -Port 80 -Protocol Http
 
     Set-PodeViewEngine -Type Pode
     New-PodeLoggingMethod -Terminal | Enable-PodeErrorLogging
