@@ -491,27 +491,49 @@ try {
                             updatePinState -Pin 16  -CoilState  $StackLightWhite -PLCIP $StackIP
                             Write-Host "Field reset change state"
                         }
-                        if ($R1Ready -ne !$RedSCCState.'5'.state) {
-                            updatePinState -Pin 5  -CoilState $R1Ready -PLCIP $redSCCIP
-                            Write-Host "Red 1 Changed State"
+                        if ($R1Ready -ne $RedSCCState.'5'.state) {
+                            if ($B3Ready -eq $false) {
+                                updatePinState -Pin 5  -CoilState $true -PLCIP $redSCCIP
+                            }else {
+                                updatePinState -Pin 5  -CoilState $false -PLCIP $redSCCIP                         
+                            }                            Write-Host "Red 1 Changed State"
                         }
-                        if ($R2Ready -ne !$RedSCCState.'6'.state) {
-                            updatePinState -Pin 6  -CoilState $R2Ready -PLCIP $redSCCIP
-                            Write-Host "Red 2 Changed State"
+                        if ($R2Ready -ne $RedSCCState.'6'.state) {
+                            if ($B3Ready -eq $false) {
+                                updatePinState -Pin 6  -CoilState $true -PLCIP $redSCCIP
+                            }else {
+                                updatePinState -Pin 6  -CoilState $false -PLCIP $redSCCIP                         
+                            }                            Write-Host "Red 2 Changed State"
                         }
-                        if ($R3Ready -ne !$RedSCCState.'13'.state) {
-                            updatePinState -Pin 13  -CoilState $R3Ready -PLCIP $redSCCIP
+                        if ($R3Ready -ne $RedSCCState.'13'.state) {
+                            if ($B3Ready -eq $false) {
+                                updatePinState -Pin 13  -CoilState $true -PLCIP $redSCCIP
+                            }else {
+                                updatePinState -Pin 13  -CoilState $false -PLCIP $redSCCIP                         
+                            }
                             Write-Host "Red 3 Changed State"
                         }
-                        if ($B1Ready -ne !$BlueSCCState.'5'.state) {
-                            updatePinState -Pin 5  -CoilState $B1Ready -PLCIP $blueSCCIP
-                            Write-Host "Blue 1 Changed State"
+                        if ($B1Ready -ne $BlueSCCState.'5'.state) {
+                            if ($B3Ready -eq $false) {
+                                updatePinState -Pin 5  -CoilState $true -PLCIP $blueSCCIP
+                            }else {
+                                updatePinState -Pin 5  -CoilState $false -PLCIP $blueSCCIP                         
+                            }                            Write-Host "Blue 1 Changed State"
                         }
-                        if ($B2Ready -ne !$BlueSCCState.'6'.state) {
-                            updatePinState -Pin 6  -CoilState $B2Ready -PLCIP $blueSCCIP
+                        if ($B2Ready -ne $BlueSCCState.'6'.state) {
+                            if ($B3Ready -eq $false) {
+                                updatePinState -Pin 6  -CoilState $true -PLCIP $blueSCCIP
+                            }else {
+                                updatePinState -Pin 6  -CoilState $false -PLCIP $blueSCCIP                         
+                            }
                             Write-Host "Blue 2 Changed State"
                         }
-                        if ($B3Ready -ne !$RedSCCState.'13'.state) {
+                        if ($B3Ready -ne $RedSCCState.'13'.state) {
+                            if ($B3Ready -eq $false) {
+                                updatePinState -Pin 13  -CoilState $true -PLCIP $blueSCCIP
+                            }else {
+                                updatePinState -Pin 13  -CoilState $false -PLCIP $blueSCCIP                         
+                            }
                             updatePinState -Pin 13  -CoilState $B3Ready -PLCIP $blueSCCIP
                             Write-Host "blue 3 Changed State"
                         }
