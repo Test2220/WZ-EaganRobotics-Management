@@ -65,81 +65,147 @@ $StackLightB3=12
 
 do {
     updatePinState -Pin $StacklightRed -Pininverted $true -CoilState $true -PLCIP $StackIP
+    Start-Sleep -Milliseconds 50
     updatePinState -Pin $StackLightBlue -Pininverted $true -CoilState $true -PLCIP $StackIP
+    Start-Sleep -Milliseconds 50
     updatePinState -Pin $StacklightRed -Pininverted $true -CoilState $true -PLCIP $StackIP
+    Start-Sleep -Milliseconds 50
     updatePinState -Pin $StackLightOrange -Pininverted $true -CoilState $true -PLCIP $StackIP
+    Start-Sleep -Milliseconds 50
     updatePinState -Pin $StackLightGreen -Pininverted $true -CoilState $true -PLCIP $StackIP
+    Start-Sleep -Milliseconds 50
     updatePinState -Pin $StackLightWhite -Pininverted $true -CoilState $true -PLCIP $StackIP
+    Start-Sleep -Milliseconds 50
     updatePinState -Pin $StackLightR1 -Pininverted $true -CoilState $true -PLCIP $redSCCIP
+    Start-Sleep -Milliseconds 50
     updatePinState -Pin $StackLightR2 -Pininverted $true -CoilState $true -PLCIP $redSCCIP
+    Start-Sleep -Milliseconds 50
     updatePinState -Pin $StackLightR3 -Pininverted $true -CoilState $true -PLCIP $redSCCIP
+    Start-Sleep -Milliseconds 50
     updatePinState -Pin $StackLightB1 -Pininverted $true -CoilState $true -PLCIP $blueSCCIP
+    Start-Sleep -Milliseconds 50
     updatePinState -Pin $StackLightB2 -Pininverted $true -CoilState $true -PLCIP $blueSCCIP
+    Start-Sleep -Milliseconds 50
     updatePinState -Pin $StackLightB3 -Pininverted $true -CoilState $true -PLCIP $blueSCCIP
     Start-Sleep -Milliseconds 500
     updatePinState -Pin $StacklightRed -Pininverted $true -CoilState $false -PLCIP $StackIP
+    Start-Sleep -Milliseconds 50
     updatePinState -Pin $StackLightBlue -Pininverted $true -CoilState $false -PLCIP $StackIP
+    Start-Sleep -Milliseconds 50
     updatePinState -Pin $StacklightRed -Pininverted $true -CoilState $false -PLCIP $StackIP
+    Start-Sleep -Milliseconds 50
     updatePinState -Pin $StackLightOrange -Pininverted $true -CoilState $false -PLCIP $StackIP
+    Start-Sleep -Milliseconds 50
     updatePinState -Pin $StackLightGreen -Pininverted $true -CoilState $false -PLCIP $StackIP
+    Start-Sleep -Milliseconds 50
     updatePinState -Pin $StackLightWhite -Pininverted $true -CoilState $false -PLCIP $StackIP
+    Start-Sleep -Milliseconds 50
     updatePinState -Pin $StackLightR1 -Pininverted $true -CoilState $false -PLCIP $redSCCIP
+    Start-Sleep -Milliseconds 50
     updatePinState -Pin $StackLightR2 -Pininverted $true -CoilState $false -PLCIP $redSCCIP
+    Start-Sleep -Milliseconds 50
     updatePinState -Pin $StackLightR3 -Pininverted $true -CoilState $false -PLCIP $redSCCIP
+    Start-Sleep -Milliseconds 50
     updatePinState -Pin $StackLightB1 -Pininverted $true -CoilState $false -PLCIP $blueSCCIP
+    Start-Sleep -Milliseconds 50
     updatePinState -Pin $StackLightB2 -Pininverted $true -CoilState $false -PLCIP $blueSCCIP
+    Start-Sleep -Milliseconds 50
     updatePinState -Pin $StackLightB3 -Pininverted $true -CoilState $false -PLCIP $blueSCCIP
     Start-Sleep -Milliseconds 500
     updatePinState -Pin $StacklightRed -Pininverted $true -CoilState $true -PLCIP $StackIP
+    Start-Sleep -Milliseconds 50
     updatePinState -Pin $StackLightBlue -Pininverted $true -CoilState $true -PLCIP $StackIP
+    Start-Sleep -Milliseconds 50
     updatePinState -Pin $StacklightRed -Pininverted $true -CoilState $true -PLCIP $StackIP
+    Start-Sleep -Milliseconds 50
     updatePinState -Pin $StackLightOrange -Pininverted $true -CoilState $true -PLCIP $StackIP
+    Start-Sleep -Milliseconds 50
     updatePinState -Pin $StackLightGreen -Pininverted $true -CoilState $true -PLCIP $StackIP
+    Start-Sleep -Milliseconds 50
     updatePinState -Pin $StackLightWhite -Pininverted $true -CoilState $true -PLCIP $StackIP
+    Start-Sleep -Milliseconds 50
     updatePinState -Pin $StackLightR1 -Pininverted $true -CoilState $true -PLCIP $redSCCIP
+    Start-Sleep -Milliseconds 50
     updatePinState -Pin $StackLightR2 -Pininverted $true -CoilState $true -PLCIP $redSCCIP
+    Start-Sleep -Milliseconds 50
     updatePinState -Pin $StackLightR3 -Pininverted $true -CoilState $true -PLCIP $redSCCIP
+    Start-Sleep -Milliseconds 50
     updatePinState -Pin $StackLightB1 -Pininverted $true -CoilState $true -PLCIP $blueSCCIP
+    Start-Sleep -Milliseconds 50
     updatePinState -Pin $StackLightB2 -Pininverted $true -CoilState $true -PLCIP $blueSCCIP
+    Start-Sleep -Milliseconds 50
     updatePinState -Pin $StackLightB3 -Pininverted $true -CoilState $true -PLCIP $blueSCCIP
     Start-Sleep -Milliseconds 500
     updatePinState -Pin $StacklightRed -Pininverted $true -CoilState $false -PLCIP $StackIP
+    Start-Sleep -Milliseconds 50
     updatePinState -Pin $StackLightBlue -Pininverted $true -CoilState $false -PLCIP $StackIP
+    Start-Sleep -Milliseconds 50
     updatePinState -Pin $StacklightRed -Pininverted $true -CoilState $false -PLCIP $StackIP
+    Start-Sleep -Milliseconds 50
     updatePinState -Pin $StackLightOrange -Pininverted $true -CoilState $false -PLCIP $StackIP
+    Start-Sleep -Milliseconds 50
     updatePinState -Pin $StackLightGreen -Pininverted $true -CoilState $false -PLCIP $StackIP
+    Start-Sleep -Milliseconds 50
     updatePinState -Pin $StackLightWhite -Pininverted $true -CoilState $false -PLCIP $StackIP
+    Start-Sleep -Milliseconds 50
     updatePinState -Pin $StackLightR1 -Pininverted $true -CoilState $false -PLCIP $redSCCIP
+    Start-Sleep -Milliseconds 50
     updatePinState -Pin $StackLightR2 -Pininverted $true -CoilState $false -PLCIP $redSCCIP
+    Start-Sleep -Milliseconds 50
     updatePinState -Pin $StackLightR3 -Pininverted $true -CoilState $false -PLCIP $redSCCIP
+    Start-Sleep -Milliseconds 50
     updatePinState -Pin $StackLightB1 -Pininverted $true -CoilState $false -PLCIP $blueSCCIP
+    Start-Sleep -Milliseconds 50
     updatePinState -Pin $StackLightB2 -Pininverted $true -CoilState $false -PLCIP $blueSCCIP
+    Start-Sleep -Milliseconds 50
     updatePinState -Pin $StackLightB3 -Pininverted $true -CoilState $false -PLCIP $blueSCCIP
     Start-Sleep -Milliseconds 500
     updatePinState -Pin $StacklightRed -Pininverted $true -CoilState $true -PLCIP $StackIP
+    Start-Sleep -Milliseconds 50
     updatePinState -Pin $StackLightBlue -Pininverted $true -CoilState $true -PLCIP $StackIP
+    Start-Sleep -Milliseconds 50
     updatePinState -Pin $StacklightRed -Pininverted $true -CoilState $true -PLCIP $StackIP
+    Start-Sleep -Milliseconds 50
     updatePinState -Pin $StackLightOrange -Pininverted $true -CoilState $true -PLCIP $StackIP
+    Start-Sleep -Milliseconds 50
     updatePinState -Pin $StackLightGreen -Pininverted $true -CoilState $true -PLCIP $StackIP
+    Start-Sleep -Milliseconds 50
     updatePinState -Pin $StackLightWhite -Pininverted $true -CoilState $true -PLCIP $StackIP
+    Start-Sleep -Milliseconds 50
     updatePinState -Pin $StackLightR1 -Pininverted $true -CoilState $true -PLCIP $redSCCIP
+    Start-Sleep -Milliseconds 50
     updatePinState -Pin $StackLightR2 -Pininverted $true -CoilState $true -PLCIP $redSCCIP
+    Start-Sleep -Milliseconds 50
     updatePinState -Pin $StackLightR3 -Pininverted $true -CoilState $true -PLCIP $redSCCIP
+    Start-Sleep -Milliseconds 50
     updatePinState -Pin $StackLightB1 -Pininverted $true -CoilState $true -PLCIP $blueSCCIP
+    Start-Sleep -Milliseconds 50
     updatePinState -Pin $StackLightB2 -Pininverted $true -CoilState $true -PLCIP $blueSCCIP
+    Start-Sleep -Milliseconds 50
     updatePinState -Pin $StackLightB3 -Pininverted $true -CoilState $true -PLCIP $blueSCCIP
     Start-Sleep -Milliseconds 500
     updatePinState -Pin $StacklightRed -Pininverted $true -CoilState $false -PLCIP $StackIP
+    Start-Sleep -Milliseconds 50
     updatePinState -Pin $StackLightBlue -Pininverted $true -CoilState $false -PLCIP $StackIP
+    Start-Sleep -Milliseconds 50
     updatePinState -Pin $StacklightRed -Pininverted $true -CoilState $false -PLCIP $StackIP
+    Start-Sleep -Milliseconds 50
     updatePinState -Pin $StackLightOrange -Pininverted $true -CoilState $false -PLCIP $StackIP
+    Start-Sleep -Milliseconds 50
     updatePinState -Pin $StackLightGreen -Pininverted $true -CoilState $false -PLCIP $StackIP
+    Start-Sleep -Milliseconds 50
     updatePinState -Pin $StackLightWhite -Pininverted $true -CoilState $false -PLCIP $StackIP
+    Start-Sleep -Milliseconds 50
     updatePinState -Pin $StackLightR1 -Pininverted $true -CoilState $false -PLCIP $redSCCIP
+    Start-Sleep -Milliseconds 50
     updatePinState -Pin $StackLightR2 -Pininverted $true -CoilState $false -PLCIP $redSCCIP
+    Start-Sleep -Milliseconds 50
     updatePinState -Pin $StackLightR3 -Pininverted $true -CoilState $false -PLCIP $redSCCIP
+    Start-Sleep -Milliseconds 50
     updatePinState -Pin $StackLightB1 -Pininverted $true -CoilState $false -PLCIP $blueSCCIP
+    Start-Sleep -Milliseconds 50
     updatePinState -Pin $StackLightB2 -Pininverted $true -CoilState $false -PLCIP $blueSCCIP
+    Start-Sleep -Milliseconds 50
     updatePinState -Pin $StackLightB3 -Pininverted $true -CoilState $false -PLCIP $blueSCCIP
     Start-Sleep -Milliseconds 250
     updatePinState -Pin $StacklightRed -Pininverted $true -CoilState $true -PLCIP $StackIP
