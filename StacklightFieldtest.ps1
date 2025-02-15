@@ -47,7 +47,7 @@ function updatePinState {
 
    # Write-Host "Pin is $Pin and relays are inverted is $Pininverted the state of the Pin is $pinStateCast"
 }
-$StackIP = "172.16.20.70"
+$StackIP = "172.16.20.73"
 $redSCCIP = "172.16.20.71"
 $blueSCCIP = "172.16.20.72"
 $StacklightRed = 5
