@@ -80,7 +80,7 @@ $alliancestatus = ""
 
 
 
-$StackIP = "172.16.20.70"
+$StackIP = "172.16.20.73"
 $redSCCIP = "172.16.20.71"
 $blueSCCIP = "172.16.20.72"
 
