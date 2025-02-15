@@ -499,8 +499,8 @@ try {
                             updatePinState -Pin 6  -CoilState $R2Ready -PLCIP $redSCCIP
                             Write-Host "Red 2 Changed State"
                         }
-                        if ($R3Ready -ne $RedSCCState.'12'.state) {
-                            updatePinState -Pin 12  -CoilState $R3Ready -PLCIP $redSCCIP
+                        if ($R3Ready -ne $RedSCCState.'13'.state) {
+                            updatePinState -Pin 13  -CoilState $R3Ready -PLCIP $redSCCIP
                             Write-Host "Red 3 Changed State"
                         }
                         if ($B1Ready -ne $BlueSCCState.'5'.state) {
@@ -511,8 +511,8 @@ try {
                             updatePinState -Pin 6  -CoilState $B2Ready -PLCIP $blueSCCIP
                             Write-Host "Blue 2 Changed State"
                         }
-                        if ($B3Ready -ne $RedSCCState.'12'.state) {
-                            updatePinState -Pin 12  -CoilState $B3Ready -PLCIP $blueSCCIP
+                        if ($B3Ready -ne $RedSCCState.'13'.state) {
+                            updatePinState -Pin 13  -CoilState $B3Ready -PLCIP $blueSCCIP
                             Write-Host "blue 3 Changed State"
                         }
 

@@ -52,15 +52,15 @@ $redSCCIP = "172.16.20.71"
 $blueSCCIP = "172.16.20.72"
 $StacklightRed = 5
 $StackLightBlue = 6
-$StackLightOrange = 12 
+$StackLightOrange = 13 
 $StackLightGreen=19
-$StackLightWhite=20
+$StackLightWhite=16
 $StackLightR1=5
 $StackLightR2=6
-$StackLightR3=12
+$StackLightR3=13
 $StackLightB1=5
 $StackLightB2=6
-$StackLightB3=12
+$StackLightB3=13
 
 
 do {
