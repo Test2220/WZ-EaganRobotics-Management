@@ -178,6 +178,15 @@ $oldR3Byp = "init"
 $oldB1Byp = "init"
 $oldB2Byp = "init"
 $oldB3Byp = "init"
+
+$R1Ready = $false
+$R2Ready = $false
+$R3Ready = $false
+
+$B1Ready = $false
+$B2Ready = $false
+$B3Ready = $false
+
     
 $oldMatchState = "init"
 $arenareadyFlag = $false
@@ -451,6 +460,7 @@ try {
                     }else {
                         $StackLightWhite = $false
                     }
+                    $StackLightOrange =$false
                     #End of PLC Logic
                     #Send to Stack
 
