@@ -57,7 +57,7 @@ Start-PodeServer -Threads 4 {
     }
     catch {
 
-        Write-Podehost "Error with playlist capture navigate to http://$podeserver`:8081/setup to setup player"
+        Write-Podehost "Error with playlist capture navigate to http://$podeserver/setup to setup player"
         Add-PodeRoute -Method Post,get -Path '/setup' -ScriptBlock {
             if ($webevent.method -eq "post") {
                 Lock-PodeObject -Name "PlayerConfigLock" -CheckGlobal -ScriptBlock{
