@@ -27,6 +27,8 @@ Start-PodeServer -Threads 4 {
     set-podestate -Name "PlayerConfig" |Out-Null
     set-podestate -Name "PlaylistConfig" |Out-Null
     set-podestate -Name "Nexuslink" |Out-Null
+    Set-PodeState -Name 'points' -Value @{ 'RedAuto' = 0;'blueauto' = 0;'Redtele' = 0;'bluetele' = 0;'redend' = 0;'blueend' = 0 } | Out-Null
+
 
     
     New-PodeLockable -name "NexusLock"
