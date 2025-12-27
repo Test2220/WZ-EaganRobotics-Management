@@ -1,5 +1,12 @@
 Import-Module -Name Pode -MaximumVersion 2.99.99
+function out-TerminalLog {
+    param (
+        [string]$msg  
+    )
 
+    $date = "[{0:MM/dd/yy} {0:HH:mm:ss}]" -f (Get-Date)
+    Write-Host $date $msg 
+}
 $podeServer = '0.0.0.0'
 
 Start-PodeServer -Threads 4 {
@@ -102,64 +109,14 @@ Start-PodeServer -Threads 4 {
                 Write-PodeJsonResponse -Value $payload
             }
         }
-
-        Add-PodeRoute -Method Get,Post -Path "/arena" -ContentType 'application/json' -FilePath ".\routes\api-arena.ps1"
-
-
-        add-poderoute -Method get,post -Path "/arena/queue" -ContentType 'application/json' -ScriptBlock{
-            if ($webevent.method -eq "post") {
-                    try{
-                        $queue = Get-Content -Path "./data/queue.json" -erroraction Stop| ConvertFrom-Json
-                    }Catch{$queue = New-Object -TypeName PSObject}
-                    if($null -eq $queue.1 ){
-                        $queue = New-Object -TypeName PSObject
-                    }
-                
-                    $queueindex = $queue.psobject.Properties.name.count + 1
-                    $queue |Add-Member -MemberType NoteProperty -Name $queueindex -Value $webevent.data 
-                    
-
-                    $output = $queue | convertto-json 
-                    $output |Out-File -FilePath './data/queue.json'
-                    write-PodeJsonResponse -Value $Output
-                
-                
-            }else{
-                Write-PodeJsonResponse -Path "./data/queue.json"
-                
-            }
+        Add-PodeRouteGroup -Path "/arena" -Routes{
+            Add-PodeRoute -Method Get,Post -Path "/arena" -ContentType 'application/json' -FilePath ".\routes\API\api-arena.ps1"
+            Add-PodeRoute -Method get,Post -Path "/points/:team/:score" -FilePath ".\routes\API\Arenapoints.ps1"
+            add-poderoute -Method get,post -Path "/arena/queue" -ContentType 'application/json' -FilePath ".\routes\API\api-arenaQueue.ps1"
+            add-poderoute -Method get -Path "/arena/queue/read" -ContentType 'application/json' -FilePath ".\routes\API\Api-arenaReadqueue.ps1"
+            add-poderoute -Method get,post -Path "/arena/state" -ContentType 'application/json' -FilePath ".\routes\API\API-ArenaStateChange.ps1"
         }
-
-        add-poderoute -Method get -Path "/arena/queue/read" -ContentType 'application/json' -ScriptBlock{
-            
-            $queue = Get-Content -Path "./data/queue.json" -ErrorAction Stop| ConvertFrom-Json
-
-            if($null -eq $queue.1 ){
-                $payload = '{"type":"queueEmpty"}'
-            }else{
-                $payload = $queue.1 | ConvertTo-Json
-                    $tempqueue = $queue | Select-Object -Property * -ExcludeProperty 1
-                    $newqueue = New-Object -TypeName PSObject
-        
-                    foreach ($data in $tempqueue.PSObject.Properties.Value){
-                        $newequeueIndex = $newqueue.psobject.Properties.Name.count + 1
-                        $newqueue | Add-Member -MemberType NoteProperty -Name $newequeueIndex -Value $data
-                    }
-                    $newqueuecount = $newqueue.psobject.Properties.Name.count
-
-                    if ($newqueuecount -eq 0){
-                        "{}" |Out-File -FilePath './data/queue.json'
-                    }else{
-
-                        $output = $newqueue | convertto-json
-
-                        $output |Out-File -FilePath './data/queue.json'
-                    }
-            }
-            Write-PodeJsonResponse -Value $payload
-            
-}
-        }
+    }
 
         Add-PodeRoute -Method Get -Path "/save" -ScriptBlock {
             if(!(Test-Path ./data/)){
