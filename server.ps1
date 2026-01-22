@@ -113,7 +113,7 @@ Start-PodeServer -Threads 4 {
         }
         Add-PodeRouteGroup -Path "/arena" -Routes{
             Add-PodeRoute -Method Get,Post -Path "/arena" -ContentType 'application/json' -FilePath ".\routes\API\api-arena.ps1"
-            Add-PodeRoute -Method get,Post -Path "/points/:team/:score" -FilePath ".\routes\API\Arenapoints.ps1"
+            Add-PodeRoute -Method get,Post -Path "/points/:mode/:team/:score" -FilePath ".\routes\API\GameSpecifc\ArenaScoring.ps1"
             add-poderoute -Method get,post -Path "/arena/queue" -ContentType 'application/json' -FilePath ".\routes\API\api-arenaQueue.ps1"
             add-poderoute -Method get -Path "/arena/queue/read" -ContentType 'application/json' -FilePath ".\routes\API\Api-arenaReadqueue.ps1"
             add-poderoute -Method get,post -Path "/arena/state" -ContentType 'application/json' -FilePath ".\routes\API\API-ArenaStateChange.ps1"

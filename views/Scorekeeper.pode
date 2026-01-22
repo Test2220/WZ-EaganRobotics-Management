@@ -3,29 +3,87 @@
 
     <link rel="stylesheet" href="style.css" />
     <script src="https://ajax.googleapis.com/ajax/libs/jquery/3.7.1/jquery.min.js"></script>
+
+ <script type="application/javascript">
+
+    
+    function PlaylistChange (fieldID){
+
+    // Creating a XHR object
+    let xhr = new XMLHttpRequest();
+    let url = "./api/arena/scorekeeper/";
+    // Converting JSON data to string
+
+        var data = JSON.stringify({"element": fieldID});
+
+    // open a connection
+    xhr.open("POST", url, true);
+
+    // Set the request header i.e. which type of content you are sending
+    xhr.setRequestHeader("Content-Type", "application/json");
+    
+
+    // Sending data with the request
+    xhr.send(data);
+}
+
+var getJSON = function(url, callback) {
+    var xhr = new XMLHttpRequest();
+    xhr.open('GET', url, true);
+    xhr.responseType = 'json';
+    xhr.onload = function() {
+      var status = xhr.status;
+      if (status === 200) {
+        callback(null, xhr.response);
+      } else {
+        callback(status, xhr.response);
+      }
+    };
+    xhr.send();
+};
+
+</script>
 </head>
 <body>
 <div id="mainview">
-<form action="./setup" id="Playerconfig" method="post">
-<h2>Manual add</h2>
-    <div class="form-row'>
-        <label for="MusicPlayerIP">Music Player IP</label>
-        <input type="text" class="input-text input-text-block" id="MusicPlayerIP" name="MusicPlayerIP"/>
-    </div>
-    <div class="form-row'>
-        <label for="MusicPort">MusicPort</label>
-        <input type="text" class="input-text input-text-block" id="MusicPort" name="MusicPort"/>
-    </div>
-        <div class="form-row'>
-        <label for="DJIP">DJIP</label>
-        <input type="text" class="input-text input-text-block" id="DJIP" name="DJIP"/>
-    </div>
-    <div class="form-row mx-auto">
-        <input type="submit" class="btn-submit" id="btn-submit" />
-    </div>
+<div id="redContainer">
+<button id="redautoL1Add"/>
+<button id="redteleL1Add"/>
+Level 1
+<button id="redautoL1Sub"/>
+<button id="redteleL1Sub"/>
+
+<button id="redteleL1Add"/>
+Level 2
+<button id="redteleL1Sub"/>
+
+<button id="redteleL1Add"/>
+Level 3
+<button id="redteleL1Sub"/>
+
+</div>
+
+<div id="blueContainer">
+<button id="blueautoL1Add"/>
+<button id="blueteleL1Add"/>
+Level 1
+<button id="blueautoL1Sub"/>
+<button id="blueteleL1Sub"/>
+
+<button id="blueteleL1Add"/>
+Level 2
+<button id="blueteleL1Sub"/>
+
+<button id="blueteleL1Add"/>
+Level 3
+<button id="blueteleL1Sub"/>
+</div>
+
+<div id="ScoreStats">
 
 
-</form>
+</div>
+
 </div>
 </body>
 </html>
