@@ -1,0 +1,31 @@
+<html>
+<head>
+
+    <link rel="stylesheet" href="style.css" />
+    <script src="https://ajax.googleapis.com/ajax/libs/jquery/3.7.1/jquery.min.js"></script>
+</head>
+<body>
+<div id="mainview">
+<form action="./setup" id="Playerconfig" method="post">
+<h2>Manual add</h2>
+    <div class="form-row'>
+        <label for="MusicPlayerIP">Music Player IP</label>
+        <input type="text" class="input-text input-text-block" id="MusicPlayerIP" name="MusicPlayerIP"/>
+    </div>
+    <div class="form-row'>
+        <label for="MusicPort">MusicPort</label>
+        <input type="text" class="input-text input-text-block" id="MusicPort" name="MusicPort"/>
+    </div>
+        <div class="form-row'>
+        <label for="DJIP">DJIP</label>
+        <input type="text" class="input-text input-text-block" id="DJIP" name="DJIP"/>
+    </div>
+    <div class="form-row mx-auto">
+        <input type="submit" class="btn-submit" id="btn-submit" />
+    </div>
+
+
+</form>
+</div>
+</body>
+</html>
