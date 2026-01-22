@@ -53,13 +53,13 @@ Level 1
 <button id="redautoL1Sub"/>
 <button id="redteleL1Sub"/>
 
-<button id="redteleL1Add"/>
+<button id="redteleL2Add"/>
 Level 2
-<button id="redteleL1Sub"/>
+<button id="redteleL2Sub"/>
 
-<button id="redteleL1Add"/>
+<button id="redteleL3Add"/>
 Level 3
-<button id="redteleL1Sub"/>
+<button id="redteleL3Sub"/>
 
 </div>
 
@@ -70,13 +70,13 @@ Level 1
 <button id="blueautoL1Sub"/>
 <button id="blueteleL1Sub"/>
 
-<button id="blueteleL1Add"/>
+<button id="blueteleL2Add"/>
 Level 2
-<button id="blueteleL1Sub"/>
+<button id="blueteleL2Sub"/>
 
-<button id="blueteleL1Add"/>
+<button id="blueteleL3Add"/>
 Level 3
-<button id="blueteleL1Sub"/>
+<button id="blueteleL3Sub"/>
 </div>
 
 <div id="ScoreStats">

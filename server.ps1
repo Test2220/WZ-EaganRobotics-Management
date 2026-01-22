@@ -27,7 +27,7 @@ Start-PodeServer -Threads 4 {
     set-podestate -Name "PlayerConfig" |Out-Null
     set-podestate -Name "PlaylistConfig" |Out-Null
     set-podestate -Name "Nexuslink" |Out-Null
-    Set-PodeState -Name 'points' -Value @{ 'RedAuto' = 0;'blueauto' = 0;'Redtele' = 0;'bluetele' = 0;'redend' = 0;'blueend' = 0 } | Out-Null
+    Set-PodeState -Name 'points' -Value @{ 'RedAuto' = 0;'blueauto' = 0;'Redtele' = 0;'bluetele' = 0;'redend' = 0;'blueend' = 0;'redAutoL1' = 0;'redTeleL1' = 0;'redTeleL2' = 0;'redTeleL3' = 0;'BlueAutoL1' = 0;'BlueTeleL1' = 0;'BlueTeleL2' = 0;'BlueTeleL3' = 0 } | Out-Null
 
 
     
@@ -120,6 +120,7 @@ Start-PodeServer -Threads 4 {
         }
     }
 
+    Add-PodeRouteGroup -path "/pode" -Routes{
         Add-PodeRoute -Method Get -Path "/save" -ScriptBlock {
             if(!(Test-Path ./data/)){
                 mkdir ./data
@@ -127,7 +128,22 @@ Start-PodeServer -Threads 4 {
             Lock-PodeObject -ScriptBlock {
                 Save-PodeState -Path './data/state.json'
             }
-
+        }
+        add-poderoute -path "/reload" -ScriptBlock{
+            if(!(Test-Path ./data/)){
+                mkdir ./data
+            }
+            Lock-PodeObject -ScriptBlock {
+                Save-PodeState -Path './data/state.json'
+            }
+            restart-podeServer
+        }
+        add-poderoute -path "/reset" -ScriptBlock{
+            if((Test-Path ./data/)){
+                Remove-Item "./data/state.json"
+            }
+            restart-podeServer
         }
     }
+}
 
