@@ -60,7 +60,7 @@ blueteleL3Sub
                 }
                 
             }else{
-                 
+                Write-PodeTextResponse -Value "this is the api for scorekeeper"  
             }
 
     

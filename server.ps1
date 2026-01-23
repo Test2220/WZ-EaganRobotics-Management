@@ -7,17 +7,16 @@ function out-TerminalLog {
     $date = "[{0:MM/dd/yy} {0:HH:mm:ss}]" -f (Get-Date)
     Write-Host $date $msg 
 }
-$podeServer = '0.0.0.0'
+$podeServer = 'localhost'
 
 Start-PodeServer -Threads 4 {
 
     # attach to port 80 for http
-    Add-PodeEndpoint -Address $podeServer -Port 80 -Protocol Http
+    Add-PodeEndpoint -Address $podeServer -Port 8800 -Protocol Http
 
     Set-PodeViewEngine -Type Pode
     New-PodeLoggingMethod -Terminal | Enable-PodeErrorLogging
     
-
     #init the podestate and lock table
     Restore-PodeState -Path ".\data\state.json"
     Set-PodeState -Name 'currentlyplaying' -Value @{ 'currentplayer' = "none"; } | Out-Null
@@ -27,8 +26,6 @@ Start-PodeServer -Threads 4 {
     set-podestate -Name "PlayerConfig" |Out-Null
     set-podestate -Name "PlaylistConfig" |Out-Null
     set-podestate -Name "Nexuslink" |Out-Null
-    Set-PodeState -Name 'points' -Value @{ 'RedAuto' = 0;'blueauto' = 0;'Redtele' = 0;'bluetele' = 0;'redend' = 0;'blueend' = 0;'redAutoL1' = 0;'redTeleL1' = 0;'redTeleL2' = 0;'redTeleL3' = 0;'BlueAutoL1' = 0;'BlueTeleL1' = 0;'BlueTeleL2' = 0;'BlueTeleL3' = 0 } | Out-Null
-
 
     
     New-PodeLockable -name "NexusLock"
@@ -40,6 +37,9 @@ Start-PodeServer -Threads 4 {
     New-PodeLockable -Name 'PlayerAutomationLock'
     New-PodeLockable -Name 'ConfigStateLock'
     New-PodeLockable -Name 'arenaQueueLock'
+ 
+    Set-PodeState -Name 'points' -Value @{ 'RedAuto' = 0;'blueauto' = 0;'Redtele' = 0;'bluetele' = 0;'redend' = 0;'blueend' = 0;'redAutoL1' = 0;'redTeleL1' = 0;'redTeleL2' = 0;'redTeleL3' = 0;'BlueAutoL1' = 0;'BlueTeleL1' = 0;'BlueTeleL2' = 0;'BlueTeleL3' = 0 } | Out-Null
+    New-PodeLockable -name "points"
     
     if (Test-Path -Path "./data/config.json") {
         $playerconfig = Get-Content -Path "./data/config.json" -ErrorAction SilentlyContinue | ConvertFrom-Json
@@ -98,6 +98,12 @@ Start-PodeServer -Threads 4 {
         Add-PodeRoute -Method Post -Path '/change-song' -FilePath ".\routes\music-changeSong.ps1"
         Add-PodeRoute -Method Post -path "/update-automation" -FilePath ".\routes\music-updateAutomation.ps1"
     }
+    Add-PodeRouteGroup -Path "/arena" -Routes {
+        Add-PodeRoute -Method Get -Path "/scorekeeper" -ScriptBlock {
+            Write-PodeViewResponse -Path "Scorekeeper"
+        }
+
+    }
     Add-PodeRouteGroup -Path '/api' -Routes  {
         Add-PodeRoute -Method get -Path "/Music" -ScriptBlock {
             Lock-PodeObject -Name "currentlyplayingLock" -CheckGlobal -ScriptBlock{
@@ -111,12 +117,14 @@ Start-PodeServer -Threads 4 {
                 Write-PodeJsonResponse -Value $payload
             }
         }
+        Add-PodeRoute -Method Get,Post -Path "/arena" -ContentType 'application/json' -FilePath ".\routes\API\api-arena.ps1"
         Add-PodeRouteGroup -Path "/arena" -Routes{
-            Add-PodeRoute -Method Get,Post -Path "/arena" -ContentType 'application/json' -FilePath ".\routes\API\api-arena.ps1"
-            Add-PodeRoute -Method get,Post -Path "/points/:mode/:team/:score" -FilePath ".\routes\API\GameSpecifc\ArenaScoring.ps1"
-            add-poderoute -Method get,post -Path "/arena/queue" -ContentType 'application/json' -FilePath ".\routes\API\api-arenaQueue.ps1"
-            add-poderoute -Method get -Path "/arena/queue/read" -ContentType 'application/json' -FilePath ".\routes\API\Api-arenaReadqueue.ps1"
-            add-poderoute -Method get,post -Path "/arena/state" -ContentType 'application/json' -FilePath ".\routes\API\API-ArenaStateChange.ps1"
+            Add-PodeRoute -Method get -Path "/points" -FilePath ".\routes\API\Arenapoints.ps1"
+            Add-PodeRoute -Method Post -Path "/points/:mode/:team/:score" -FilePath ".\Game2026\routes\API\ArenaScoring.ps1"
+            add-poderoute -Method get,post -Path "/queue" -ContentType 'application/json' -FilePath ".\routes\API\api-arenaQueue.ps1"
+            add-poderoute -Method get -Path "/queue/read" -ContentType 'application/json' -FilePath ".\routes\API\Api-arenaReadqueue.ps1"
+            add-poderoute -Method get,post -Path "/state" -ContentType 'application/json' -FilePath ".\routes\API\API-ArenaStateChange.ps1"
+            Add-PodeRoute -Method get,post -Path "/scorekeeper" -ContentType 'application/json' -filepath ".\Game2026\routes\API\api-scorekeeper.ps1"
         }
     }
 
@@ -129,7 +137,7 @@ Start-PodeServer -Threads 4 {
                 Save-PodeState -Path './data/state.json'
             }
         }
-        add-poderoute -path "/reload" -ScriptBlock{
+        add-poderoute -Method get -path "/reload" -ScriptBlock{
             if(!(Test-Path ./data/)){
                 mkdir ./data
             }
@@ -138,7 +146,7 @@ Start-PodeServer -Threads 4 {
             }
             restart-podeServer
         }
-        add-poderoute -path "/reset" -ScriptBlock{
+        add-poderoute -Method get -path "/reset" -ScriptBlock{
             if((Test-Path ./data/)){
                 Remove-Item "./data/state.json"
             }
