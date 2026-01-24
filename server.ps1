@@ -12,7 +12,7 @@ $podeServer = 'localhost'
 Start-PodeServer -Threads 4 {
 
     # attach to port 80 for http
-    Add-PodeEndpoint -Address $podeServer -Port 8800 -Protocol Http
+    Add-PodeEndpoint -Address $podeServer -Port 80 -Protocol Http
 
     Set-PodeViewEngine -Type Pode
     New-PodeLoggingMethod -Terminal | Enable-PodeErrorLogging
@@ -102,6 +102,9 @@ Start-PodeServer -Threads 4 {
         Add-PodeRoute -Method Get -Path "/scorekeeper" -ScriptBlock {
             Write-PodeViewResponse -Path "Scorekeeper"
         }
+        Add-PodeRoute -method get -Path "/points" -ScriptBlock{
+            Write-PodeViewResponse -Path "ScoreDashboard"
+        }
 
     }
     Add-PodeRouteGroup -Path '/api' -Routes  {
@@ -121,6 +124,7 @@ Start-PodeServer -Threads 4 {
         Add-PodeRouteGroup -Path "/arena" -Routes{
             Add-PodeRoute -Method get -Path "/points" -FilePath ".\routes\API\Arenapoints.ps1"
             Add-PodeRoute -Method Post -Path "/points/:mode/:team/:score" -FilePath ".\Game2026\routes\API\ArenaScoring.ps1"
+            Add-PodeRoute -Method get -Path "/score" -FilePath ".\Game2026\routes\API\API-Score.ps1"
             add-poderoute -Method get,post -Path "/queue" -ContentType 'application/json' -FilePath ".\routes\API\api-arenaQueue.ps1"
             add-poderoute -Method get -Path "/queue/read" -ContentType 'application/json' -FilePath ".\routes\API\Api-arenaReadqueue.ps1"
             add-poderoute -Method get,post -Path "/state" -ContentType 'application/json' -FilePath ".\routes\API\API-ArenaStateChange.ps1"
