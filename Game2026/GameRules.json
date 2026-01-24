@@ -1,0 +1,26 @@
+{
+    "G401":{
+        "title":"Behind the lines",
+        "shortDescrition": "IN Auto Drive teams must stay in their Area",
+        "description":"In AUTO, each DRIVE TEAM member must remain in their staged areas. A DRIVE TEAM member staged behind a HUMAN STARTING LINE may not contact anything in front of that HUMAN STARTING LINE, unless for personal or equipment safety, to press the E-Stop or A-Stop, or granted permission by a Head REFEREE or FTA.",
+        "Grade":1,
+        "EnhancedGrade": 0,
+        "visable": false
+    },
+    "G402":{
+        "title":"Let the ROBOT do its thing",
+        "shortDescrition": "IN Auto Drive teams May not interact with Robot or Ops Console",
+        "description":"In AUTO, a DRIVE TEAM member may not directly or indirectly interact with a ROBOT or an OPERATOR CONSOLE unless for personal safety, OPERATOR CONSOLE safety, or pressing an E-Stop or A-Stop. A HUMAN PLAYER entering FUEL onto the FIELD is an exception to this rule.",
+        "Grade":1,
+        "EnhancedGrade": 0,
+        "visable": false
+    },
+    "G403":{
+        "title":"Limited AUTO opponent interaction",
+        "shortDescrition": "IN Auto Drive teams May not interact with Robot or Ops Console",
+        "description":"In AUTO, a ROBOT whose BUMPERS are completely across the CENTER LINE (i.e. to the opposite side of the CENTER LINE from its ROBOT STARTING LINE) may not contact an opponent ROBOT.",
+        "Grade":1,
+        "EnhancedGrade": 0,
+        "visable": false
+    }
+}
