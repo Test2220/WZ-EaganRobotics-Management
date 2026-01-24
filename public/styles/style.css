@@ -56,7 +56,27 @@ label{
   border: 3px solid #73AD21;
   margin: 2px;
   }
+#redcontainer{
+    background-color: red;
+    position: fixed;
+    top: 150px;
+ left: 0px;
+  width: 300px;
+  height: 250px;
+  border: 3px solid #73AD21;
+  margin: 2px;
 
+}#bluecontainer{
+    background-color: blue;
+    position: fixed;
+    top: 150px;
+  right: 0px;
+  width: 300px;
+  height: 250px;
+  border: 3px solid #73AD21;
+  margin: 2px;
+
+}
   
 /* CSS */
 .button-9 {
