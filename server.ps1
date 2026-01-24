@@ -18,7 +18,7 @@ Start-PodeServer -Threads 4 {
     New-PodeLoggingMethod -Terminal | Enable-PodeErrorLogging
     
     #init the podestate and lock table
-    Restore-PodeState -Path ".\data\state.json"
+    Restore-PodeState -Path "./data/state.json"
     Set-PodeState -Name 'currentlyplaying' -Value @{ 'currentplayer' = "none"; } | Out-Null
     Set-PodeState -Name 'FMSArenaStatus' -Value @{ 'values' = @(); } | Out-Null
     Set-PodeState -Name 'AutomationStatus' -Value @{ 'automation' = $true } | Out-Null
@@ -90,13 +90,13 @@ Start-PodeServer -Threads 4 {
     
     }
     Write-podehost "indexed Playlist"
-    #Start-Process powershell {.\WSClient.ps1}
+    #Start-Process powershell {./WSClient.ps1}
     Add-PodeRoute -Method get -Path "/" -ScriptBlock{Write-PodeViewResponse -Path "index"}
 
-    Add-PodeRoute -Method get -Path "/music" -FilePath ".\routes\music.ps1"
+    Add-PodeRoute -Method get -Path "/music" -FilePath "./routes/music.ps1"
     Add-PodeRouteGroup -Path "/music" -Routes {
-        Add-PodeRoute -Method Post -Path '/change-song' -FilePath ".\routes\music-changeSong.ps1"
-        Add-PodeRoute -Method Post -path "/update-automation" -FilePath ".\routes\music-updateAutomation.ps1"
+        Add-PodeRoute -Method Post -Path '/change-song' -FilePath "./routes/music-changeSong.ps1"
+        Add-PodeRoute -Method Post -path "/update-automation" -FilePath "./routes/music-updateAutomation.ps1"
     }
     Add-PodeRouteGroup -Path "/arena" -Routes {
         Add-PodeRoute -Method Get -Path "/scorekeeper" -ScriptBlock {
@@ -120,15 +120,15 @@ Start-PodeServer -Threads 4 {
                 Write-PodeJsonResponse -Value $payload
             }
         }
-        Add-PodeRoute -Method Get,Post -Path "/arena" -ContentType 'application/json' -FilePath ".\routes\API\api-arena.ps1"
+        Add-PodeRoute -Method Get,Post -Path "/arena" -ContentType 'application/json' -FilePath "./routes/API/api-arena.ps1"
         Add-PodeRouteGroup -Path "/arena" -Routes{
-            Add-PodeRoute -Method get -Path "/points" -FilePath ".\routes\API\Arenapoints.ps1"
-            Add-PodeRoute -Method Post -Path "/points/:mode/:team/:score" -FilePath ".\Game2026\routes\API\ArenaScoring.ps1"
-            Add-PodeRoute -Method get -Path "/score" -FilePath ".\Game2026\routes\API\API-Score.ps1"
-            add-poderoute -Method get,post -Path "/queue" -ContentType 'application/json' -FilePath ".\routes\API\api-arenaQueue.ps1"
-            add-poderoute -Method get -Path "/queue/read" -ContentType 'application/json' -FilePath ".\routes\API\Api-arenaReadqueue.ps1"
-            add-poderoute -Method get,post -Path "/state" -ContentType 'application/json' -FilePath ".\routes\API\API-ArenaStateChange.ps1"
-            Add-PodeRoute -Method get,post -Path "/scorekeeper" -ContentType 'application/json' -filepath ".\Game2026\routes\API\api-scorekeeper.ps1"
+            Add-PodeRoute -Method get -Path "/points" -FilePath "./routes/API/Arenapoints.ps1"
+            Add-PodeRoute -Method Post -Path "/points/:team/:score" -FilePath "./Game2026/routes/API/ArenaScoring.ps1"
+            Add-PodeRoute -Method get -Path "/score" -FilePath "./fhGame2026/routes/API/API-Score.ps1"
+            add-poderoute -Method get,post -Path "/queue" -ContentType 'application/json' -FilePath "./routes/API/api-arenaQueue.ps1"
+            add-poderoute -Method get -Path "/queue/read" -ContentType 'application/json' -FilePath "./routes/API/Api-arenaReadqueue.ps1"
+            add-poderoute -Method get,post -Path "/state" -ContentType 'application/json' -FilePath "./routes/API/API-ArenaStateChange.ps1"
+            Add-PodeRoute -Method get,post -Path "/scorekeeper" -ContentType 'application/json' -filepath "./Game2026/routes/API/api-scorekeeper.ps1"
         }
     }
 
