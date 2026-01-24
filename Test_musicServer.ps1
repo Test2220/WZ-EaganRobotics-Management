@@ -19,11 +19,15 @@ New-PodeLoggingMethod -Terminal | Enable-PodeErrorLogging
     }
     Add-PodeRoute -Method get -Path "/query" -ScriptBlock {
         $stringout =  $WebEvent.Query['script']
+        if($stringout -match "automix"){
+            Write-PodeTextResponse 'yes'    
+        }elseif ($stringout -match "stem%20Vocal") {
+            Write-PodeTextResponse '1' 
+        }
         Write-PodeTextResponse 'true'
 
     }
     Add-PodeRoute -Method get -Path "/execute" -ScriptBlock {
-            $stringout =  $WebEvent.Query['script']
             Write-PodeTextResponse "true"
     }
 
