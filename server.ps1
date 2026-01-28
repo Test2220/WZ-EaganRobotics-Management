@@ -8,8 +8,9 @@ function out-TerminalLog {
     Write-Host $date $msg 
 }
 $podeServer = 'localhost'
+$FMSAddress = "localhost" #address to pull websocket for CA
 
-Start-PodeServer -Threads 4 {
+Start-PodeServer -Threads 4 -EnablePool WebSockets {
 
     # attach to port 80 for http
     Add-PodeEndpoint -Address $podeServer -Port 80 -Protocol Http
@@ -41,6 +42,10 @@ Start-PodeServer -Threads 4 {
     Set-PodeState -Name 'points' -Value @{ 'RedAuto' = 0;'blueauto' = 0;'Redtele' = 0;'bluetele' = 0;'redend' = 0;'blueend' = 0;'redAutoL1' = 0;'redTeleL1' = 0;'redTeleL2' = 0;'redTeleL3' = 0;'BlueAutoL1' = 0;'BlueTeleL1' = 0;'BlueTeleL2' = 0;'BlueTeleL3' = 0; 'redMinorFoul' = 0;'redMajorFoul' = 0; 'blueMinorFoul'=0;'blueMajorFoul' = 0; } | Out-Null
     New-PodeLockable -name "points"
     
+    Connect-PodeWebSocket -Url "ws://localhost:8080/match_play/websocket" -Name "CA" -ScriptBlock {
+       
+    }
+
     if (Test-Path -Path "./data/config.json") {
         $playerconfig = Get-Content -Path "./data/config.json" -ErrorAction SilentlyContinue | ConvertFrom-Json
         $MPIP = $playerconfig.MusicPlayerIP 
