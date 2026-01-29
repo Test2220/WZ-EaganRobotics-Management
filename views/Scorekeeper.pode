@@ -47,20 +47,33 @@ var getJSON = function(url, callback) {
 <body>
 <div id="mainview">
 <div id="redContainer">
-  <button id="redautoL1Add" type="button" onclick="PlaylistChange(this.id)">Auto +</button>
-  <button id="redteleL1Add" type="button" onclick="PlaylistChange(this.id)">Tele +</button>
-  Level 1
-  <button id="redteleL1Sub" type="button" onclick="PlaylistChange(this.id)">Tele -</button>
-  <button id="redAutoL1Sub" type="button" onclick="PlaylistChange(this.id)">Auto -</button>
-
-  <button id="redteleL2Add" type="button" onclick="PlaylistChange(this.id)">+</button>
-  Level 2
-  <button id="redteleL2Sub" type="button" onclick="PlaylistChange(this.id)">-</button>
-
-  <button id="redteleL3Add" type="button" onclick="PlaylistChange(this.id)">+</button>
-  Level 3
-  <button id="redteleL3Sub" type="button" onclick="PlaylistChange(this.id)">-</button>
-
+<table id="redTowerTable">
+  <tr><td colspan="4">Red L1 Auto</td></tr>
+  <tr>  
+    <td><button id="redautoL1-0" type="button" onclick="PlaylistChange(this.id)">0</button></td>
+    <td><button id="redautoL1-1" type="button" onclick="PlaylistChange(this.id)">1</button></td>
+    <td><button id="redautoL1-2" type="button" onclick="PlaylistChange(this.id)">2</button></td>
+  </tr>
+  <tr><td colspan="4">Level 1</td></tr>
+    <tr>  
+    <td><button id="redteleL1-0" type="button" onclick="PlaylistChange(this.id)">0</button></td>
+    <td><button id="redteleL1-1" type="button" onclick="PlaylistChange(this.id)">1</button></td>
+    <td><button id="redteleL1-2" type="button" onclick="PlaylistChange(this.id)">2</button></td>
+    <td><button id="redteleL1-3" type="button" onclick="PlaylistChange(this.id)">3</button></td>
+  </tr>  <tr><td colspan="4">Level 2</td></tr>
+    <tr>  
+    <td><button id="redteleL2-0" type="button" onclick="PlaylistChange(this.id)">0</button></td>
+    <td><button id="redteleL2-1" type="button" onclick="PlaylistChange(this.id)">1</button></td>
+    <td><button id="redteleL2-2" type="button" onclick="PlaylistChange(this.id)">2</button></td>
+    <td><button id="redteleL2-3" type="button" onclick="PlaylistChange(this.id)">3</button></td>
+  </tr>
+    <tr><td colspan="4">Level 3</td></tr>
+    <tr>  
+    <td><button id="redteleL3-0" type="button" onclick="PlaylistChange(this.id)">0</button></td>
+    <td><button id="redteleL3-1" type="button" onclick="PlaylistChange(this.id)">1</button></td>
+    <td><button id="redteleL3-2" type="button" onclick="PlaylistChange(this.id)">2</button></td>
+    <td><button id="redteleL3-3" type="button" onclick="PlaylistChange(this.id)">3</button></td>
+  </tr>
 </div>
 
 <div id="blueContainer">

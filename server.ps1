@@ -41,10 +41,17 @@ Start-PodeServer -Threads 4 -EnablePool WebSockets {
  
     Set-PodeState -Name 'points' -Value @{ 'RedAuto' = 0;'blueauto' = 0;'Redtele' = 0;'bluetele' = 0;'redend' = 0;'blueend' = 0;'redAutoL1' = 0;'redTeleL1' = 0;'redTeleL2' = 0;'redTeleL3' = 0;'BlueAutoL1' = 0;'BlueTeleL1' = 0;'BlueTeleL2' = 0;'BlueTeleL3' = 0; 'redMinorFoul' = 0;'redMajorFoul' = 0; 'blueMinorFoul'=0;'blueMajorFoul' = 0; } | Out-Null
     New-PodeLockable -name "points"
-    
-    Connect-PodeWebSocket -Url "ws://localhost:8080/match_play/websocket" -Name "CA" -ScriptBlock {
+    $WSURL = "ws://" + $FMSAddress +":8080/match_play/websocket"
+    try {
+            Connect-PodeWebSocket -Url $WSURL -Name "CA" -ScriptBlock {
        
     }
+    }
+    catch {
+Write-Host "Websocket to FMS Software failed check connection and reset server if FMS is up"    }
+
+
+
 
     if (Test-Path -Path "./data/config.json") {
         $playerconfig = Get-Content -Path "./data/config.json" -ErrorAction SilentlyContinue | ConvertFrom-Json
@@ -128,7 +135,7 @@ Start-PodeServer -Threads 4 -EnablePool WebSockets {
         Add-PodeRoute -Method Get,Post -Path "/arena" -ContentType 'application/json' -FilePath "./routes/API/api-arena.ps1"
         Add-PodeRouteGroup -Path "/arena" -Routes{
             Add-PodeRoute -Method get -Path "/points" -FilePath "./routes/API/Arenapoints.ps1"
-            Add-PodeRoute -Method Post -Path "/points/:team/:score" -FilePath "./Game2026/routes/API/ArenaScoring.ps1"
+            Add-PodeRoute -Method get,Post -Path "/points/:team/:score" -FilePath "./Game2026/routes/API/ArenaScoring.ps1"
             Add-PodeRoute -Method get -Path "/score" -FilePath "./Game2026/routes/API/API-Score.ps1"
             add-poderoute -Method get,post -Path "/queue" -ContentType 'application/json' -FilePath "./routes/API/api-arenaQueue.ps1"
             add-poderoute -Method get -Path "/queue/read" -ContentType 'application/json' -FilePath "./routes/API/Api-arenaReadqueue.ps1"
