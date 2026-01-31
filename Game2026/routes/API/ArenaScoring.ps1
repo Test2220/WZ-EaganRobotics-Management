@@ -1,7 +1,13 @@
 {
     #Mode should be fetched from the FMS - Auto, Teleop, or Endgame
-    $mode = $WebEvent.Parameters['mode']
     # $mode = Invoke-WebRequest -Uri $CheesyUrl/state/I/Made/This/Up
+    
+    # Testing code - set mode to Query option on url (http://.../:team:/:score?mode={choose}), default to "tele"
+    $mode = $WebEvent.Query['mode']
+    if (-not $mode){
+        $mode = "tele"
+    }
+
     if ($webevent.method -eq "post") {
         Lock-PodeObject -Name "points" -CheckGlobal -ScriptBlock {
             $pointState = Get-PodeState -Name "points" 
