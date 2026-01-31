@@ -135,7 +135,7 @@ Write-Host "Websocket to FMS Software failed check connection and reset server i
         Add-PodeRoute -Method Get,Post -Path "/arena" -ContentType 'application/json' -FilePath "./routes/API/api-arena.ps1"
         Add-PodeRouteGroup -Path "/arena" -Routes{
             Add-PodeRoute -Method get -Path "/points" -FilePath "./routes/API/Arenapoints.ps1"
-            Add-PodeRoute -Method get,Post -Path "/points/:team/:score" -FilePath "./Game2026/routes/API/ArenaScoring.ps1"
+            Add-PodeRoute -Method get,Post -Path "/points/:team/:score/:mode" -FilePath "./Game2026/routes/API/ArenaScoring.ps1"
             Add-PodeRoute -Method get -Path "/score" -FilePath "./Game2026/routes/API/API-Score.ps1"
             add-poderoute -Method get,post -Path "/queue" -ContentType 'application/json' -FilePath "./routes/API/api-arenaQueue.ps1"
             add-poderoute -Method get -Path "/queue/read" -ContentType 'application/json' -FilePath "./routes/API/Api-arenaReadqueue.ps1"

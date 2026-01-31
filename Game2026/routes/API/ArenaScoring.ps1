@@ -4,19 +4,19 @@
                     $pointState = Get-PodeState -Name "points" 
                     if ($WebEvent.Parameters['team'] -match "red"){
                         if ($WebEvent.Parameters['mode']-match "auto") {
-                            $pointState.RedAuto + $WebEvent.Parameters['score']
+                            $pointState.RedAuto += $WebEvent.Parameters['score']
                         }elseif($WebEvent.Parameters['mode']-match "tele") {
-                            $pointState.Redtele + $WebEvent.Parameters['score']
+                            $pointState.Redtele += $WebEvent.Parameters['score']
                         }elseif($WebEvent.Parameters['mode']-match "end") {
-                            $pointState.redend + $WebEvent.Parameters['score']
+                            $pointState.redend += $WebEvent.Parameters['score']
                         }
                     }elseif ($WebEvent.Parameters['team'] -match "blue") {
                         if ($WebEvent.Parameters['mode']-match "auto") {
-                            $pointState.BlueAuto + $WebEvent.Parameters['score']
+                            $pointState.BlueAuto += $WebEvent.Parameters['score']
                         }elseif($WebEvent.Parameters['mode']-match "tele") {
-                            $pointState.BlueTele + $WebEvent.Parameters['score']
+                            $pointState.BlueTele += $WebEvent.Parameters['score']
                         }elseif($WebEvent.Parameters['mode']-match "end") {
-                            $pointState.BlueEnd + $WebEvent.Parameters['score']
+                            $pointState.BlueEnd += $WebEvent.Parameters['score']
                         }
                     }
                     Set-PodeState -Name "points" -Value $pointState
@@ -26,25 +26,6 @@
             }else{
                  Lock-PodeObject -Name "points" -CheckGlobal -ScriptBlock {
                     $pointState = Get-PodeState -Name "points" 
-                                        if ($WebEvent.Parameters['team'] -match "red"){
-                        if ($WebEvent.Parameters['mode']-match "auto") {
-                            $pointState.RedAuto + $WebEvent.Parameters['score']
-                        }elseif($WebEvent.Parameters['mode']-match "tele") {
-                            $pointState.Redtele + $WebEvent.Parameters['score']
-                        }elseif($WebEvent.Parameters['mode']-match "end") {
-                            $pointState.redend + $WebEvent.Parameters['score']
-                        }
-                    }elseif ($WebEvent.Parameters['team'] -match "blue") {
-                        if ($WebEvent.Parameters['mode']-match "auto") {
-                            $pointState.BlueAuto + $WebEvent.Parameters['score']
-                        }elseif($WebEvent.Parameters['mode']-match "tele") {
-                            $pointState.BlueTele + $WebEvent.Parameters['score']
-                        }elseif($WebEvent.Parameters['mode']-match "end") {
-                            $pointState.BlueEnd + $WebEvent.Parameters['score']
-                        }
-                    }
-                    
-                    Set-PodeState -Name "points" -Value $pointState
                     Write-PodeJsonResponse $pointState
                 } 
             }
