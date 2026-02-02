@@ -7,6 +7,8 @@ function out-TerminalLog {
     $date = "[{0:MM/dd/yy} {0:HH:mm:ss}]" -f (Get-Date)
     Write-Host $date $msg 
 }
+$serverSettings = Get-Content -Path "./data/server.json" |ConvertFrom-Json
+
 $podeServer = 'localhost'
 $FMSAddress = "localhost" #address to pull websocket for CA
 
@@ -136,7 +138,7 @@ Write-Host "Websocket to FMS Software failed check connection and reset server i
         Add-PodeRouteGroup -Path "/arena" -Routes{
             Add-PodeRoute -Method get -Path "/points" -FilePath "./routes/API/Arenapoints.ps1"
             Add-PodeRoute -Method get,Post -Path "/points/:team/:score" -FilePath "./Game2026/routes/API/ArenaScoring.ps1"
-            Add-PodeRoute -Method get -Path "/score" -FilePath "./Game2026/routes/API/API-Score.ps1"
+            Add-PodeRoute -Method get -Path "/score" -FilePath "./Game2026/routes/API/api-score.ps1"
             add-poderoute -Method get,post -Path "/queue" -ContentType 'application/json' -FilePath "./routes/API/api-arenaQueue.ps1"
             add-poderoute -Method get -Path "/queue/read" -ContentType 'application/json' -FilePath "./routes/API/Api-arenaReadqueue.ps1"
             add-poderoute -Method get,post -Path "/state" -ContentType 'application/json' -FilePath "./routes/API/API-ArenaStateChange.ps1"
