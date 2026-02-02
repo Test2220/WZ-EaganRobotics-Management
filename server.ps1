@@ -7,10 +7,15 @@ function out-TerminalLog {
     $date = "[{0:MM/dd/yy} {0:HH:mm:ss}]" -f (Get-Date)
     Write-Host $date $msg 
 }
-$serverSettings = Get-Content -Path "./data/server.json" |ConvertFrom-Json
-
-$podeServer = 'localhost'
-$FMSAddress = "localhost" #address to pull websocket for CA
+if(Test-Path -Path "./data/server.json"){
+    $serverSettings = Get-Content -Path "./data/server.json"  |ConvertFrom-Json
+}else {
+    Write-Host "server config file created update config to new settings"
+    '{"server":"localhost","FMS":"localhost"}'| Out-File -FilePath "./data/server.json"
+    exit 99 
+}
+$podeServer = $serverSettings.server
+$FMSAddress = $serverSettings.FMS #address to pull websocket for CA
 
 Start-PodeServer -Threads 4 -EnablePool WebSockets {
 
@@ -45,12 +50,13 @@ Start-PodeServer -Threads 4 -EnablePool WebSockets {
     New-PodeLockable -name "points"
     $WSURL = "ws://" + $FMSAddress +":8080/match_play/websocket"
     try {
-            Connect-PodeWebSocket -Url $WSURL -Name "CA" -ScriptBlock {
-       
-    }
+        Connect-PodeWebSocket -Url $WSURL -Name "CA" -ScriptBlock {
+
+        }
     }
     catch {
-Write-Host "Websocket to FMS Software failed check connection and reset server if FMS is up"    }
+        Write-Host "Websocket to FMS Software failed check connection and reset server if FMS is up"
+    }
 
 
 
