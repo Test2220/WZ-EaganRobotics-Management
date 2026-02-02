@@ -7,24 +7,26 @@ function out-TerminalLog {
     $date = "[{0:MM/dd/yy} {0:HH:mm:ss}]" -f (Get-Date)
     Write-Host $date $msg 
 }
+$DebugPreference = 'Continue'
 if(Test-Path -Path "./data/server.json"){
+    Write-Debug "Getting Server Config"
     $serverSettings = Get-Content -Path "./data/server.json"  |ConvertFrom-Json
 }else {
+    Write-Debug "Writing Server.JSON"
     Write-Host "server config file created update config to new settings"
-    '{"server":"localhost","FMS":"localhost"}'| Out-File -FilePath "./data/server.json"
+    '{"server":"localhost","FMS":"localhost","FMSConnect":true}'| Out-File -FilePath "./data/server.json"
     exit 99 
 }
+    Write-Debug "Getting loading Server Config"
 $podeServer = $serverSettings.server
 $FMSAddress = $serverSettings.FMS #address to pull websocket for CA
-
+ Write-Host "starting PODE Server"
 Start-PodeServer -Threads 4 -EnablePool WebSockets {
-
     # attach to port 80 for http
     Add-PodeEndpoint -Address $podeServer -Port 80 -Protocol Http
-
     Set-PodeViewEngine -Type Pode
     New-PodeLoggingMethod -Terminal | Enable-PodeErrorLogging
-    
+    Write-Debug "init Pode State and Lock Tables"
     #init the podestate and lock table
     Restore-PodeState -Path "./data/state.json"
     Set-PodeState -Name 'currentlyplaying' -Value @{ 'currentplayer' = "none"; } | Out-Null
@@ -34,7 +36,6 @@ Start-PodeServer -Threads 4 -EnablePool WebSockets {
     set-podestate -Name "PlayerConfig" |Out-Null
     set-podestate -Name "PlaylistConfig" |Out-Null
     set-podestate -Name "Nexuslink" |Out-Null
-
     
     New-PodeLockable -name "NexusLock"
     New-PodeLockable -name "playlistLock"
@@ -45,64 +46,54 @@ Start-PodeServer -Threads 4 -EnablePool WebSockets {
     New-PodeLockable -Name 'PlayerAutomationLock'
     New-PodeLockable -Name 'ConfigStateLock'
     New-PodeLockable -Name 'arenaQueueLock'
+    New-PodeLockable -Name 'FMSArenamatchtime'
  
     Set-PodeState -Name 'points' -Value @{ 'RedAuto' = 0;'blueauto' = 0;'Redtele' = 0;'bluetele' = 0;'redend' = 0;'blueend' = 0;'redAutoL1' = 0;'redTeleL1' = 0;'redTeleL2' = 0;'redTeleL3' = 0;'BlueAutoL1' = 0;'BlueTeleL1' = 0;'BlueTeleL2' = 0;'BlueTeleL3' = 0; 'redMinorFoul' = 0;'redMajorFoul' = 0; 'blueMinorFoul'=0;'blueMajorFoul' = 0; } | Out-Null
     New-PodeLockable -name "points"
     $WSURL = "ws://" + $FMSAddress +":8080/match_play/websocket"
-    try {
-        Connect-PodeWebSocket -Url $WSURL -Name "CA" -ScriptBlock {
-
+    if($serverSettings.FMSConnect){
+        Write-Debug "Starting WebSocket"
+        try {
+            Connect-PodeWebSocket -Url $WSURL -Name "CA" -ScriptBlock {
+                $WsEvent.Request.data | Out-Default
+            }
         }
+        catch {
+            Write-Host "Websocket to FMS Software failed check connection and reset server if FMS is up"
+        }
+    }else{
+        write-debug "Setting for Websocket is disabled skipping WS connection"
     }
-    catch {
-        Write-Host "Websocket to FMS Software failed check connection and reset server if FMS is up"
-    }
-
-
-
-
     if (Test-Path -Path "./data/config.json") {
         $playerconfig = Get-Content -Path "./data/config.json" -ErrorAction SilentlyContinue | ConvertFrom-Json
         $MPIP = $playerconfig.MusicPlayerIP 
         $musicPort = $playerconfig.MusicPort
         $MusicPlayerIP= $MPIP+":"+$musicPort
-        $DJIP = $playerconfig.DJIP
     }
     else {
         #assume players is in local mode
         $MPIP = "localhost" 
         $musicPort = "8880"
         $MusicPlayerIP= $MPIP+":"+$musicPort
-        $DJIP = "localhost"
     }    
-
-
-
-    
-    $DJIP = $playerconfig.DJIP
     try {
         $playlistIDs =Invoke-RestMethod -Uri "http://$MusicPlayerIP/api/playlists/"
         Write-podehost "got Playlist"
     }
     catch {
-
         Write-Podehost "Error with playlist capture navigate to http://$podeserver/setup to setup player"
         Add-PodeRoute -Method Post,get -Path '/setup' -ScriptBlock {
             if ($webevent.method -eq "post") {
                 Lock-PodeObject -Name "PlayerConfigLock" -CheckGlobal -ScriptBlock{
                     $playerconfig = @{"MusicPlayerIP" = $webevent.data.MusicPlayerIP;"MusicPort" = $webevent.data.MusicPort; "DJIP" = $webevent.data.DJIP;}
-                    
                     Set-PodeState -Name "PlayerConfig" -Value $playerconfig
                     ConvertTo-Json $playerconfig | Out-File "./data/config.json"
                 }
-
-                
                 Save-PodeState -Path './data/state.json'
                 }
              Write-PodeViewResponse -Path "setup"
             }
         }
-    
     $PlayerIndex = @{}
     foreach ($player in $playlistIDs.playlists){
     
@@ -151,7 +142,6 @@ Start-PodeServer -Threads 4 -EnablePool WebSockets {
             Add-PodeRoute -Method get,post -Path "/scorekeeper" -ContentType 'application/json' -filepath "./Game2026/routes/API/api-scorekeeper.ps1"
         }
     }
-
     Add-PodeRouteGroup -path "/pode" -Routes{
         Add-PodeRoute -Method Get -Path "/save" -ScriptBlock {
             if(!(Test-Path ./data/)){
