@@ -74,7 +74,7 @@ var getJSON = function(url, callback) {
     <td><button id="redteleL3-2" type="button" onclick="PlaylistChange(this.id)">2</button></td>
     <td><button id="redteleL3-3" type="button" onclick="PlaylistChange(this.id)">3</button></td>
   </tr>
-  </table
+  </table>
 </div>
 
 <div id="blueContainer">
@@ -105,7 +105,7 @@ var getJSON = function(url, callback) {
     <td><button id="blueteleL3-2" type="button" onclick="PlaylistChange(this.id)">2</button></td>
     <td><button id="blueteleL3-3" type="button" onclick="PlaylistChange(this.id)">3</button></td>
   </tr>
-  </table
+  </table>
 </div>
 
 <div id="ScoreStats">

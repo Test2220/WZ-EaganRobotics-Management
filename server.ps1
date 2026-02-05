@@ -54,9 +54,7 @@ Start-PodeServer -Threads 4 -EnablePool WebSockets {
     if($serverSettings.FMSConnect){
         Write-Debug "Starting WebSocket"
         try {
-            Connect-PodeWebSocket -Url $WSURL -Name "CA" -ScriptBlock {
-                $WsEvent.Request.data | Out-Default
-            }
+            Connect-PodeWebSocket -Url $WSURL -Name "CA" -FilePath "./routes/Arena/CAWebSocketClient.ps1"
         }
         catch {
             Write-Host "Websocket to FMS Software failed check connection and reset server if FMS is up"
@@ -111,11 +109,12 @@ Start-PodeServer -Threads 4 -EnablePool WebSockets {
     }
     Add-PodeRouteGroup -Path "/arena" -Routes {
         Add-PodeRoute -Method Get -Path "/scorekeeper" -ScriptBlock {
-            Write-PodeViewResponse -Path "Scorekeeper"
+            Write-PodeViewResponse -Path "arena/Scorekeeper"
         }
         Add-PodeRoute -method get -Path "/points" -ScriptBlock{
-            Write-PodeViewResponse -Path "ScoreDashboard"
+            Write-PodeViewResponse -Path "arena/ScoreDashboard"
         }
+        Add-PodeRouteGroup -Path "/Audiance"
 
     }
     Add-PodeRouteGroup -Path '/api' -Routes  {

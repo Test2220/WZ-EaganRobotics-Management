@@ -26,7 +26,7 @@ Relay8  GPIO26  Aux2
 function updatePinState {
     param (
         [int]$Pin,
-        [bool]$CoilState,
+        [string]$CoilState,
         [bool]$invert = $false,
         [string]$PLCIP,
         [PSCustomObject[]]$LightState
@@ -44,250 +44,70 @@ function updatePinState {
             Invoke-RestMethod -Uri "http://$PLCIP/api/$Pin/off"|Out-Null
         }
     }
-
+    #http://[piaddres:80]/set/[relayid]/[on/off/blink]
    # Write-Host "Pin is $Pin and relays are inverted is $Pininverted the state of the Pin is $pinStateCast"
 }
-$StackIP = "172.16.20.73"
-$redSCCIP = "172.16.20.71"
-$blueSCCIP = "172.16.20.72"
-$StacklightRed = 5
-$StackLightBlue = 6
-$StackLightOrange = 13 
-$StackLightGreen=19
-$StackLightWhite=16
-$StackLightR1=5
-$StackLightR2=6
-$StackLightR3=13
-$StackLightB1=5
-$StackLightB2=6
-$StackLightB3=13
+$StackIP = "192.168.1.251"
+$StacklightRed = 1
+$StackLightBlue = 2
+$StackLightOrange = 6 
+$StackLightGreen=3
+$StackLightWhite=4
 
 
 do {
-    updatePinState -Pin $StacklightRed -Pininverted $true -CoilState $true -PLCIP $StackIP
-    Start-Sleep -Milliseconds 50
-    updatePinState -Pin $StackLightBlue -Pininverted $true -CoilState $true -PLCIP $StackIP
-    Start-Sleep -Milliseconds 50
-    updatePinState -Pin $StacklightRed -Pininverted $true -CoilState $true -PLCIP $StackIP
-    Start-Sleep -Milliseconds 50
-    updatePinState -Pin $StackLightOrange -Pininverted $true -CoilState $true -PLCIP $StackIP
-    Start-Sleep -Milliseconds 50
-    updatePinState -Pin $StackLightGreen -Pininverted $true -CoilState $true -PLCIP $StackIP
-    Start-Sleep -Milliseconds 50
-    updatePinState -Pin $StackLightWhite -Pininverted $true -CoilState $true -PLCIP $StackIP
-    Start-Sleep -Milliseconds 50
-    updatePinState -Pin $StackLightR1 -Pininverted $true -CoilState $true -PLCIP $redSCCIP
-    Start-Sleep -Milliseconds 50
-    updatePinState -Pin $StackLightR2 -Pininverted $true -CoilState $true -PLCIP $redSCCIP
-    Start-Sleep -Milliseconds 50
-    updatePinState -Pin $StackLightR3 -Pininverted $true -CoilState $true -PLCIP $redSCCIP
-    Start-Sleep -Milliseconds 50
-    updatePinState -Pin $StackLightB1 -Pininverted $true -CoilState $true -PLCIP $blueSCCIP
-    Start-Sleep -Milliseconds 50
-    updatePinState -Pin $StackLightB2 -Pininverted $true -CoilState $true -PLCIP $blueSCCIP
-    Start-Sleep -Milliseconds 50
-    updatePinState -Pin $StackLightB3 -Pininverted $true -CoilState $true -PLCIP $blueSCCIP
-    Start-Sleep -Milliseconds 500
-    updatePinState -Pin $StacklightRed -Pininverted $true -CoilState $false -PLCIP $StackIP
-    Start-Sleep -Milliseconds 50
-    updatePinState -Pin $StackLightBlue -Pininverted $true -CoilState $false -PLCIP $StackIP
-    Start-Sleep -Milliseconds 50
-    updatePinState -Pin $StacklightRed -Pininverted $true -CoilState $false -PLCIP $StackIP
-    Start-Sleep -Milliseconds 50
-    updatePinState -Pin $StackLightOrange -Pininverted $true -CoilState $false -PLCIP $StackIP
-    Start-Sleep -Milliseconds 50
-    updatePinState -Pin $StackLightGreen -Pininverted $true -CoilState $false -PLCIP $StackIP
-    Start-Sleep -Milliseconds 50
-    updatePinState -Pin $StackLightWhite -Pininverted $true -CoilState $false -PLCIP $StackIP
-    Start-Sleep -Milliseconds 50
-    updatePinState -Pin $StackLightR1 -Pininverted $true -CoilState $false -PLCIP $redSCCIP
-    Start-Sleep -Milliseconds 50
-    updatePinState -Pin $StackLightR2 -Pininverted $true -CoilState $false -PLCIP $redSCCIP
-    Start-Sleep -Milliseconds 50
-    updatePinState -Pin $StackLightR3 -Pininverted $true -CoilState $false -PLCIP $redSCCIP
-    Start-Sleep -Milliseconds 50
-    updatePinState -Pin $StackLightB1 -Pininverted $true -CoilState $false -PLCIP $blueSCCIP
-    Start-Sleep -Milliseconds 50
-    updatePinState -Pin $StackLightB2 -Pininverted $true -CoilState $false -PLCIP $blueSCCIP
-    Start-Sleep -Milliseconds 50
-    updatePinState -Pin $StackLightB3 -Pininverted $true -CoilState $false -PLCIP $blueSCCIP
-    Start-Sleep -Milliseconds 500
-    updatePinState -Pin $StacklightRed -Pininverted $true -CoilState $true -PLCIP $StackIP
-    Start-Sleep -Milliseconds 50
-    updatePinState -Pin $StackLightBlue -Pininverted $true -CoilState $true -PLCIP $StackIP
-    Start-Sleep -Milliseconds 50
-    updatePinState -Pin $StacklightRed -Pininverted $true -CoilState $true -PLCIP $StackIP
-    Start-Sleep -Milliseconds 50
-    updatePinState -Pin $StackLightOrange -Pininverted $true -CoilState $true -PLCIP $StackIP
-    Start-Sleep -Milliseconds 50
-    updatePinState -Pin $StackLightGreen -Pininverted $true -CoilState $true -PLCIP $StackIP
-    Start-Sleep -Milliseconds 50
-    updatePinState -Pin $StackLightWhite -Pininverted $true -CoilState $true -PLCIP $StackIP
-    Start-Sleep -Milliseconds 50
-    updatePinState -Pin $StackLightR1 -Pininverted $true -CoilState $true -PLCIP $redSCCIP
-    Start-Sleep -Milliseconds 50
-    updatePinState -Pin $StackLightR2 -Pininverted $true -CoilState $true -PLCIP $redSCCIP
-    Start-Sleep -Milliseconds 50
-    updatePinState -Pin $StackLightR3 -Pininverted $true -CoilState $true -PLCIP $redSCCIP
-    Start-Sleep -Milliseconds 50
-    updatePinState -Pin $StackLightB1 -Pininverted $true -CoilState $true -PLCIP $blueSCCIP
-    Start-Sleep -Milliseconds 50
-    updatePinState -Pin $StackLightB2 -Pininverted $true -CoilState $true -PLCIP $blueSCCIP
-    Start-Sleep -Milliseconds 50
-    updatePinState -Pin $StackLightB3 -Pininverted $true -CoilState $true -PLCIP $blueSCCIP
-    Start-Sleep -Milliseconds 500
-    updatePinState -Pin $StacklightRed -Pininverted $true -CoilState $false -PLCIP $StackIP
-    Start-Sleep -Milliseconds 50
-    updatePinState -Pin $StackLightBlue -Pininverted $true -CoilState $false -PLCIP $StackIP
-    Start-Sleep -Milliseconds 50
-    updatePinState -Pin $StacklightRed -Pininverted $true -CoilState $false -PLCIP $StackIP
-    Start-Sleep -Milliseconds 50
-    updatePinState -Pin $StackLightOrange -Pininverted $true -CoilState $false -PLCIP $StackIP
-    Start-Sleep -Milliseconds 50
-    updatePinState -Pin $StackLightGreen -Pininverted $true -CoilState $false -PLCIP $StackIP
-    Start-Sleep -Milliseconds 50
-    updatePinState -Pin $StackLightWhite -Pininverted $true -CoilState $false -PLCIP $StackIP
-    Start-Sleep -Milliseconds 50
-    updatePinState -Pin $StackLightR1 -Pininverted $true -CoilState $false -PLCIP $redSCCIP
-    Start-Sleep -Milliseconds 50
-    updatePinState -Pin $StackLightR2 -Pininverted $true -CoilState $false -PLCIP $redSCCIP
-    Start-Sleep -Milliseconds 50
-    updatePinState -Pin $StackLightR3 -Pininverted $true -CoilState $false -PLCIP $redSCCIP
-    Start-Sleep -Milliseconds 50
-    updatePinState -Pin $StackLightB1 -Pininverted $true -CoilState $false -PLCIP $blueSCCIP
-    Start-Sleep -Milliseconds 50
-    updatePinState -Pin $StackLightB2 -Pininverted $true -CoilState $false -PLCIP $blueSCCIP
-    Start-Sleep -Milliseconds 50
-    updatePinState -Pin $StackLightB3 -Pininverted $true -CoilState $false -PLCIP $blueSCCIP
-    Start-Sleep -Milliseconds 500
-    updatePinState -Pin $StacklightRed -Pininverted $true -CoilState $true -PLCIP $StackIP
-    Start-Sleep -Milliseconds 50
-    updatePinState -Pin $StackLightBlue -Pininverted $true -CoilState $true -PLCIP $StackIP
-    Start-Sleep -Milliseconds 50
-    updatePinState -Pin $StacklightRed -Pininverted $true -CoilState $true -PLCIP $StackIP
-    Start-Sleep -Milliseconds 50
-    updatePinState -Pin $StackLightOrange -Pininverted $true -CoilState $true -PLCIP $StackIP
-    Start-Sleep -Milliseconds 50
-    updatePinState -Pin $StackLightGreen -Pininverted $true -CoilState $true -PLCIP $StackIP
-    Start-Sleep -Milliseconds 50
-    updatePinState -Pin $StackLightWhite -Pininverted $true -CoilState $true -PLCIP $StackIP
-    Start-Sleep -Milliseconds 50
-    updatePinState -Pin $StackLightR1 -Pininverted $true -CoilState $true -PLCIP $redSCCIP
-    Start-Sleep -Milliseconds 50
-    updatePinState -Pin $StackLightR2 -Pininverted $true -CoilState $true -PLCIP $redSCCIP
-    Start-Sleep -Milliseconds 50
-    updatePinState -Pin $StackLightR3 -Pininverted $true -CoilState $true -PLCIP $redSCCIP
-    Start-Sleep -Milliseconds 50
-    updatePinState -Pin $StackLightB1 -Pininverted $true -CoilState $true -PLCIP $blueSCCIP
-    Start-Sleep -Milliseconds 50
-    updatePinState -Pin $StackLightB2 -Pininverted $true -CoilState $true -PLCIP $blueSCCIP
-    Start-Sleep -Milliseconds 50
-    updatePinState -Pin $StackLightB3 -Pininverted $true -CoilState $true -PLCIP $blueSCCIP
-    Start-Sleep -Milliseconds 500
-    updatePinState -Pin $StacklightRed -Pininverted $true -CoilState $false -PLCIP $StackIP
-    Start-Sleep -Milliseconds 50
-    updatePinState -Pin $StackLightBlue -Pininverted $true -CoilState $false -PLCIP $StackIP
-    Start-Sleep -Milliseconds 50
-    updatePinState -Pin $StacklightRed -Pininverted $true -CoilState $false -PLCIP $StackIP
-    Start-Sleep -Milliseconds 50
-    updatePinState -Pin $StackLightOrange -Pininverted $true -CoilState $false -PLCIP $StackIP
-    Start-Sleep -Milliseconds 50
-    updatePinState -Pin $StackLightGreen -Pininverted $true -CoilState $false -PLCIP $StackIP
-    Start-Sleep -Milliseconds 50
-    updatePinState -Pin $StackLightWhite -Pininverted $true -CoilState $false -PLCIP $StackIP
-    Start-Sleep -Milliseconds 50
-    updatePinState -Pin $StackLightR1 -Pininverted $true -CoilState $false -PLCIP $redSCCIP
-    Start-Sleep -Milliseconds 50
-    updatePinState -Pin $StackLightR2 -Pininverted $true -CoilState $false -PLCIP $redSCCIP
-    Start-Sleep -Milliseconds 50
-    updatePinState -Pin $StackLightR3 -Pininverted $true -CoilState $false -PLCIP $redSCCIP
-    Start-Sleep -Milliseconds 50
-    updatePinState -Pin $StackLightB1 -Pininverted $true -CoilState $false -PLCIP $blueSCCIP
-    Start-Sleep -Milliseconds 50
-    updatePinState -Pin $StackLightB2 -Pininverted $true -CoilState $false -PLCIP $blueSCCIP
-    Start-Sleep -Milliseconds 50
-    updatePinState -Pin $StackLightB3 -Pininverted $true -CoilState $false -PLCIP $blueSCCIP
-    Start-Sleep -Milliseconds 250
-    updatePinState -Pin $StacklightRed -Pininverted $true -CoilState $true -PLCIP $StackIP
-    Start-Sleep -Milliseconds 250
-    updatePinState -Pin $StackLightBlue -Pininverted $true -CoilState $true -PLCIP $StackIP
-    Start-Sleep -Milliseconds 250
-    updatePinState -Pin $StacklightRed -Pininverted $true -CoilState $true -PLCIP $StackIP
-    Start-Sleep -Milliseconds 250
-    updatePinState -Pin $StackLightOrange -Pininverted $true -CoilState $true -PLCIP $StackIP
-    Start-Sleep -Milliseconds 250
-    updatePinState -Pin $StackLightGreen -Pininverted $true -CoilState $true -PLCIP $StackIP
-    Start-Sleep -Milliseconds 250
-    updatePinState -Pin $StackLightWhite -Pininverted $true -CoilState $true -PLCIP $StackIP
-    Start-Sleep -Milliseconds 250
-    updatePinState -Pin $StackLightR1 -Pininverted $true -CoilState $true -PLCIP $redSCCIP
-    Start-Sleep -Milliseconds 250
-    updatePinState -Pin $StackLightR2 -Pininverted $true -CoilState $true -PLCIP $redSCCIP
-    Start-Sleep -Milliseconds 250
-    updatePinState -Pin $StackLightR3 -Pininverted $true -CoilState $true -PLCIP $redSCCIP
-    Start-Sleep -Milliseconds 250
-    updatePinState -Pin $StackLightB1 -Pininverted $true -CoilState $true -PLCIP $blueSCCIP
-    Start-Sleep -Milliseconds 250
-    updatePinState -Pin $StackLightB2 -Pininverted $true -CoilState $true -PLCIP $blueSCCIP
-    Start-Sleep -Milliseconds 250
-    updatePinState -Pin $StackLightB3 -Pininverted $true -CoilState $true -PLCIP $blueSCCIP
-    Start-Sleep -Milliseconds 500
-    updatePinState -Pin $StacklightRed -Pininverted $true -CoilState $false -PLCIP $StackIP
-    Start-Sleep -Milliseconds 250
-    updatePinState -Pin $StackLightBlue -Pininverted $true -CoilState $false -PLCIP $StackIP
-    Start-Sleep -Milliseconds 250
-    updatePinState -Pin $StacklightRed -Pininverted $true -CoilState $false -PLCIP $StackIP
-    Start-Sleep -Milliseconds 250
-    updatePinState -Pin $StackLightOrange -Pininverted $true -CoilState $false -PLCIP $StackIP
-    Start-Sleep -Milliseconds 250
-    updatePinState -Pin $StackLightGreen -Pininverted $true -CoilState $false -PLCIP $StackIP
-    Start-Sleep -Milliseconds 250
-    updatePinState -Pin $StackLightWhite -Pininverted $true -CoilState $false -PLCIP $StackIP
-    Start-Sleep -Milliseconds 250
-    updatePinState -Pin $StackLightR1 -Pininverted $true -CoilState $false -PLCIP $redSCCIP
-    Start-Sleep -Milliseconds 250
-    updatePinState -Pin $StackLightR2 -Pininverted $true -CoilState $false -PLCIP $redSCCIP
-    Start-Sleep -Milliseconds 250
-    updatePinState -Pin $StackLightR3 -Pininverted $true -CoilState $false -PLCIP $redSCCIP
-    Start-Sleep -Milliseconds 250
-    updatePinState -Pin $StackLightB1 -Pininverted $true -CoilState $false -PLCIP $blueSCCIP
-    Start-Sleep -Milliseconds 250
-    updatePinState -Pin $StackLightB2 -Pininverted $true -CoilState $false -PLCIP $blueSCCIP
-    Start-Sleep -Milliseconds 250
-    updatePinState -Pin $StackLightB3 -Pininverted $true -CoilState $false -PLCIP $blueSCCIP
-    Start-Sleep -Milliseconds 1000
-    updatePinState -Pin $StacklightRed -Pininverted $true -CoilState $true -PLCIP $StackIP
-    updatePinState -Pin $StackLightBlue -Pininverted $true -CoilState $true -PLCIP $StackIP
-    updatePinState -Pin $StacklightRed -Pininverted $true -CoilState $true -PLCIP $StackIP
-    updatePinState -Pin $StackLightOrange -Pininverted $true -CoilState $true -PLCIP $StackIP
-    updatePinState -Pin $StackLightGreen -Pininverted $true -CoilState $true -PLCIP $StackIP
-    updatePinState -Pin $StackLightWhite -Pininverted $true -CoilState $true -PLCIP $StackIP
-    
-    Start-Sleep -Milliseconds 500
-    updatePinState -Pin $StacklightRed -Pininverted $true -CoilState $false -PLCIP $StackIP
-    updatePinState -Pin $StackLightBlue -Pininverted $true -CoilState $false -PLCIP $StackIP
-    updatePinState -Pin $StacklightRed -Pininverted $true -CoilState $false -PLCIP $StackIP
-    updatePinState -Pin $StackLightOrange -Pininverted $true -CoilState $false -PLCIP $StackIP
-    updatePinState -Pin $StackLightGreen -Pininverted $true -CoilState $false -PLCIP $StackIP
-    updatePinState -Pin $StackLightWhite -Pininverted $true -CoilState $false -PLCIP $StackIP
-    Start-Sleep -Milliseconds 500
-    updatePinState -Pin $StackLightR1 -Pininverted $true -CoilState $true -PLCIP $redSCCIP
-    updatePinState -Pin $StackLightR2 -Pininverted $true -CoilState $true -PLCIP $redSCCIP
-    updatePinState -Pin $StackLightR3 -Pininverted $true -CoilState $true -PLCIP $redSCCIP
-    Start-Sleep -Milliseconds 500
-    updatePinState -Pin $StackLightR1 -Pininverted $true -CoilState $false -PLCIP $redSCCIP
-    updatePinState -Pin $StackLightR2 -Pininverted $true -CoilState $false -PLCIP $redSCCIP
-    updatePinState -Pin $StackLightR3 -Pininverted $true -CoilState $false -PLCIP $redSCCIP
-    Start-Sleep -Milliseconds 500
-    updatePinState -Pin $StackLightB1 -Pininverted $true -CoilState $true -PLCIP $blueSCCIP
-    updatePinState -Pin $StackLightB2 -Pininverted $true -CoilState $true -PLCIP $blueSCCIP
-    updatePinState -Pin $StackLightB3 -Pininverted $true -CoilState $true -PLCIP $blueSCCIP
-    Start-Sleep -Milliseconds 500
-    updatePinState -Pin $StackLightB1 -Pininverted $true -CoilState $false -PLCIP $blueSCCIP
-    updatePinState -Pin $StackLightB2 -Pininverted $true -CoilState $false -PLCIP $blueSCCIP
-    updatePinState -Pin $StackLightB3 -Pininverted $true -CoilState $false -PLCIP $blueSCCIP
+    invoke-restmethod -Uri "http://$stackIP/set/$StacklightRed/on"  -Method post
+    sleep 1
+    invoke-restmethod -Uri "http://$stackIP/set/$StackLightBlue/on"  -Method post
+    sleep 1
+    invoke-restmethod -Uri "http://$stackIP/set/$StackLightOrange/on"  -Method post
+    sleep 1
+    invoke-restmethod -Uri "http://$stackIP/set/$StackLightGreen/on"  -Method post
+    sleep 1
+    invoke-restmethod -Uri "http://$stackIP/set/$Stacklightblue/on"  -Method post
+    sleep 1
+    invoke-restmethod -Uri "http://$stackIP/set/$StackLightWhite/on"  -Method post
+    sleep 1
+        invoke-restmethod -Uri "http://$stackIP/set/$StacklightRed/on"  -Method post
+    sleep 1
+    invoke-restmethod -Uri "http://$stackIP/set/$StackLightBlue/off"  -Method post
+    sleep 1
+    invoke-restmethod -Uri "http://$stackIP/set/$StackLightOrange/off"  -Method post
+    sleep 1
+    invoke-restmethod -Uri "http://$stackIP/set/$StackLightGreen/off"  -Method post
+    sleep 1
+    invoke-restmethod -Uri "http://$stackIP/set/$Stacklightblue/off"  -Method post
+    sleep 1
+    invoke-restmethod -Uri "http://$stackIP/set/$StackLightWhite/off"  -Method post
+    sleep 1
 
-    Start-Sleep -Seconds 2
+
+    invoke-restmethod -Uri "http://$stackIP/set/1/on"  -Method post
+    invoke-restmethod -Uri "http://$stackIP/set/2/on"   -Method post
+    invoke-restmethod -Uri "http://$stackIP/set/3/on"   -Method post
+    invoke-restmethod -Uri "http://$stackIP/set/4/on"   -Method post
+    invoke-restmethod -Uri "http://$stackIP/set/5/on"   -Method post
+    Sleep 1
+    invoke-restmethod -Uri "http://$stackIP/set/1/off"  -Method post
+    invoke-restmethod -Uri "http://$stackIP/set/2/off"   -Method post
+    invoke-restmethod -Uri "http://$stackIP/set/3/off"   -Method post
+    invoke-restmethod -Uri "http://$stackIP/set/4/off"   -Method post
+    invoke-restmethod -Uri "http://$stackIP/set/5/off"   -Method post
+    sleep 3
+
+    invoke-restmethod -Uri "http://$stackIP/set/$StackLightBlue/blink"   -Method post
+    invoke-restmethod -Uri "http://$stackIP/set/$StackLightOrange/blink"   -Method post
+    invoke-restmethod -Uri "http://$stackIP/set/$StackLightGreen/blink"   -Method post
+    invoke-restmethod -Uri "http://$stackIP/set/$Stacklightblue/blink"   -Method post
+    invoke-restmethod -Uri "http://$stackIP/set/$StackLightWhite/blink"   -Method post
+    sleep 10
+
+    invoke-restmethod -Uri "http://$stackIP/set/$StackLightBlue/off"   -Method post
+    invoke-restmethod -Uri "http://$stackIP/set/$StackLightOrange/off"   -Method post
+    invoke-restmethod -Uri "http://$stackIP/set/$StackLightGreen/off"   -Method post
+    invoke-restmethod -Uri "http://$stackIP/set/$Stacklightblue/off"   -Method post
+    invoke-restmethod -Uri "http://$stackIP/set/$StackLightWhite/off"   -Method post
+    sleep 3
 
 } while (
     $true
