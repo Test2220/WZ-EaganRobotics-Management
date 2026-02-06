@@ -139,6 +139,9 @@ Start-PodeServer -Threads 4 -EnablePool WebSockets {
             add-poderoute -Method get -Path "/queue/read" -ContentType 'application/json' -FilePath "./routes/API/Api-arenaReadqueue.ps1"
             add-poderoute -Method get,post -Path "/state" -ContentType 'application/json' -FilePath "./routes/API/API-ArenaStateChange.ps1"
             Add-PodeRoute -Method get,post -Path "/scorekeeper" -ContentType 'application/json' -filepath "./Game2026/routes/API/api-scorekeeper.ps1"
+            Add-PodeRoute -Method get -Path "/bypass/:pos" -ScriptBlock {Send-PodeWebSocket -Name "CA" -Message @{"type"="toggleBypass";"data"=$WebEvent.Parameters['pos']}}
+            Add-PodeRoute -Method Get -Path "/matchstart" -ScriptBlock {Send-PodeWebSocket -name "CA" -Message @{"type"="startMatch";"data"=@{"muteMatchSounds"=$false}}}
+            Add-PodeRoute -Method Get -Path "/abortmatch" -ScriptBlock {Send-PodeWebSocket -name "CA" -Message @{"type"="abortMatch"}}
         }
     }
     Add-PodeRouteGroup -path "/pode" -Routes{
