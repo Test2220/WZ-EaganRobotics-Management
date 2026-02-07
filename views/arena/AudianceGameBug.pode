@@ -8,7 +8,7 @@
 <div id="mainview">
     <div id="Pointcontainer">
         <div id="TimerContainer">0:00 </div>
-        <div id="LogoSpace"><img id="gamelogoPNG" src="./img/Gamelogo.png"/></div>
+        <div id="LogoSpace"><img id="gamelogoPNG" src="../../../img/Gamelogo.png"/></div>
         <div id="teamRight" class="Redteam BlueTeamReverse">
         <div id="team1">Team1</div>
         <div id="team2">Team2</div>
