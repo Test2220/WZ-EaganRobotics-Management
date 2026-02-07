@@ -14,7 +14,7 @@ if(Test-Path -Path "./data/server.json"){
 }else {
     Write-Debug "Writing Server.JSON"
     Write-Host "server config file created update config to new settings"
-    '{"server":"localhost","FMS":"localhost","FMSConnect":true}'| Out-File -FilePath "./data/server.json"
+    '{"server":"localhost","FMS":"localhost","FMSConnect":true}'| Out-File -FilePath "./data/server.json" -Force
     exit 99 
 }
     Write-Debug "Getting loading Server Config"
@@ -36,6 +36,8 @@ Start-PodeServer -Threads 4 -EnablePool WebSockets {
     set-podestate -Name "PlayerConfig" |Out-Null
     set-podestate -Name "PlaylistConfig" |Out-Null
     set-podestate -Name "Nexuslink" |Out-Null
+    Set-PodeState -Name "StackState" -Value @{"B1"= "off";"B2"= "off";"B3"= "off";"R1"= "off";"R2"= "off";"R3"= "off";"Cred"="off";"Cblue"="off";"Cwhite"="off";"Cgreen"="off";"Corange"="off";"HubBlue"="off";"HubRed"="off";}
+
     
     New-PodeLockable -name "NexusLock"
     New-PodeLockable -name "playlistLock"
@@ -114,7 +116,9 @@ Start-PodeServer -Threads 4 -EnablePool WebSockets {
         Add-PodeRoute -method get -Path "/points" -ScriptBlock{
             Write-PodeViewResponse -Path "arena/ScoreDashboard"
         }
-        Add-PodeRouteGroup -Path "/Audiance"
+        Add-PodeRouteGroup -Path "/Audiance" -Routes {
+            Add-PodeRoute -Path "/game" -Method Get -ScriptBlock {Write-PodeViewResponse -Path "arena/AudianceGameBug"}
+        }
 
     }
     Add-PodeRouteGroup -Path '/api' -Routes  {
