@@ -15,7 +15,6 @@ $(document).ready(() => {
 
     // event for inbound messages to append them
     ws.onmessage = function(evt) {
-        $('#messages').append(`<p>${evt.data}</p>`);
         if (typeof evt.data === 'string') {
         try {
         const data = JSON.parse(evt.data);
