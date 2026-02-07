@@ -146,7 +146,10 @@ Start-PodeServer -Threads 4 -EnablePool WebSockets {
             Add-PodeRoute -Method get -Path "/bypass/:pos" -ScriptBlock {Send-PodeWebSocket -Name "CA" -Message @{"type"="toggleBypass";"data"=$WebEvent.Parameters['pos']}}
             Add-PodeRoute -Method Get -Path "/matchstart" -ScriptBlock {Send-PodeWebSocket -name "CA" -Message @{"type"="startMatch";"data"=@{"muteMatchSounds"=$false}}}
             Add-PodeRoute -Method Get -Path "/abortmatch" -ScriptBlock {Send-PodeWebSocket -name "CA" -Message @{"type"="abortMatch"}}
+            Add-PodeRoute -Method Get -Path "/AudianceDisplay" -FilePath "./Game2026/routes/API/api-score.ps1"
+            add-Poderoute -method get -path "reset" -scriptblock {    Set-PodeState -Name 'points' -Value @{ 'RedAuto' = 0;'blueauto' = 0;'Redtele' = 0;'bluetele' = 0;'redend' = 0;'blueend' = 0;'redAutoL1' = 0;'redTeleL1' = 0;'redTeleL2' = 0;'redTeleL3' = 0;'BlueAutoL1' = 0;'BlueTeleL1' = 0;'BlueTeleL2' = 0;'BlueTeleL3' = 0; 'redMinorFoul' = 0;'redMajorFoul' = 0; 'blueMinorFoul'=0;'blueMajorFoul' = 0; } | Out-Null}
         }
+        
     }
     Add-PodeRouteGroup -path "/pode" -Routes{
         Add-PodeRoute -Method Get -Path "/save" -ScriptBlock {
