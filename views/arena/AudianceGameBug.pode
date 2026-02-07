@@ -8,14 +8,18 @@
 <div id="mainview">
     <div id="Pointcontainer">
         <div id="TimerContainer">0:00 </div>
-        <div id="LogoSpace"><img id="gamelogoPNG" src="../../../img/Gamelogo.png"/></div>
+        <div id="LogoSpace"><img id="gamelogoPNG" src="../../../img/GameLogo.png"/></div>
         <div id="teamRight" class="Redteam BlueTeamReverse">
         <div id="team1">Team1</div>
         <div id="team2">Team2</div>
         <div id="team3">Team3</div>
         </div>
-        <div id="pointsRight" class="Redpoints BluePointReverse">00</div>
-        <div id="pointsLeft" class="Bluepoints RedteamReverse">00</div>
+        <div id="pointsRightContainer" class="Redpoints BluePointReverse">
+            <div id="pointsRight" >00</div>
+        </div>
+        <div id="pointsLeftContainer" class="Bluepoints RedteamReverse">
+            <div id="pointsLeft" >00</div>
+        </div>
         <div id="teamLeft" class="Blueteam RedPointReverse">
         <div id="team4">Team4</div>
         <div id="team5">Team5</div>
