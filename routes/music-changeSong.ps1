@@ -1,6 +1,6 @@
 {
             $apiIPPort = $using:MusicPlayerIP
-            $VDJIP = $using:DJIP
+            $VDJIP = $apiIPPort
             $Pindex = $using:PlayerIndex
             $pWalkin = $Pindex.'WalkIn'
             $pStartup = $Pindex.'Gamestartup'
