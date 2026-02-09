@@ -24,6 +24,8 @@ $FMSAddress = $serverSettings.FMS #address to pull websocket for CA
 Start-PodeServer -Threads 4 -EnablePool WebSockets {
     # attach to port 80 for http
     Add-PodeEndpoint -Address $podeServer -Port 80 -Protocol Http
+        Add-PodeEndpoint -Address localhost -Port 80 -Protocol Ws
+
     Set-PodeViewEngine -Type Pode
     New-PodeLoggingMethod -Terminal | Enable-PodeErrorLogging
     Write-Debug "init Pode State and Lock Tables"
@@ -56,7 +58,7 @@ Start-PodeServer -Threads 4 -EnablePool WebSockets {
     if($serverSettings.FMSConnect){
         Write-Debug "Starting WebSocket"
         try {
-            Connect-PodeWebSocket -Url $WSURL -Name "CA" -FilePath "./routes/Arena/CAWebSocketClient.ps1"
+            Connect-PodeWebSocket -Url $WSURL -Name "CA" -FilePath "./Game2026/routes/CAWebSocketClient.ps1"
         }
         catch {
             Write-Host "Websocket to FMS Software failed check connection and reset server if FMS is up"
@@ -118,7 +120,10 @@ Start-PodeServer -Threads 4 -EnablePool WebSockets {
         }
         Add-PodeRouteGroup -Path "/Audiance" -Routes {
             Add-PodeRoute -Path "/game" -Method Get -ScriptBlock {Write-PodeViewResponse -Path "arena/AudianceGameBug"}
+            Add-PodeRoute -Path "/AudioPlayback" -Method Get -ScriptBlock {Write-PodeViewResponse -Path "arena/soundplayer"}
+
         }
+        
 
     }
     Add-PodeRouteGroup -Path '/api' -Routes  {
@@ -146,7 +151,17 @@ Start-PodeServer -Threads 4 -EnablePool WebSockets {
             Add-PodeRoute -Method get -Path "/bypass/:pos" -ScriptBlock {Send-PodeWebSocket -Name "CA" -Message @{"type"="toggleBypass";"data"=$WebEvent.Parameters['pos']}}
             Add-PodeRoute -Method Get -Path "/matchstart" -ScriptBlock {Send-PodeWebSocket -name "CA" -Message @{"type"="startMatch";"data"=@{"muteMatchSounds"=$false}}}
             Add-PodeRoute -Method Get -Path "/abortmatch" -ScriptBlock {Send-PodeWebSocket -name "CA" -Message @{"type"="abortMatch"}}
-            Add-PodeRoute -Method Get -Path "/AudianceDisplay" -FilePath "./Game2026/routes/API/api-score.ps1"
+            Add-PodeRoute -Method Get -Path "/AudianceDisplay" -FilePath "./routes/API/API-AudianceDisplay.ps1"
+
+            Add-PodeRoute -Method Get -Path "/Arenastate" -ScriptBlock {
+                $message = Get-PodeState -Name "FMSArenaStatus"
+                Write-PodeJsonResponse -Value $message
+            }
+                        Add-PodeRoute -Method Get -Path "/Arenatimer" -ScriptBlock {
+                $message = Get-PodeState -Name "FMSArenatimer"
+                Write-PodeJsonResponse -Value $message
+            }
+            
             add-Poderoute -method get -path "/reset" -scriptblock {    Set-PodeState -Name 'points' -Value @{ 'RedAuto' = 0;'blueauto' = 0;'Redtele' = 0;'bluetele' = 0;'redend' = 0;'blueend' = 0;'redAutoL1' = 0;'redTeleL1' = 0;'redTeleL2' = 0;'redTeleL3' = 0;'BlueAutoL1' = 0;'BlueTeleL1' = 0;'BlueTeleL2' = 0;'BlueTeleL3' = 0; 'redMinorFoul' = 0;'redMajorFoul' = 0; 'blueMinorFoul'=0;'blueMajorFoul' = 0; } | Out-Null}
         }
         

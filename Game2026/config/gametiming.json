@@ -1,6 +1,7 @@
 {
 "totaltime":160,
 "autoend":20,
+"pause":3,
 "transtionshiftend":30,
 "endshift1":55,
 "endshift2":80,
