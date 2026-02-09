@@ -40,7 +40,13 @@
     if($timeing.data.MatchState -eq 6){
         $responce.matchtimer = 160
     }else{
+        if($timeing.data.MatchTimeSec -ge 23){
+            $responce.matchtimer = $timeing.data.MatchTimeSec -3
+        }elseif (($timeing.data.MatchTimeSec -lt 23) -and ($timeing.data.MatchTimeSec -gt 20)){
+            $responce.matchtimer = 20
+        }else{
         $responce.matchtimer = $timeing.data.MatchTimeSec
+    }
     }
     Write-PodeJsonResponse -Value $responce
 

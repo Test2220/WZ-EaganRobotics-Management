@@ -24,7 +24,7 @@ body{
   bottom: 0;           /* Positions the element at the bottom edge */
   left: 50%;           /* Moves the left edge to the horizontal center */
   transform: translateX(-50%); /* Pulls the element back by half of its own width */
-  width: 550px;
+  width: 410px;
   height: 110px;
   border: 1px;
   border-color: red;
@@ -75,18 +75,28 @@ position: absolute;
     justify-content: center;
 
 }#teamRight{
-  right: -2%;
+  right: -9%;
   bottom: 110;
   position: absolute;
   background-color: white;
-  width: 220;
+  width: 200;
   height: 30;
   text-align: center;
    font-size: 18pt;
    padding-bottom: 5px;
    padding-top: 5px;
-   padding-right: 15px;
-   padding-left: 15px;
+
+}#teamLeft{
+  left: -9%;
+  bottom: 110;
+  position: absolute;
+  background-color: white;
+  width: 200;
+  height: 30;
+  text-align: center;
+   font-size: 18pt;
+   padding-bottom: 5px;
+   padding-top: 5px;
 }
 
 #B1{
@@ -124,20 +134,7 @@ width: 32%;
   width: 33%;
 }
 
-#teamLeft{
-  left: -2%;
-  bottom: 110;
-  position: absolute;
-  background-color: white;
-  width: 220;
-  height: 30;
-  text-align: center;
-   font-size: 18pt;
-   padding-bottom: 5px;
-   padding-top: 5px;
-   padding-right: 15px;
-   padding-left: 15px;
-}
+
 .Redpoints{
   background-color: red;
 width: 150;
@@ -176,14 +173,14 @@ z-index: 100;
 margin: auto;
   position: absolute;
   bottom: 0;           /* Positions the element at the bottom edge */
-  left: 13%;           /* Moves the left edge to the horizontal center */
+  left: 0%;           /* Moves the left edge to the horizontal center */
  
 
 }#pointsRightContainer{
 margin: auto;
   position: absolute;
   bottom: 0;           /* Positions the element at the bottom edge */
-  right: 13%;           /* Moves the left edge to the horizontal center */
+  right: 0%;           /* Moves the left edge to the horizontal center */
  
 
 }

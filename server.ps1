@@ -58,7 +58,7 @@ Start-PodeServer -Threads 4 -EnablePool WebSockets {
     if($serverSettings.FMSConnect){
         Write-Debug "Starting WebSocket"
         try {
-            Connect-PodeWebSocket -Url $WSURL -Name "CA" -FilePath "./routes/Arena/CAWebSocketClient.ps1"
+            Connect-PodeWebSocket -Url $WSURL -Name "CA" -FilePath "./Game2026/routes/CAWebSocketClient.ps1"
         }
         catch {
             Write-Host "Websocket to FMS Software failed check connection and reset server if FMS is up"

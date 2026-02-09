@@ -17,7 +17,12 @@ async function updateTagFromJson() {
     const B2 = data.b2;
     const B3 = data.b3;
 
-    const Matchtime = data.matchtimer
+    const pausetime = 3;
+    const autostop = 20;
+
+      let Matchtime = data.matchtimer;
+    
+
     const totalmatchtime = 160;
 
 
@@ -36,8 +41,8 @@ async function updateTagFromJson() {
 
 
     // 4. Replace the text in the HTML tag
-    document.getElementById('pointsRight').innerText = BluenewValue;
-    document.getElementById('pointsLeft').innerText = RednewValue;
+    document.getElementById('pointsLeft').innerText = BluenewValue;
+    document.getElementById('pointsRight').innerText = RednewValue;
     document.getElementById('B1').innerText = B1;
     document.getElementById('B2').innerText = B2;
     document.getElementById('B3').innerText = B3;
@@ -56,6 +61,7 @@ async function updateTagFromJson() {
     console.error('Update failed:', error);
   }
 }
+
 
 // 4. Run immediately, then every 500ms (.5 seconds)
 updateTagFromJson(); 

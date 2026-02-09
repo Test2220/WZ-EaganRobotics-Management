@@ -315,7 +315,7 @@
                 Set-PodeState -Name 'FMSArenatimer' -Value $WsEvent.Request.body
             }
 
-            if (($WSJSONPacket.data.MatchTimeSec -eq 0)-and ($WSJSONPacket.data.MatchState -gt 0)) {
+            if (($WSJSONPacket.data.MatchTimeSec -eq 0)-and (($WSJSONPacket.data.MatchState -eq 3) )) {
                 write-debug "triger Sound Start"
                         Send-PodeSignal -Value @{"type"="playaudio";"data"="start.wav"}
             }
@@ -326,21 +326,25 @@
             if($WSJSONPacket.data.MatchTimeSec -eq (20 + $gametiming.Pause)){
                     write-debug "triger Sound resume"
                     Send-PodeSignal -Value @{"type"="playaudio";"data"="resume.wav"}
-            }if($WSJSONPacket.data.MatchTimeSec -eq $gametiming.endshift1){
+            }if($WSJSONPacket.data.MatchTimeSec -eq ($gametiming.transtionshiftend +$gametiming.Pause)){
                 write-debug "triger Sound powerup-force"
                     Send-PodeSignal -Value @{"type"="playaudio";"data"="powerup-force.wav"}
-            }if($WSJSONPacket.data.MatchTimeSec -eq $gametiming.endshift2){
+            }
+            if($WSJSONPacket.data.MatchTimeSec -eq ($gametiming.endshift1 +$gametiming.Pause)){
                 write-debug "triger Sound powerup-force"
                     Send-PodeSignal -Value @{"type"="playaudio";"data"="powerup-force.wav"}
-            }if($WSJSONPacket.data.MatchTimeSec -eq $gametiming.endshift3){
+            }if($WSJSONPacket.data.MatchTimeSec -eq ($gametiming.endshift2+$gametiming.Pause)){
                 write-debug "triger Sound powerup-force"
                     Send-PodeSignal -Value @{"type"="playaudio";"data"="powerup-force.wav"}
-            }if($WSJSONPacket.data.MatchTimeSec -eq $gametiming.endshift4){
+            }if($WSJSONPacket.data.MatchTimeSec -eq ($gametiming.endshift3+$gametiming.Pause)){
+                write-debug "triger Sound powerup-force"
+                    Send-PodeSignal -Value @{"type"="playaudio";"data"="powerup-force.wav"}
+            }if($WSJSONPacket.data.MatchTimeSec -eq ($gametiming.endshift4+$gametiming.Pause)){
                 write-debug "triger Sound warning"
                     Send-PodeSignal -Value @{"type"="playaudio";"data"="warning.wav"}
             }if($WSJSONPacket.data.MatchState -eq 6){
                 write-debug "triger Sound end"
-                    Send-PodeSignal -Value @{"type"="playaudio";"data"="end.wav"}
+                    Send-PodeSignal -Value @{"type"="playaudio";"data"="end.wav"} 
             }
             $timer = $WSJSONPacket.data.MatchTimeSec
             Write-host  "match time is $timer"
