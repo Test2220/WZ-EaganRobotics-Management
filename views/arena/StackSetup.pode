@@ -1,24 +1,30 @@
 <html>
 <head>
 
-    <link rel="stylesheet" href="style.css" />
+    <link rel="stylesheet" href="/style/style.css" />
     <script src="https://ajax.googleapis.com/ajax/libs/jquery/3.7.1/jquery.min.js"></script>
 </head>
 <body>
 <div id="mainview">
-<form action="/api/arena/StackSetup" id="StacklightConfig" method="post">
+<form action="/api/arena/Stack/config" id="StacklightConfig" method="post">
 <h2>Manual add</h2>
     <div class="form-row'>
         <label for="BlueSCC">BlueSCC</label>
         <input type="text" class="input-text input-text-block" id="BlueSCCIP" name="BlueSCC" value=$($data.BlueSCC;) />
+        <label for="BlueSCCPort">BlueSCCPort</label>
+        <input type="text" class="input-text input-text-block" id="BlueSCCPort" name="BlueSCCPort" value=$($data.BlueSCCPort;) />
     </div>
     <div class="form-row'>
         <label for="RedSCC">RedSCC</label>
         <input type="text" class="input-text input-text-block" id="RedSCCIP" name="RedSCC" value=$($data.RedSCC;) />
+        <label for="RedSCCport">RedSCCport</label>
+        <input type="text" class="input-text input-text-block" id="RedSCCPort" name="RedSCCport" value=$($data.RedSCCport;) />
     </div>
         <div class="form-row'>
         <label for="MiddleStack">MiddleStack</label>
         <input type="text" class="input-text input-text-block" id="MiddleStackIP" name="MiddleStack" value=$($data.MiddleStack;) />
+        <label for="MiddleStackPort">MiddleStackPort</label>
+        <input type="text" class="input-text input-text-block" id="MiddleStackPort" name="MiddleStackPort" value=$($data.MiddleStackPort;) />
     </div>
     <div class="form-row mx-auto">
         <input type="submit" class="btn-submit" id="btn-submit" />
@@ -26,6 +32,13 @@
 
 
 </form>
+<div id="IPListContainer">
+<table id="IPTable">
+ $(foreach ($ip in $data.IPList) {
+                "<tr><td>$($ip)</td><tr>";
+ })
+</table>
+</div>
 </div>
 </body>
 </html>
