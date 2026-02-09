@@ -24,7 +24,7 @@ body{
   bottom: 0;           /* Positions the element at the bottom edge */
   left: 50%;           /* Moves the left edge to the horizontal center */
   transform: translateX(-50%); /* Pulls the element back by half of its own width */
-  width: 500px;
+  width: 550px;
   height: 110px;
   border: 1px;
   border-color: red;
@@ -51,55 +51,117 @@ position: absolute;
   transform: translateX(-50%); /* Pulls the element back by half of its own width */
 
 }#pointsRight{
-  right: 50%;
+  margin: auto;
+  width: 100%;
+  right: 0%;
+  top: 25%;
   display: flex;
-  font-size: 49pt;
+  font-size: 42pt;
   position: absolute;
   color: white;
-  
+  align-items: center;
+  justify-content: center;
+
 }#pointsLeft{
-  left: 50%;
+  margin: auto;
+  width: 100%;
+  left: 0%;
+  top: 25%;
   display: flex;
-    font-size: 49pt;
+    font-size: 42pt;
     position: absolute;
-    color:white
+    color:white;
+  align-items: center;
+    justify-content: center;
 
 }#teamRight{
-  right: 50;
+  right: -2%;
+  bottom: 110;
   position: absolute;
   background-color: white;
-  width: 150;
-  height: 110;
+  width: 220;
+  height: 30;
   text-align: center;
-   font-size: 22pt;
-}#teamLeft{
-  left: 50;
+   font-size: 18pt;
+   padding-bottom: 5px;
+   padding-top: 5px;
+   padding-right: 15px;
+   padding-left: 15px;
+}
+
+#B1{
+margin: auto;
+position: absolute;
+left: 1%;
+width: 32%;
+}
+#B2{
+  margin: auto;
+  position: absolute;
+  left: 33%;
+  width: 32%;
+}#B3{
+  margin: auto;
+  position: absolute;
+  left: 65%;
+  width: 32%;
+}
+#R1{
+  margin: auto;
+  position: absolute;
+  left: 2%;
+  width: 33%;
+}
+#R2{
+  margin: auto;
+  position: absolute;
+  left: 33%;
+  width: 33%;
+}#R3{
+  margin: auto;
+  position: absolute;
+  left: 66%;
+  width: 33%;
+}
+
+#teamLeft{
+  left: -2%;
+  bottom: 110;
   position: absolute;
   background-color: white;
-  width: 150;
-  height: 110;
+  width: 220;
+  height: 30;
   text-align: center;
-   font-size: 22pt;
+   font-size: 18pt;
+   padding-bottom: 5px;
+   padding-top: 5px;
+   padding-right: 15px;
+   padding-left: 15px;
 }
 .Redpoints{
   background-color: red;
-width: 100;
+width: 150;
 height: 110;
 display: flex;
 text-align: center;
+position: relative;
 }
 .Bluepoints{
   background-color: blue;
-  width: 100;
+  width: 150;
 height: 110;
 display: flex;
 text-align: center;
+position: relative;
 }
 #TimerContainer{
 margin: auto;
+width: 65px;
 padding: 5px;
 padding-left: 10px;
 padding-right: 10px;
+padding-bottom: 6px;
+padding-top: 6px;
 background-color: white;
 border: 5px;
 border-color: black;
@@ -114,16 +176,14 @@ z-index: 100;
 margin: auto;
   position: absolute;
   bottom: 0;           /* Positions the element at the bottom edge */
-  left: 0%;           /* Moves the left edge to the horizontal center */
-  transform: translateX(-50%); /* Pulls the element back by half of its own width */
-
+  left: 13%;           /* Moves the left edge to the horizontal center */
+ 
 
 }#pointsRightContainer{
 margin: auto;
   position: absolute;
   bottom: 0;           /* Positions the element at the bottom edge */
-  left: 100%;           /* Moves the left edge to the horizontal center */
-  transform: translateX(-50%); /* Pulls the element back by half of its own width */
-
+  right: 13%;           /* Moves the left edge to the horizontal center */
+ 
 
 }
