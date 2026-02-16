@@ -133,17 +133,17 @@
                 if (($WSJSONPacket.data.CanStartMatch -eq $true)) {
                     if ($StackState.Cgreen -notmatch "blink") {
                         $StackState.Cgreen = "blink"
-                        Invoke-RestMethod -uri ("http://"+$StackConfigData.MiddleStack+":"+$StackConfigData.MiddleStackPort +"/set/1/"+$StackState.Cgreen) -Method Post  #get Green Pin ID
+                        Invoke-RestMethod -uri ("http://"+$StackConfigData.MiddleStack+":"+$StackConfigData.MiddleStackPort +"/set/5/"+$StackState.Cgreen) -Method Post  #get Green Pin ID
                     }
                 }elseif ($WSJSONPacket.data.CanStartMatch -eq $false) {
                     if ($StackState.Cgreen -notmatch "off") {
                         $StackState.Cgreen = "off"
-                        Invoke-RestMethod -uri ("http://"+$StackConfigData.MiddleStack+":"+$StackConfigData.MiddleStackPort +"/set/1/"+$StackState.Cgreen) -Method Post  #get Green Pin ID
+                        Invoke-RestMethod -uri ("http://"+$StackConfigData.MiddleStack+":"+$StackConfigData.MiddleStackPort +"/set/5/"+$StackState.Cgreen) -Method Post  #get Green Pin ID
                     }
                 }elseif (($WSJSONPacket.data.MatchState -gt 0)-and ($WSJSONPacket.data.MatchState -lt 6)) {
                     if ($StackState.Cgreen -notmatch "on") {
                         $StackState.Cgreen = "on"
-                        Invoke-RestMethod -uri ("http://"+$StackConfigData.MiddleStack+":"+$StackConfigData.MiddleStackPort +"/set/1/"+$StackState.Cgreen) -Method Post #get Green Pin ID
+                        Invoke-RestMethod -uri ("http://"+$StackConfigData.MiddleStack+":"+$StackConfigData.MiddleStackPort +"/set/5/"+$StackState.Cgreen) -Method Post #get Green Pin ID
                     }
                 }
                         $FieldteamStatus.R2 = $true
@@ -164,12 +164,12 @@
                 if ($FieldteamStatus.B1 -and $FieldteamStatus.B2 - $FieldteamStatus.B2) {
                     if ($StackState.Cblue -notmatch "on") {
                         $StackState.Cblue = "on"
-                        Invoke-RestMethod -uri ("http://"+$StackConfigData.MiddleStack+":"+$StackConfigData.MiddleStackPort +"/set/3/"+$StackState.Cblue) -Method Post  #get Blue Pin ID
+                        Invoke-RestMethod -uri ("http://"+$StackConfigData.MiddleStack+":"+$StackConfigData.MiddleStackPort +"/set/1/"+$StackState.Cblue) -Method Post  #get Blue Pin ID
                     }
                 }else {
                     if ($StackState.Cred -notmatch "off") {
                         $StackState.CRed = "off"
-                        Invoke-RestMethod -uri ("http://"+$StackConfigData.MiddleStack+":"+$StackConfigData.MiddleStackPort +"/set/3/"+$StackState.Cblue)  -Method Post #get blue Pin ID
+                        Invoke-RestMethod -uri ("http://"+$StackConfigData.MiddleStack+":"+$StackConfigData.MiddleStackPort +"/set/1/"+$StackState.Cblue)  -Method Post #get blue Pin ID
                     }
                 }
         }
@@ -226,7 +226,7 @@
                         }
                         if($StackState.HubBlue -notmatch "on"){
                             $StackState.HubBlue = "on"
-                            Invoke-RestMethod -uri ("http://"+$StackConfigData.MiddleStack+":"+$StackConfigData.MiddleStackPort +"/set/8/"+$StackState.HubRed) -Method Post
+                            Invoke-RestMethod -uri ("http://"+$StackConfigData.MiddleStack+":"+$StackConfigData.MiddleStackPort +"/set/8/"+$StackState.HubBlue) -Method Post
                             #Code to enable both hubs for auto
                         }
                     }
@@ -242,7 +242,7 @@
                             }
                             if($StackState.HubBlue -notmatch "on"){
                                 $StackState.HubBlue = "on"
-                                Invoke-RestMethod -uri ("http://"+$StackConfigData.MiddleStack+":"+$StackConfigData.MiddleStackPort +"/set/8/"+$StackState.HubRed) -Method Post
+                                Invoke-RestMethod -uri ("http://"+$StackConfigData.MiddleStack+":"+$StackConfigData.MiddleStackPort +"/set/8/"+$StackState.HubBlue) -Method Post
                                 #Code to enable Blue hubs for shift1
                                 
                             }
@@ -255,7 +255,7 @@
                             }
                             if($StackState.HubBlue -notmatch "off"){
                                 $StackState.HubBlue = "off"
-                                Invoke-RestMethod -uri ("http://"+$StackConfigData.MiddleStack+":"+$StackConfigData.MiddleStackPort +"/set/8/"+$StackState.HubRed) -Method Post
+                                Invoke-RestMethod -uri ("http://"+$StackConfigData.MiddleStack+":"+$StackConfigData.MiddleStackPort +"/set/8/"+$StackState.HubBlue) -Method Post
                                 #Code to disable Blue hubs for shift1
                                 
                             }
@@ -275,7 +275,7 @@
                             }
                             if($StackState.HubBlue -notmatch "blink"){
                                 $StackState.HubBlue = "blink"
-                                Invoke-RestMethod -uri ("http://"+$StackConfigData.MiddleStack+":"+$StackConfigData.MiddleStackPort +"/set/8/"+$StackState.HubRed) -Method Post
+                                Invoke-RestMethod -uri ("http://"+$StackConfigData.MiddleStack+":"+$StackConfigData.MiddleStackPort +"/set/8/"+$StackState.HubBlue) -Method Post
                                 #Code to enable Blue hubs for shift1
                                 
                             }
@@ -288,7 +288,7 @@
                             }
                             if($StackState.HubBlue -notmatch "off"){
                                 $StackState.HubBlue = "off"
-                                Invoke-RestMethod -uri ("http://"+$StackConfigData.MiddleStack+":"+$StackConfigData.MiddleStackPort +"/set/8/"+$StackState.HubRed) -Method Post
+                                Invoke-RestMethod -uri ("http://"+$StackConfigData.MiddleStack+":"+$StackConfigData.MiddleStackPort +"/set/8/"+$StackState.HubBlue) -Method Post
                                 #Code to disable Blue hubs for shift1
                                 
                             }
@@ -305,7 +305,7 @@
                             }
                             if($StackState.HubBlue -notmatch "on"){
                                 $StackState.HubBlue = "on"
-                                Invoke-RestMethod -uri ("http://"+$StackConfigData.MiddleStack+":"+$StackConfigData.MiddleStackPort +"/set/8/"+$StackState.HubRed) -Method Post
+                                Invoke-RestMethod -uri ("http://"+$StackConfigData.MiddleStack+":"+$StackConfigData.MiddleStackPort +"/set/8/"+$StackState.HubBlue) -Method Post
                                 #Code to enable Blue hubs for shift1
                                 
                             }
@@ -318,7 +318,7 @@
                             }
                             if($StackState.HubBlue -notmatch "off"){
                                 $StackState.HubBlue = "off"
-                                Invoke-RestMethod -uri ("http://"+$StackConfigData.MiddleStack+":"+$StackConfigData.MiddleStackPort +"/set/8/"+$StackState.HubRed) -Method Post
+                                Invoke-RestMethod -uri ("http://"+$StackConfigData.MiddleStack+":"+$StackConfigData.MiddleStackPort +"/set/8/"+$StackState.HubBlue) -Method Post
                                 #Code to disable Blue hubs for shift1
                                 
                             }
@@ -335,7 +335,7 @@
                             }
                             if($StackState.HubBlue -notmatch "blink"){
                                 $StackState.HubBlue = "blink"
-                                Invoke-RestMethod -uri ("http://"+$StackConfigData.MiddleStack+":"+$StackConfigData.MiddleStackPort +"/set/8/"+$StackState.HubRed) -Method Post
+                                Invoke-RestMethod -uri ("http://"+$StackConfigData.MiddleStack+":"+$StackConfigData.MiddleStackPort +"/set/8/"+$StackState.HubBlue) -Method Post
                                 #Code to enable Blue hubs for shift1
                                 
                             }
@@ -348,7 +348,7 @@
                             }
                             if($StackState.HubBlue -notmatch "off"){
                                 $StackState.HubBlue = "off"
-                                Invoke-RestMethod -uri ("http://"+$StackConfigData.MiddleStack+":"+$StackConfigData.MiddleStackPort +"/set/8/"+$StackState.HubRed) -Method Post
+                                Invoke-RestMethod -uri ("http://"+$StackConfigData.MiddleStack+":"+$StackConfigData.MiddleStackPort +"/set/8/"+$StackState.HubBlue) -Method Post
                                 #Code to disable Blue hubs for shift1
                                 
                             }
@@ -365,7 +365,7 @@
                             }
                             if($StackState.HubBlue -notmatch "on"){
                                 $StackState.HubBlue = "on"
-                                Invoke-RestMethod -uri ("http://"+$StackConfigData.MiddleStack+":"+$StackConfigData.MiddleStackPort +"/set/8/"+$StackState.HubRed) -Method Post
+                                Invoke-RestMethod -uri ("http://"+$StackConfigData.MiddleStack+":"+$StackConfigData.MiddleStackPort +"/set/8/"+$StackState.HubBlue) -Method Post
                                 #Code to enable Blue hubs for shift1
                                 
                             }
@@ -378,7 +378,7 @@
                             }
                             if($StackState.HubBlue -notmatch "off"){
                                 $StackState.HubBlue = "off"
-                                Invoke-RestMethod -uri ("http://"+$StackConfigData.MiddleStack+":"+$StackConfigData.MiddleStackPort +"/set/8/"+$StackState.HubRed) -Method Post
+                                Invoke-RestMethod -uri ("http://"+$StackConfigData.MiddleStack+":"+$StackConfigData.MiddleStackPort +"/set/8/"+$StackState.HubBlue) -Method Post
                                 #Code to disable Blue hubs for shift1
                                 
                             }
@@ -395,7 +395,7 @@
                             }
                             if($StackState.HubBlue -notmatch "blink"){
                                 $StackState.HubBlue = "blink"
-                                Invoke-RestMethod -uri ("http://"+$StackConfigData.MiddleStack+":"+$StackConfigData.MiddleStackPort +"/set/8/"+$StackState.HubRed) -Method Post
+                                Invoke-RestMethod -uri ("http://"+$StackConfigData.MiddleStack+":"+$StackConfigData.MiddleStackPort +"/set/8/"+$StackState.HubBlue) -Method Post
                                 #Code to enable Blue hubs for shift1
                                 
                             }
@@ -408,7 +408,7 @@
                             }
                             if($StackState.HubBlue -notmatch "off"){
                                 $StackState.HubBlue = "off"
-                                Invoke-RestMethod -uri ("http://"+$StackConfigData.MiddleStack+":"+$StackConfigData.MiddleStackPort +"/set/8/"+$StackState.HubRed) -Method Post
+                                Invoke-RestMethod -uri ("http://"+$StackConfigData.MiddleStack+":"+$StackConfigData.MiddleStackPort +"/set/8/"+$StackState.HubBlue) -Method Post
                                 #Code to disable Blue hubs for shift1
                                 
                             }
@@ -425,7 +425,7 @@
                             }
                             if($StackState.HubBlue -notmatch "on"){
                                 $StackState.HubBlue = "on"
-                                Invoke-RestMethod -uri ("http://"+$StackConfigData.MiddleStack+":"+$StackConfigData.MiddleStackPort +"/set/8/"+$StackState.HubRed) -Method Post
+                                Invoke-RestMethod -uri ("http://"+$StackConfigData.MiddleStack+":"+$StackConfigData.MiddleStackPort +"/set/8/"+$StackState.HubBlue) -Method Post
                                 #Code to enable Blue hubs for shift1
                                 
                             }
@@ -438,7 +438,7 @@
                             }
                             if($StackState.HubBlue -notmatch "off"){
                                 $StackState.HubBlue = "off"
-                                Invoke-RestMethod -uri ("http://"+$StackConfigData.MiddleStack+":"+$StackConfigData.MiddleStackPort +"/set/8/"+$StackState.HubRed) -Method Post
+                                Invoke-RestMethod -uri ("http://"+$StackConfigData.MiddleStack+":"+$StackConfigData.MiddleStackPort +"/set/8/"+$StackState.HubBlue) -Method Post
                                 #Code to disable Blue hubs for shift1
                                 
                             }
@@ -453,7 +453,7 @@
                         }
                         if($StackState.HubBlue -notmatch "on"){
                             $StackState.HubBlue = "on"
-                            Invoke-RestMethod -uri ("http://"+$StackConfigData.MiddleStack+":"+$StackConfigData.MiddleStackPort +"/set/8/"+$StackState.HubRed) -Method Post
+                            Invoke-RestMethod -uri ("http://"+$StackConfigData.MiddleStack+":"+$StackConfigData.MiddleStackPort +"/set/8/"+$StackState.HubBlue) -Method Post
                             #Code to enable both hubs for auto
                         }
                         
