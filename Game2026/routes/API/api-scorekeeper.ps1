@@ -123,7 +123,16 @@ blueteleL3Sub
                 }
                 
             }else{
-                Write-PodeTextResponse -Value "this is the api for scorekeeper"  
+                Lock-PodeObject -name "points" -ScriptBlock{
+                    $pointState = Get-PodeState -Name "points" 
+                    $redFuel = $pointState.RedAuto + $pointState.Redtele +$pointState.redend
+                    $blueFuel = $pointState.blueAuto + $pointState.bluetele +$pointState.blueend
+                    $Redtotal = ($pointState.RedAuto) + ($pointState.Redtele) + ($pointState.redend) +($pointState.RedAutoL1 * 15) + ($pointState.redTeleL1 * 10) + ($pointState.redTeleL2 * 20) + ($pointState.redTeleL3 * 30) + ($pointState.blueMinorFoul *5) +($pointState.blueMajorFoul * 15)
+                    $Bluetotal = ($pointState.blueAuto) + ($pointState.bluetele) + ($pointState.blueend) +($pointState.blueAutoL1 * 15) + ($pointState.blueTeleL1 * 10) + ($pointState.blueTeleL2 * 20) + ($pointState.blueTeleL3 * 30) + ($pointState.redMinorFoul *5) +($pointState.redMajorFoul * 15)
+    
+                    $responce = @{'redTotal'=$Redtotal;'bluetotal'=$bluetotal; 'RedFuel' = $redFuel;'blueFuel' = $blueFuel;'redAutoL1' = $pointState.redAutoL1;'redTeleL1' = $pointState.redTeleL1;'redTeleL2' = $pointState.redTeleL2;'redTeleL3' = $pointState.redTeleL3;'BlueAutoL1' = $pointState.blueAutoL1;'BlueTeleL1' = $pointState.blueTeleL1;'BlueTeleL2' = $pointState.blueTeleL2;'BlueTeleL3' = $pointState.blueTeleL3; 'redMinorFoul' = $pointState.redMinorFoul;'redMajorFoul' = $pointState.redMajorFoul; 'blueMinorFoul'=$pointState.blueMinorFoul;'blueMajorFoul' = $pointState.blueMajorFoul; }
+                    Write-PodeJsonResponse -Value $responce
+                }
             }
 
     

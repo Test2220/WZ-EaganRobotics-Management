@@ -4,7 +4,7 @@ $newip = $WebEvent.Request.RemoteEndPoint.Address.IPAddressToString
 if (Test-Path -Path ./data/StacklightList.txt) {
        $Stacklightlist =  Get-Content ./data/StacklightList.txt
     }else {
-       $Stacklightlist | Out-File -FilePath ./data/StacklightList.Csv
+       $Stacklightlist | Out-File -FilePath ./data/StacklightList.txt -Force
     }
 
 

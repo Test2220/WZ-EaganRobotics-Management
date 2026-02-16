@@ -1,7 +1,14 @@
 {
-            $apiIPPort = $using:MusicPlayerIP
-            $VDJIP = $apiIPPort
-            $Pindex = $using:PlayerIndex
+            
+            $PlayerConfig = get-content -Path ./data/config.json | ConvertFrom-Json
+            $apiIPPort = $playerconfig.MusicPlayerIP + ":" + $playerconfig.MusicPort
+            $VDJIP = $playerconfig.DJIP
+
+            Lock-PodeObject -Name "playlistlock" -ScriptBlock {
+                $Pindex = get-podestate -name "PlaylistConfig"
+            }
+
+            
             $pWalkin = $Pindex.'WalkIn'
             $pStartup = $Pindex.'Gamestartup'
             $pCrowdRally = $Pindex.'CrowdRally'
@@ -9,7 +16,7 @@
             $pWalkout = $Pindex.'Walkout'
             $pTeamIntro = $Pindex.'TeamIntro'
 
-            Lock-PodeObject -Name "currentlyplayingLock" -CheckGlobal -ScriptBlock{
+            Lock-PodeObject -Name "currentlyplayingLock" -ScriptBlock{
                 $player = $webevent.data.Player
                 Set-PodeState -Name 'currentlyplaying' -Value @{"Player" = $player;}
             }
@@ -17,11 +24,13 @@
             $payload = New-Object -TypeName psobject
             $payload | Add-Member -MemberType NoteProperty -Name Player -Value $action
 
-
+            
             switch ($action) {
                 "Walkin" { 
                     Invoke-RestMethod -uri "http://$VDJIP/execute?script=pause" -Method get
-                    $playlist =(Invoke-RestMethod -Uri "http://$apiIPPort/api/playlists/$pWalkin/items/0%3A100?columns=%25title%25,%25artist%25,%25album%2")
+                    $url = "http://$apiIPPort/api/playlists/$pWalkin/items/0%3A100?columns=%25title%25,%25artist%25,%25album%2"
+                    Write-Debug $url
+                    $playlist =(Invoke-RestMethod -Uri $url)
                     $index = Get-Random -Minimum 0 -Maximum $playlist.playlistItems.totalCount
                     Invoke-RestMethod -Uri "http://$apiIPPort/api/player/play/$pWalkin/$index" -Method Post
                     $payload | Add-Member -MemberType NoteProperty -Name playlistID -Value $pWalkin

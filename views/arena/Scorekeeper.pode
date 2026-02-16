@@ -2,115 +2,141 @@
 <head>
 
     <link rel="stylesheet" href="/styles/style.css" />
+    <link rel="stylesheet" href="/styles/scorekeeper.css" />
     <script src="https://ajax.googleapis.com/ajax/libs/jquery/3.7.1/jquery.min.js"></script>
+    <script src="/js/scorekeeper.js"></script>
 
- <script type="application/javascript">
-
-    
-    function PlaylistChange (fieldID){
-
-    // Creating a XHR object
-    let xhr = new XMLHttpRequest();
-    let url = "/api/arena/scorekeeper";
-    // Converting JSON data to string
-
-        var data = JSON.stringify({"element": fieldID});
-
-    // open a connection
-    xhr.open("POST", url, true);
-
-    // Set the request header i.e. which type of content you are sending
-    xhr.setRequestHeader("Content-Type", "application/json");
-    
-
-    // Sending data with the request
-    xhr.send(data);
-}
-
-var getJSON = function(url, callback) {
-    var xhr = new XMLHttpRequest();
-    xhr.open('GET', url, true);
-    xhr.responseType = 'json';
-    xhr.onload = function() {
-      var status = xhr.status;
-      if (status === 200) {
-        callback(null, xhr.response);
-      } else {
-        callback(status, xhr.response);
-      }
-    };
-    xhr.send();
-};
-
-</script>
+ 
 </head>
 <body>
 <div id="mainview">
 <div id="redContainer">
 <table id="redTowerTable">
-  <tr><td colspan="4">Red L1 Auto</td></tr>
+  <tr><td colspan="4">L1 Auto</td></tr>
   <tr>  
-    <td><button id="redautoL1-0" type="button" onclick="PlaylistChange(this.id)">0</button></td>
-    <td><button id="redautoL1-1" type="button" onclick="PlaylistChange(this.id)">1</button></td>
-    <td><button id="redautoL1-2" type="button" onclick="PlaylistChange(this.id)">2</button></td>
+    <td><button id="redautoL1-0" type="button" onclick="sendscore(this.id)">0</button></td>
+    <td><button id="redautoL1-1" type="button" onclick="sendscore(this.id)">1</button></td>
+    <td><button id="redautoL1-2" type="button" onclick="sendscore(this.id)">2</button></td>
   </tr>
   <tr><td colspan="4">Level 1</td></tr>
     <tr>  
-    <td><button id="redteleL1-0" type="button" onclick="PlaylistChange(this.id)">0</button></td>
-    <td><button id="redteleL1-1" type="button" onclick="PlaylistChange(this.id)">1</button></td>
-    <td><button id="redteleL1-2" type="button" onclick="PlaylistChange(this.id)">2</button></td>
-    <td><button id="redteleL1-3" type="button" onclick="PlaylistChange(this.id)">3</button></td>
+    <td><button id="redteleL1-0" type="button" onclick="sendscore(this.id)">0</button></td>
+    <td><button id="redteleL1-1" type="button" onclick="sendscore(this.id)">1</button></td>
+    <td><button id="redteleL1-2" type="button" onclick="sendscore(this.id)">2</button></td>
+    <td><button id="redteleL1-3" type="button" onclick="sendscore(this.id)">3</button></td>
   </tr>  <tr><td colspan="4">Level 2</td></tr>
     <tr>  
-    <td><button id="redteleL2-0" type="button" onclick="PlaylistChange(this.id)">0</button></td>
-    <td><button id="redteleL2-1" type="button" onclick="PlaylistChange(this.id)">1</button></td>
-    <td><button id="redteleL2-2" type="button" onclick="PlaylistChange(this.id)">2</button></td>
-    <td><button id="redteleL2-3" type="button" onclick="PlaylistChange(this.id)">3</button></td>
+    <td><button id="redteleL2-0" type="button" onclick="sendscore(this.id)">0</button></td>
+    <td><button id="redteleL2-1" type="button" onclick="sendscore(this.id)">1</button></td>
+    <td><button id="redteleL2-2" type="button" onclick="sendscore(this.id)">2</button></td>
+    <td><button id="redteleL2-3" type="button" onclick="sendscore(this.id)">3</button></td>
   </tr>
     <tr><td colspan="4">Level 3</td></tr>
     <tr>  
-    <td><button id="redteleL3-0" type="button" onclick="PlaylistChange(this.id)">0</button></td>
-    <td><button id="redteleL3-1" type="button" onclick="PlaylistChange(this.id)">1</button></td>
-    <td><button id="redteleL3-2" type="button" onclick="PlaylistChange(this.id)">2</button></td>
-    <td><button id="redteleL3-3" type="button" onclick="PlaylistChange(this.id)">3</button></td>
+    <td><button id="redteleL3-0" type="button" onclick="sendscore(this.id)">0</button></td>
+    <td><button id="redteleL3-1" type="button" onclick="sendscore(this.id)">1</button></td>
+    <td><button id="redteleL3-2" type="button" onclick="sendscore(this.id)">2</button></td>
+    <td><button id="redteleL3-3" type="button" onclick="sendscore(this.id)">3</button></td>
   </tr>
   </table>
 </div>
 
 <div id="blueContainer">
 <table id="blueTowerTable">
-  <tr><td colspan="4">blue L1 Auto</td></tr>
-  <tr>  
-    <td><button id="blueautoL1-0" type="button" onclick="PlaylistChange(this.id)">0</button></td>
-    <td><button id="blueautoL1-1" type="button" onclick="PlaylistChange(this.id)">1</button></td>
-    <td><button id="blueautoL1-2" type="button" onclick="PlaylistChange(this.id)">2</button></td>
+  <tr><td colspan="4">L1 Auto</td></tr>
+  <tr>
+    <td></td>  
+    <td><button id="blueautoL1-0" type="button" onclick="sendscore(this.id)">2</button></td>
+    <td><button id="blueautoL1-1" type="button" onclick="sendscore(this.id)">1</button></td>
+    <td><button id="blueautoL1-2" type="button" onclick="sendscore(this.id)">0</button></td>
   </tr>
   <tr><td colspan="4">Level 1</td></tr>
     <tr>  
-    <td><button id="blueteleL1-0" type="button" onclick="PlaylistChange(this.id)">0</button></td>
-    <td><button id="blueteleL1-1" type="button" onclick="PlaylistChange(this.id)">1</button></td>
-    <td><button id="blueteleL1-2" type="button" onclick="PlaylistChange(this.id)">2</button></td>
-    <td><button id="blueteleL1-3" type="button" onclick="PlaylistChange(this.id)">3</button></td>
+    <td><button id="blueteleL1-3" type="button" onclick="sendscore(this.id)">3</button></td>
+    
+    <td><button id="blueteleL1-2" type="button" onclick="sendscore(this.id)">2</button></td>
+    <td><button id="blueteleL1-1" type="button" onclick="sendscore(this.id)">1</button></td>
+    <td><button id="blueteleL1-0" type="button" onclick="sendscore(this.id)">0</button></td>
+    
   </tr>  <tr><td colspan="4">Level 2</td></tr>
     <tr>  
-    <td><button id="blueteleL2-0" type="button" onclick="PlaylistChange(this.id)">0</button></td>
-    <td><button id="blueteleL2-1" type="button" onclick="PlaylistChange(this.id)">1</button></td>
-    <td><button id="blueteleL2-2" type="button" onclick="PlaylistChange(this.id)">2</button></td>
-    <td><button id="blueteleL2-3" type="button" onclick="PlaylistChange(this.id)">3</button></td>
+    <td><button id="blueteleL2-3" type="button" onclick="sendscore(this.id)">3</button></td>
+    <td><button id="blueteleL2-2" type="button" onclick="sendscore(this.id)">2</button></td>
+    <td><button id="blueteleL2-1" type="button" onclick="sendscore(this.id)">1</button></td>
+    <td><button id="blueteleL2-0" type="button" onclick="sendscore(this.id)">0</button></td>
   </tr>
     <tr><td colspan="4">Level 3</td></tr>
     <tr>  
-    <td><button id="blueteleL3-0" type="button" onclick="PlaylistChange(this.id)">0</button></td>
-    <td><button id="blueteleL3-1" type="button" onclick="PlaylistChange(this.id)">1</button></td>
-    <td><button id="blueteleL3-2" type="button" onclick="PlaylistChange(this.id)">2</button></td>
-    <td><button id="blueteleL3-3" type="button" onclick="PlaylistChange(this.id)">3</button></td>
+    <td><button id="blueteleL3-3" type="button" onclick="sendscore(this.id)">3</button></td>
+    <td><button id="blueteleL3-2" type="button" onclick="sendscore(this.id)">2</button></td>
+    <td><button id="blueteleL3-1" type="button" onclick="sendscore(this.id)">1</button></td>
+    <td><button id="blueteleL3-0" type="button" onclick="sendscore(this.id)">0</button></td>
   </tr>
   </table>
 </div>
 
 <div id="ScoreStats">
-
-
+<table id="Scorematrix">
+  <tr>
+    <td class="red" colspan="2">RED</td>
+    <td class="PointLines">Tower</td>
+    <td class="blue" colspan="2">Blue</td>
+  </tr>
+  <tr>
+    <td class="red">Points</td>
+    <td class="red">Value</td>
+     <td class="PointLines">Auto</td>
+     <td class="blue">Value</td>
+     <td class="blue">Points</td>
+     </tr>
+  <tr>
+    <td id="redAutoL1Score" class="red">0</td>
+    <td id="redAutoL1Value" class="red">0</td>
+    <td class="PointLines"> Level 1</td>
+    <td id="blueautoL1Value" class="blue">0</td>
+    <td id="blueautoL1Score" class="blue">0</td>
+  </tr>
+  <tr>
+    <td class="red" colspan="2"></td>
+    <td class="PointLines">TeleOp</td>
+    <td class="blue" colspan="2"></td>
+  </tr>
+  <tr>
+    <td id="REDTeleL1Score" class="red">0</td>
+    <td id="REDTeleL1Value" class="red">0</td>
+    <td class="PointLines"> Level 1</td>
+    <td id="blueTeleL1Value" class="blue">0</td>
+    <td id="blueTeleL1Score" class="blue">0</td>
+  </tr>
+  <tr>
+    <td id="REDTeleL2Score" class="red">0</td>
+    <td id="REDTeleL2Value" class="red">0</td>
+    <td class="PointLines"> Level 2</td>
+    <td id="blueTeleL2Value" class="blue">0</td>
+    <td id="blueTeleL2Score" class="blue">0</td>
+  </tr>
+  <tr>
+    <td id="REDTeleL3Score"class="red">0</td>
+    <td id="REDTeleL3Value"class="red">0</td>
+    <td class="PointLines"> Level 3</td>
+    <td id="blueTeleL3Value" class="blue">0</td>
+    <td id="blueTeleL3Score" class="blue">0</td>
+  </tr>
+  <tr>
+    <td id="REDFuelScore"class="red">0</td>
+    <td class="red"></td>
+    <td class="PointLines">Fuel</td>
+    <td class="blue"></td>
+    <td id="blueFuelScore" class="blue">0</td>
+  </tr>
+  <tr>
+    <td id="REDtotalScore"class="red">0</td>
+       <td class="red"></td>
+    <td class="PointLines">Total</td>
+        <td class="blue"></td>
+    <td id="blueTotalScore" class="blue">0</td>
+  </tr>
+</table>
 </div>
 
 </div>

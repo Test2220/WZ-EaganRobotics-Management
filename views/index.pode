@@ -1,6 +1,6 @@
 <html>
 <head>
-    <link rel="stylesheet" href="style.css" />
+    <link rel="stylesheet" href="/styles/style.css" />
     <script src="https://ajax.googleapis.com/ajax/libs/jquery/3.7.1/jquery.min.js"></script>
 </head>
 <body>
@@ -13,10 +13,21 @@
         <tr>
         <td> <a href="./FMS"> FMS Field Status</a></td>
         </tr>
-        
         <tr>
-        <td> <a href="./Audiance-Display">Audiance-Control</a></td>
+        <td> <a href="./arena/Audiance/game">Audiance Overlay</a></td>
         </tr>
+        <tr>
+        <td> <a href="./arena/Audiance/AudioPlayback">Game Audio Playback</a></td>
+        </tr>
+        <tr>
+        <td> <a href="./arena/scorekeeper">Scorekeeper</a></td>
+        </tr>
+        <tr>
+        <td> <a href="./arena/points">ScoreDashboard</a></td>
+        </tr>
+        
+        
+        
         <tr>
         <td> <a href="./OBS">OBS Control</a></td>
         </tr>
