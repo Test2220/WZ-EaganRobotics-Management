@@ -116,18 +116,32 @@
     <td id="blueTeleL2Score" class="blue">0</td>
   </tr>
   <tr>
-    <td id="REDTeleL3Score"class="red">0</td>
-    <td id="REDTeleL3Value"class="red">0</td>
+    <td id="REDTeleL3Score" class="red">0</td>
+    <td id="REDTeleL3Value" class="red">0</td>
     <td class="PointLines"> Level 3</td>
     <td id="blueTeleL3Value" class="blue">0</td>
     <td id="blueTeleL3Score" class="blue">0</td>
   </tr>
   <tr>
-    <td id="REDFuelScore"class="red">0</td>
+    <td id="REDFuelScore" class="red">0</td>
     <td class="red"></td>
     <td class="PointLines">Fuel</td>
     <td class="blue"></td>
     <td id="blueFuelScore" class="blue">0</td>
+  </tr>
+    <tr>
+    <td id="redFoulScore" class="red">0</td>
+    <td id="redFoulValue" class="red">0</td>
+    <td class="PointLines">Fouls</td>
+    <td id="blueFoulvalue" class="blue">0</td>
+    <td id="blueFoulScore" class="blue">0</td>
+  </tr>
+      <tr>
+    <td id="redTFoulScore" class="red">0</td>
+    <td id="redTFoulValue" class="red">0</td>
+    <td class="PointLines" class="blue">Tech Fouls</td>
+    <td id="blueTFoulvalue" class="blue">0</td>
+    <td id="blueTFoulScore" class="blue">0</td>
   </tr>
   <tr>
     <td id="REDtotalScore"class="red">0</td>
@@ -138,7 +152,27 @@
   </tr>
 </table>
 </div>
+<div id="FoulSection">
+  <div id="RedFouls">
+    <button id="redFoulAdd" type="button" onclick="sendscore(this.id)">+</button>
+    Foul
+    <button id="redFoulMin" type="button" onclick="sendscore(this.id)">-</button>
 
+    <button id="redTFoulAdd" type="button" onclick="sendscore(this.id)">+</button>
+    Tech Foul
+    <button id="redTFoulMin" type="button" onclick="sendscore(this.id)">Foul </button>
+  </div>
+    <div id="BlueFouls">
+    <button id="blueFoulAdd" type="button" onclick="sendscore(this.id)">+</button>
+    Foul
+    <button id="blueFoulMin" type="button" onclick="sendscore(this.id)">-</button>
+
+    <button id="blueTFoulAdd" type="button" onclick="sendscore(this.id)">+</button>
+    Tech Foul
+    <button id="blueTFoulMin" type="button" onclick="sendscore(this.id)">Foul </button>
+  </div>
+
+</div>
 </div>
 </body>
 </html>

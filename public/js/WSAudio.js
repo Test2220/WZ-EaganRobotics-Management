@@ -11,8 +11,8 @@ $(document).ready(() => {
     });
 
     // create the websocket
-    var hostname = window.location.hostname 
-    var ws = new WebSocket("ws://"+hostname+":81/");
+    var url = "ws://"+window.location.hostname+":81/";
+    var ws = new WebSocket(url);
 
     // event for inbound messages to append them
     ws.onmessage = function(evt) {

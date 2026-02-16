@@ -116,6 +116,22 @@ blueteleL3Sub
                         $pointState.blueTeleL3 = 3
                         $pointState.blueTeleL2 = 0
                         $pointState.blueTeleL1 = 0
+                    }elseif ($webevent.data.element -match "blueFoulAdd"){
+                        $pointState.blueMinorFoul++
+                    }elseif ($webevent.data.element -match "blueFoulMin"){
+                        $pointState.blueMinorFoul--
+                    }elseif ($webevent.data.element -match "redFoulAdd"){
+                        $pointState.redMinorFoul++
+                    }elseif ($webevent.data.element -match "redFoulMin"){
+                        $pointState.redMinorFoul--
+                    }elseif ($webevent.data.element -match "blueTFoulAdd"){
+                        $pointState.blueMajorFoul++
+                    }elseif ($webevent.data.element -match "blueTFoulMin"){
+                        $pointState.blueMajorFoul--
+                    }elseif ($webevent.data.element -match "redTFoulAdd"){
+                        $pointState.redMajorFoul++
+                    }elseif ($webevent.data.element -match "redTFoulMin"){
+                        $pointState.redMajorFoul--
                     }
 
                     Set-PodeState -Name "points" -Value $pointState

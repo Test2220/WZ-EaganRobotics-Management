@@ -22,6 +22,8 @@ const BlueTeleL1 = data.BlueTeleL1
 const BlueTeleL2 = data.BlueTeleL2
 const BlueTeleL3 = data.BlueTeleL3
 
+
+
     // 4. Replace the text in the HTML tag
     document.getElementById('redAutoL1Score').innerText = redAutol1*15;
     document.getElementById('blueautoL1Score').innerText = BlueAutoL1*15;
@@ -52,6 +54,7 @@ const BlueTeleL3 = data.BlueTeleL3
     
     document.getElementById('REDtotalScore').innerText = redTotal;
     document.getElementById('blueTotalScore').innerText = blueTotal;
+    
     
 
   } catch (error) {
