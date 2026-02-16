@@ -40,7 +40,6 @@ Start-PodeServer -Threads 4 -EnablePool WebSockets {
     set-podestate -Name "Nexuslink" |Out-Null
     Set-PodeState -Name "StackState" -Value @{"B1"= "off";"B2"= "off";"B3"= "off";"R1"= "off";"R2"= "off";"R3"= "off";"Cred"="off";"Cblue"="off";"Cwhite"="off";"Cgreen"="off";"Corange"="off";"HubBlue"="off";"HubRed"="off";}
 
-    
     New-PodeLockable -name "NexusLock"
     New-PodeLockable -name "playlistLock"
     New-PodeLockable -name "playerconfigLock"
@@ -53,19 +52,13 @@ Start-PodeServer -Threads 4 -EnablePool WebSockets {
     New-PodeLockable -Name 'FMSArenamatchtime'
  
     Set-PodeState -Name 'points' -Value @{ 'RedAuto' = 0;'blueauto' = 0;'Redtele' = 0;'bluetele' = 0;'redend' = 0;'blueend' = 0;'redAutoL1' = 0;'redTeleL1' = 0;'redTeleL2' = 0;'redTeleL3' = 0;'BlueAutoL1' = 0;'BlueTeleL1' = 0;'BlueTeleL2' = 0;'BlueTeleL3' = 0; 'redMinorFoul' = 0;'redMajorFoul' = 0; 'blueMinorFoul'=0;'blueMajorFoul' = 0; } | Out-Null
-    New-PodeLockable -name "points"
+    New-PodeLockable -name "pointsLock"
     $WSURL = "ws://" + $FMSAddress +":8080/match_play/websocket"
     if($serverSettings.FMSConnect){
         Write-Debug "Starting WebSocket"
-        try {
-            Connect-PodeWebSocket -Url $WSURL -Name "CA" -FilePath "./Game2026/routes/CAWebSocketClient.ps1"
-        }
-        catch {
-            Write-Host "Websocket to FMS Software failed check connection and reset server if FMS is up"
-        }
-    }else{
-        write-debug "Setting for Websocket is disabled skipping WS connection"
-    }
+        try {Connect-PodeWebSocket -Url $WSURL -Name "CA" -FilePath "./Game2026/routes/CAWebSocketClient.ps1"}
+        catch {Write-Host "Websocket to FMS Software failed check connection and reset server if FMS is up"}
+    }else{write-debug "Setting for Websocket is disabled skipping WS connection"}
     if (Test-Path -Path "./data/config.json") {
         $playerconfig = Get-Content -Path "./data/config.json" -ErrorAction SilentlyContinue | ConvertFrom-Json
         $MPIP = $playerconfig.MusicPlayerIP 
@@ -98,17 +91,18 @@ Start-PodeServer -Threads 4 -EnablePool WebSockets {
         }
     $PlayerIndex = @{}
     foreach ($player in $playlistIDs.playlists){
-    
         $PlayerIndex.Add($player.title,$player.id)
-    
     }
+    Lock-PodeObject -Name "playlistlock" -ScriptBlock {
+        Set-PodeState -Name "PlaylistConfig" -Value $PlayerIndex
+    }
+    
     Write-podehost "indexed Playlist"
-    #Start-Process powershell {./WSClient.ps1}
     Add-PodeRoute -Method get -Path "/" -ScriptBlock{Write-PodeViewResponse -Path "index"}
 
-    Add-PodeRoute -Method get -Path "/music" -FilePath "./routes/music.ps1"
+    Add-PodeRoute -Method get -Path "/music" -FilePath "./routes/music.ps1" 
     Add-PodeRouteGroup -Path "/music" -Routes {
-        Add-PodeRoute -Method Post -Path '/change-song' -FilePath "./routes/music-changeSong.ps1"
+        Add-PodeRoute -Method Post -Path '/change-song' -FilePath "./routes/music-changeSong.ps1" 
         Add-PodeRoute -Method Post -path "/update-automation" -FilePath "./routes/music-updateAutomation.ps1"
     }
     Add-PodeRouteGroup -Path "/arena" -Routes {

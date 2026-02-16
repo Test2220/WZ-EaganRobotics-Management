@@ -7,10 +7,8 @@
             Set-PodeState -Name 'FMSArenaStatus' -Value $WsEvent.Request.body
             }
             Lock-PodeObject -Name "StackConfig" -ScriptBlock{
-                $StackConfigData = Get-PodeState -Name "StackConfig"
-                if($null -eq $StackConfigData.MiddleStack){
-                    $StackConfigData = Get-Content "./data/Stacklightconfig.json" | Convertfrom-Json
-                }
+
+                $StackConfigData = Get-Content "./data/Stacklightconfig.json" | Convertfrom-Json
                 $StackState = Get-PodeState -name "StackState"
                 $FieldteamStatus = @{"B1"=$false;"B2"=$false;"B3"=$false;"R1"=$false;"R2"=$false;"R3"=$false;}
                 #check for blue 1 ready Status

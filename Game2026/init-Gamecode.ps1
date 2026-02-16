@@ -1,1 +1,1 @@
-Set-PodeState -Name 'points' -Value @{ 'RedAuto' = 0;'blueauto' = 0;'Redtele' = 0;'bluetele' = 0;'redend' = 0;'blueend' = 0;'redAutoL1' = 0;'redTeleL1' = 0;'redTeleL2' = 0;'redTeleL3' = 0;'BlueAutoL1' = 0;'BlueTeleL1' = 0;'BlueTeleL2' = 0;'BlueTeleL3' = 0 } | Out-Null
+    Set-PodeState -Name "StackState" -Value @{"B1"= "off";"B2"= "off";"B3"= "off";"R1"= "off";"R2"= "off";"R3"= "off";"Cred"="off";"Cblue"="off";"Cwhite"="off";"Cgreen"="off";"Corange"="off";"HubBlue"="off";"HubRed"="off";}
