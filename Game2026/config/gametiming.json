@@ -3,8 +3,12 @@
 "autoend":20,
 "pause":3,
 "transtionshiftend":30,
+"endshift1warn":52,
 "endshift1":55,
+"endshift2warn":77,
 "endshift2":80,
+"endshift3warn":102,
 "endshift3":105,
+"endshift4warn":127,
 "endshift4":130
 }

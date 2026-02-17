@@ -147,6 +147,13 @@ Start-PodeServer -Threads 4 -EnablePool WebSockets {
             Add-PodeRoute -Method Get -Path "/abortmatch" -ScriptBlock {Send-PodeWebSocket -name "CA" -Message @{"type"="abortMatch"}}
             Add-PodeRoute -Method Get -Path "/AudianceDisplay" -FilePath "./routes/API/API-AudianceDisplay.ps1"
             Add-PodeRouteGroup -Path "/Stack"-Routes{
+                Add-PodeRoute -Path "/state" -Method Get -ScriptBlock{
+                    Lock-PodeObject -Name "ConfigStateLock" -ScriptBlock {
+                        
+                        Write-PodeJsonResponse (Get-PodeState -Name "StackState")
+                    }
+
+                } 
                Add-PodeRoute -Path "/config" -Method Get,post -FilePath "./routes/API/Stacklight/Config.ps1" 
     
             }
@@ -155,6 +162,7 @@ Start-PodeServer -Threads 4 -EnablePool WebSockets {
         
     }
     Add-PodeRouteGroup -path "/pode" -Routes{
+
         Add-PodeRoute -Method Get -Path "/save" -ScriptBlock {
             if(!(Test-Path ./data/)){
                 mkdir ./data

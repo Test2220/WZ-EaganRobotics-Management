@@ -7,7 +7,7 @@
             Set-PodeState -Name 'FMSArenaStatus' -Value $WsEvent.Request.body
             }
             Lock-PodeObject -Name "StackConfig" -ScriptBlock{
-
+                
                 $StackConfigData = Get-Content "./data/Stacklightconfig.json" | Convertfrom-Json
                 $StackState = Get-PodeState -name "StackState"
                 $FieldteamStatus = @{"B1"=$false;"B2"=$false;"B3"=$false;"R1"=$false;"R2"=$false;"R3"=$false;}
@@ -23,7 +23,7 @@
                     if ($StackState.B1 -notmatch "blink") {
                         $StackState.B1 = "blink"
                         $FieldteamStatus.B1 = $false
-                        $url
+                        $url = "http://"+$StackConfigData.BlueSCC+":"+$StackConfigData.BlueSCCPort +"/set/1/"+$StackState.B1
                         Invoke-RestMethod -uri $url -Method Post
                     }
                 }elseif ((($WSJSONPacket.data.MatchState -gt 0)-and ($WSJSONPacket.data.MatchState -lt 6))-and (($null -ne $WSJSONPacket.data.AllianceStations.B1.DSConn) -and ($WSJSONPacket.data.AllianceStations.B1.Ethernet -eq $true) -and ($WSJSONPacket.data.AllianceStations.B1.Astop -eq $true) -and ($WSJSONPacket.data.AllianceStations.B1.Estop -eq $true) -and ($WSJSONPacket.data.AllianceStations.B1.Bypass -eq $true))){
@@ -172,6 +172,7 @@
                         Invoke-RestMethod -uri ("http://"+$StackConfigData.MiddleStack+":"+$StackConfigData.MiddleStackPort +"/set/1/"+$StackState.Cblue)  -Method Post #get blue Pin ID
                     }
                 }
+                Set-PodeState -Name "StackConfig" -Value $StackState
         }
         }elseif ($WSJSONPacket.type -match "matchTiming") {
         Set-PodeState -Name 'FMSArenatimings' -Value $WsEvent.Request.body
@@ -179,71 +180,57 @@
         }elseif ($WSJSONPacket.type -match "ping") {
         Write-Debug "WSMadepingrequest"
         }elseif ($WSJSONPacket.type -match "matchTime") {
-            Lock-PodeObject -Name 'FMSArenamatchtime' -ScriptBlock{
-                $prevstate = get-podeState -Name 'FMSArenatimer' | ConvertFrom-Json
-
-                if($prevstate.data.MatchState -ne $WSJSONPacket.data.MatchState){
-                    if ($prevstate.data.MatchState -match "3" ) {
-                        
-                        $currentpoints = Get-PodeState -Name "points"
-                        if (($currentpoints.RedAuto) -gt ($currentpoints.blueAuto)) {
-                            write-host "red is leading setting leader to red"
-                            $Fuelleader ="red"
-                            $FuelRunnerup = "blue"
-                        }elseif (($currentpoints.RedAuto) -lt ($currentpoints.BlueAuto)) {
-                            write-host "red is leading setting leader to red"
-                            $Fuelleader = "blue"
-                            $FuelRunnerup = "red"
-                        }else{
-                            $coinflip = Get-Random -Maximum 1 -Minimum 0
-                            if ($coinflip -eq 0) {
-                                $Fuelleader = "red"
-                                $FuelRunnerup = "blue"
-                            }
-                            if ($coinflip -eq 1) {
-                                $Fuelleader = "blue"
-                                $FuelRunnerup = "red"
-                            }
-                            write-host "FMS Desides $team"
-                        }
-                        Set-PodeState -Name "Shifttiming"-Value @{"shift1"=$FuelRunnerup;"shift2"=$Fuelleader;"shift3"=$FuelRunnerup;"shift4"=$Fuelleader;}
-                        Set-PodeState -Name 'FMSArenatimer' -Value "$WsEvent.Request.body"
-                    }
-
-                    $StackConfigData = Get-PodeState -Name "StackConfig"
+            Lock-PodeObject -name "StackState" -ScriptBlock {
+                $StackConfigData = Get-PodeState -Name "StackConfig"
                     if($null -eq $StackConfigData.MiddleStack){
                         $StackConfigData = Get-Content "./data/Stacklightconfig.json" | Convertfrom-Json
                     }
                     $shifttiming = get-podestate -Name "Shifttiming"
                     $StackState = Get-PodeState -name "StackState"
+                    if (!(($WSJSONPacket.data.MatchState -ge 3) -and ($WSJSONPacket.data.MatchState -le 5))) {
+                        if($StackState.HubRed -notmatch "off"){
+                            $StackState.HubRed = "off"
+                            Invoke-RestMethod -uri ("http://"+$StackConfigData.MiddleStack+":"+$StackConfigData.MiddleStackPort +"/set/7/"+$StackState.HubRed) -Method Post
+                            Write-host "Red hubs off"
+                            #Code to enable both hubs for non ops
+                        }
+                        if($StackState.HubBlue -notmatch "off"){
+                            $StackState.HubBlue = "off"
+                            Invoke-RestMethod -uri ("http://"+$StackConfigData.MiddleStack+":"+$StackConfigData.MiddleStackPort +"/set/8/"+$StackState.HubBlue) -Method Post
+                            #Code to enable both hubs for no ops
+                            Write-host "Blue hubs off"
+                        }                    }
                     #from Start of match to the transtion end
-                    if ((($WSJSONPacket.data.MatchTimeSec -GT 0)) -and (($WSJSONPacket.data.MatchTimeSec -lT $gametiming.transtionshiftend)+ $PauseShift)) { 
+                    if (($WSJSONPacket.data.MatchTimeSec -GT 0) -and ($WSJSONPacket.data.MatchTimeSec -lT ($gametiming.transtionshiftend))) { 
                         if($StackState.HubRed -notmatch "on"){
                             $StackState.HubRed = "on"
                             Invoke-RestMethod -uri ("http://"+$StackConfigData.MiddleStack+":"+$StackConfigData.MiddleStackPort +"/set/7/"+$StackState.HubRed) -Method Post
-                            
+                            Write-host "Red hubs On"
                             #Code to enable both hubs for auto
                         }
                         if($StackState.HubBlue -notmatch "on"){
                             $StackState.HubBlue = "on"
                             Invoke-RestMethod -uri ("http://"+$StackConfigData.MiddleStack+":"+$StackConfigData.MiddleStackPort +"/set/8/"+$StackState.HubBlue) -Method Post
                             #Code to enable both hubs for auto
+                            Write-host "Blue hubs On"
                         }
+                        
                     }
                     #end of from Start
                     #from Transtionend to 3 second before end of first Shift
-                    if (($WSJSONPacket.data.MatchTimeSec -ge ($gametiming.transtionshiftend+$PauseShift)) -and ($WSJSONPacket.data.MatchTimeSec -lT ($gametiming.endshift1 + $PauseShift - 3))) {
+                    if (($WSJSONPacket.data.MatchTimeSec -ge ($gametiming.transtionshiftend)) -and ($WSJSONPacket.data.MatchTimeSec -lT ($gametiming.endshift1Warn))) {
                         if ($shifttiming.shift1 -match "blue"){
                             if($StackState.HubRed -notmatch "off"){
                                 $StackState.HubRed = "off"
                                 Invoke-RestMethod -uri ("http://"+$StackConfigData.MiddleStack+":"+$StackConfigData.MiddleStackPort +"/set/7/"+$StackState.HubRed) -Method Post
                                 #Code to disable red hubs for shift1
-                                
+                                Write-host " Red hubs $StackState.HubRed for Shift 1"
                             }
                             if($StackState.HubBlue -notmatch "on"){
                                 $StackState.HubBlue = "on"
                                 Invoke-RestMethod -uri ("http://"+$StackConfigData.MiddleStack+":"+$StackConfigData.MiddleStackPort +"/set/8/"+$StackState.HubBlue) -Method Post
                                 #Code to enable Blue hubs for shift1
+                                write-host " Blue hubs $StackState.HubBlue for Shift 1"
                                 
                             }
                         }if ($shifttiming.shift1 -match "red"){
@@ -251,12 +238,13 @@
                                 $StackState.Hubred = "on"
                                 Invoke-RestMethod -uri ("http://"+$StackConfigData.MiddleStack+":"+$StackConfigData.MiddleStackPort +"/set/7/"+$StackState.HubRed) -Method Post
                                 #Code to enable red hubs for shift1
-                                
+                                Write-host " Red hubs $StackState.HubRed"
                             }
                             if($StackState.HubBlue -notmatch "off"){
                                 $StackState.HubBlue = "off"
                                 Invoke-RestMethod -uri ("http://"+$StackConfigData.MiddleStack+":"+$StackConfigData.MiddleStackPort +"/set/8/"+$StackState.HubBlue) -Method Post
                                 #Code to disable Blue hubs for shift1
+                                write-host " Blue hubs $StackState.HubBlue"
                                 
                             }
                         }
@@ -265,7 +253,7 @@
 
                     #end of block
                     #3 Second before End First Shift to end of first shift
-                    if (($WSJSONPacket.data.MatchTimeSec -ge ($gametiming.endshift1 + $PauseShift - 3)) -and ($WSJSONPacket.data.MatchTimeSec -lT ($gametiming.endshift1 + $PauseShift))) {
+                    if (($WSJSONPacket.data.MatchTimeSec -ge ($gametiming.endshift1Warn)) -and ($WSJSONPacket.data.MatchTimeSec -lT ($gametiming.endshift1))) {
                         if ($shifttiming.shift1 -match "blue"){
                             if($StackState.HubRed -notmatch "off"){
                                 $StackState.HubRed = "off"
@@ -281,7 +269,7 @@
                             }
                         }if ($shifttiming.shift1 -match "red"){
                             if($StackState.HubRed -notmatch "blink"){
-                                $StackState.Hubred = "on"
+                                $StackState.Hubred = "blink"
                                 Invoke-RestMethod -uri ("http://"+$StackConfigData.MiddleStack+":"+$StackConfigData.MiddleStackPort +"/set/7/"+$StackState.HubRed) -Method Post
                                 #Code to enable red hubs for shift1
                                 
@@ -295,7 +283,7 @@
                         }
                         
                     }# End First Shift to  three sec before end of 2nd shift
-                    if (($WSJSONPacket.data.MatchTimeSec -ge ($gametiming.endshift1 + $PauseShift)) -and ($WSJSONPacket.data.MatchTimeSec -lT ($gametiming.endshift2 + $PauseShift -3))) {
+                    if (($WSJSONPacket.data.MatchTimeSec -ge ($gametiming.endshift1)) -and ($WSJSONPacket.data.MatchTimeSec -lT ($gametiming.endshift2warn ))) {
                         if ($shifttiming.shift2 -match "blue"){
                             if($StackState.HubRed -notmatch "off"){
                                 $StackState.HubRed = "off"
@@ -325,7 +313,7 @@
                         }
                         
                     }#3 Second before End of 2nd Shift to end of 2nd shift
-                    if (($WSJSONPacket.data.MatchTimeSec -ge ($gametiming.endshift2 + $PauseShift - 3)) -and ($WSJSONPacket.data.MatchTimeSec -lT ($gametiming.endshift2 + $PauseShift))) {
+                    if (($WSJSONPacket.data.MatchTimeSec -ge ($gametiming.endshift2warn)) -and ($WSJSONPacket.data.MatchTimeSec -lT ($gametiming.endshift2))) {
                         if ($shifttiming.shift2 -match "blue"){
                             if($StackState.HubRed -notmatch "off"){
                                 $StackState.HubRed = "off"
@@ -341,7 +329,7 @@
                             }
                         }if ($shifttiming.shift2 -match "red"){
                             if($StackState.HubRed -notmatch "blink"){
-                                $StackState.Hubred = "on"
+                                $StackState.Hubred = "blink"
                                 Invoke-RestMethod -uri ("http://"+$StackConfigData.MiddleStack+":"+$StackConfigData.MiddleStackPort +"/set/7/"+$StackState.HubRed) -Method Post
                                 #Code to enable red hubs for shift1
                                 
@@ -355,7 +343,7 @@
                         }
                         
                     }# End 2rd Shift to  three sec before end of 3nd shift
-                    if (($WSJSONPacket.data.MatchTimeSec -ge ($gametiming.endshift2 + $PauseShift)) -and ($WSJSONPacket.data.MatchTimeSec -lT ($gametiming.endshift3 + $PauseShift -3))) {
+                    if (($WSJSONPacket.data.MatchTimeSec -ge ($gametiming.endshift2)) -and ($WSJSONPacket.data.MatchTimeSec -lT ($gametiming.endshift3warn))) {
                         if ($shifttiming.shift3 -match "blue"){
                             if($StackState.HubRed -notmatch "off"){
                                 $StackState.HubRed = "off"
@@ -385,7 +373,7 @@
                         }
                         
                     }#3 Second before End 3rd Shift to end of 3rd shift
-                    if (($WSJSONPacket.data.MatchTimeSec -ge ($gametiming.endshift3 + $PauseShift - 3)) -and ($WSJSONPacket.data.MatchTimeSec -lT ($gametiming.endshift3 + $PauseShift))) {
+                    if (($WSJSONPacket.data.MatchTimeSec -ge ($gametiming.endshift3warn)) -and ($WSJSONPacket.data.MatchTimeSec -lT ($gametiming.endshift3))) {
                         if ($shifttiming.shift3 -match "blue"){
                             if($StackState.HubRed -notmatch "off"){
                                 $StackState.HubRed = "off"
@@ -401,7 +389,7 @@
                             }
                         }if ($shifttiming.shift3 -match "red"){
                             if($StackState.HubRed -notmatch "blink"){
-                                $StackState.Hubred = "on"
+                                $StackState.Hubred = "blink"
                                 Invoke-RestMethod -uri ("http://"+$StackConfigData.MiddleStack+":"+$StackConfigData.MiddleStackPort +"/set/7/"+$StackState.HubRed) -Method Post
                                 #Code to enable red hubs for shift1
                                 
@@ -415,7 +403,7 @@
                         }
                         
                     }# End 3rd Shift to  4th shift
-                    if (($WSJSONPacket.data.MatchTimeSec -ge ($gametiming.endshift3 + $PauseShift)) -and ($WSJSONPacket.data.MatchTimeSec -lT ($gametiming.endshift4 + $PauseShift))) {
+                    if (($WSJSONPacket.data.MatchTimeSec -ge ($gametiming.endshift3)) -and ($WSJSONPacket.data.MatchTimeSec -lT ($gametiming.endshift4))) {
                         if ($shifttiming.shift3 -match "blue"){
                             if($StackState.HubRed -notmatch "off"){
                                 $StackState.HubRed = "off"
@@ -445,7 +433,7 @@
                         }
                         
                     }
-                    if (($WSJSONPacket.data.MatchTimeSec -ge ($gametiming.endshift4 + $PauseShift))) {
+                    if (($WSJSONPacket.data.MatchTimeSec -ge ($gametiming.endshift4))) {
                         if($StackState.HubRed -notmatch "on"){
                             $StackState.HubRed = "on"
                             Invoke-RestMethod -uri ("http://"+$StackConfigData.MiddleStack+":"+$StackConfigData.MiddleStackPort +"/set/7/"+$StackState.HubRed) -Method Post
@@ -460,8 +448,44 @@
                     }
                     Set-PodeState -Name "StackConfig" -Value $StackState
 
+            }
+            Lock-PodeObject -Name 'FMSArenamatchtime' -ScriptBlock{
+                $prevstate = get-podeState -Name 'FMSArenatimer' | ConvertFrom-Json
+
+                if($prevstate.data.MatchState -notmatch $WSJSONPacket.data.MatchState){
+                    if ($prevstate.data.MatchState -match "3" ) {
+                        
+                        $currentpoints = Get-PodeState -Name "points"
+                        if (($currentpoints.RedAuto) -gt ($currentpoints.blueAuto)) {
+                            write-host "red is leading setting leader to red"
+                            $Fuelleader ="red"
+                            $FuelRunnerup = "blue"
+                        }elseif (($currentpoints.RedAuto) -lt ($currentpoints.BlueAuto)) {
+                            write-host "red is leading setting leader to red"
+                            $Fuelleader = "blue"
+                            $FuelRunnerup = "red"
+                        }else{
+                            $coinflip = Get-Random -Maximum 1 -Minimum 0
+                            if ($coinflip -eq 0) {
+                                $Fuelleader = "red"
+                                $FuelRunnerup = "blue"
+                            }
+                            if ($coinflip -eq 1) {
+                                $Fuelleader = "blue"
+                                $FuelRunnerup = "red"
+                            }
+                            write-host "FMS Desides $Fuelleader Leads"
+                        }
+                        Set-PodeState -Name "Shifttiming"-Value @{"shift1"=$FuelRunnerup;"shift2"=$Fuelleader;"shift3"=$FuelRunnerup;"shift4"=$Fuelleader;}
+                        Set-PodeState -Name 'FMSArenatimer' -Value "$WsEvent.Request.body"
+                    }
+
+                    
                     if ($WSJSONPacket.data.MatchState -eq "0") {
                         if ($prevstate.data.MatchState -eq  "6"){
+                            $arena = get-podeState -name "FMSArenaStatus" | ConvertFrom-Json
+                            $matchid = ($arena.data.MatchId)
+                            Get-PodeState -name "points"| convertto-JSON | Out-File -FilePath ./log/$matchid.json -Force
                             Set-PodeState -Name 'points' -Value @{ 'RedAuto' = 0;'blueauto' = 0;'Redtele' = 0;'bluetele' = 0;'redend' = 0;'blueend' = 0;'redAutoL1' = 0;'redTeleL1' = 0;'redTeleL2' = 0;'redTeleL3' = 0;'BlueAutoL1' = 0;'BlueTeleL1' = 0;'BlueTeleL2' = 0;'BlueTeleL3' = 0; 'redMinorFoul' = 0;'redMajorFoul' = 0; 'blueMinorFoul'=0;'blueMajorFoul' = 0; } | Out-Null
                         }
                         $newstate = "PreMatch"
@@ -476,6 +500,7 @@
                     }elseif ($WSJSONPacket.data.MatchState -eq  "5") {
                         $newstate = "TeleopPeriod"
                     }elseif ($WSJSONPacket.data.MatchState -eq  "6") {
+
                         $newstate = "PostMatch"
                     }elseif ($WSJSONPacket.data.MatchState -eq  "7") {
                         $newstate = "TimeoutActive"
@@ -492,27 +517,27 @@
                 write-debug "triger Sound Start"
                         Send-PodeSignal -Value @{"type"="playaudio";"data"="start.wav"}
             }
-            if($WSJSONPacket.data.MatchTimeSec -eq (20)){
+            if($WSJSONPacket.data.MatchTimeSec -eq ($gametiming.Autoend)){
                 write-debug "triger Sound end"
                     Send-PodeSignal -Value @{"type"="playaudio";"data"="end.wav"}
             }
-            if($WSJSONPacket.data.MatchTimeSec -eq (20 + $gametiming.Pause)){
+            if($WSJSONPacket.data.MatchTimeSec -eq ($gametiming.Autoend + $gametiming.pause)){
                     write-debug "triger Sound resume"
                     Send-PodeSignal -Value @{"type"="playaudio";"data"="resume.wav"}
-            }if($WSJSONPacket.data.MatchTimeSec -eq ($gametiming.transtionshiftend +$gametiming.Pause)){
+            }if($WSJSONPacket.data.MatchTimeSec -eq ($gametiming.transtionshiftend + $gametiming.pause)){
                 write-debug "triger Sound powerup-force"
                     Send-PodeSignal -Value @{"type"="playaudio";"data"="powerup-force.wav"}
             }
-            if($WSJSONPacket.data.MatchTimeSec -eq ($gametiming.endshift1 +$gametiming.Pause)){
+            if($WSJSONPacket.data.MatchTimeSec -eq ($gametiming.endshift1 + $gametiming.pause)){
                 write-debug "triger Sound powerup-force"
                     Send-PodeSignal -Value @{"type"="playaudio";"data"="powerup-force.wav"}
-            }if($WSJSONPacket.data.MatchTimeSec -eq ($gametiming.endshift2+$gametiming.Pause)){
+            }if($WSJSONPacket.data.MatchTimeSec -eq ($gametiming.endshift2 + $gametiming.pause)){
                 write-debug "triger Sound powerup-force"
                     Send-PodeSignal -Value @{"type"="playaudio";"data"="powerup-force.wav"}
-            }if($WSJSONPacket.data.MatchTimeSec -eq ($gametiming.endshift3+$gametiming.Pause)){
+            }if($WSJSONPacket.data.MatchTimeSec -eq ($gametiming.endshift3 + $gametiming.pause)){
                 write-debug "triger Sound powerup-force"
                     Send-PodeSignal -Value @{"type"="playaudio";"data"="powerup-force.wav"}
-            }if($WSJSONPacket.data.MatchTimeSec -eq ($gametiming.endshift4+$gametiming.Pause)){
+            }if($WSJSONPacket.data.MatchTimeSec -eq ($gametiming.endshift4 + $gametiming.pause)){
                 write-debug "triger Sound warning"
                     Send-PodeSignal -Value @{"type"="playaudio";"data"="warning.wav"}
             }if($WSJSONPacket.data.MatchState -eq 6){
