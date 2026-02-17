@@ -8,8 +8,8 @@
         $gametiming = get-content -Path ./Game2026/config/gametiming.json | ConvertFrom-Json
         Lock-PodeObject -Name "points" -CheckGlobal -ScriptBlock {
             $shifttiming = get-podestate -Name "Shifttiming"
-            
             $pointState = Get-PodeState -Name "points" 
+            $arenaGlobalState = get-podestate -name "ArenaOverride"
            
             $time = Get-PodeState -name "FMSArenatimer" | ConvertFrom-Json 
             if ($time.data.MatchState -eq 3) {
@@ -18,7 +18,10 @@
                 $mode = "tele"
             }elseif (($time.data.MatchState -eq 5) -and($time.data.MatchTimeSec -ge 130)) {
                 $mode = "end"
-            }else{
+            }elseif($arenaGlobalState.TestMode){
+                $mode = "test"
+            }
+            else{
 
                 $mode ="nonOps"
             }
@@ -37,6 +40,8 @@
                     }    
                 }elseif($mode -match "end") {
                     $pointState.redend += $WebEvent.Parameters['score']
+                }elseif($mode -match "test"){
+                        $pointState.Redtele += $WebEvent.Parameters['score']
                 }
             }elseif ($WebEvent.Parameters['team'] -match "blue") {
                 if ($mode -match "auto") {
@@ -53,6 +58,8 @@
                     }    
                 }elseif($mode -match "end") {
                     $pointState.BlueEnd += $WebEvent.Parameters['score']
+                }elseif($mode -match "test"){
+                        $pointState.Bluetele += $WebEvent.Parameters['score']
                 }
             }
             $responseTable = @{ 'RedAuto' = $pointState.RedAuto;'blueauto' = $pointState.BlueAuto;'Redtele' = $pointState.RedTele;'bluetele' = $pointState.BlueTele;'redend' = $pointState.RedEnd;'blueend' = $pointState.BlueEnd; "MatchState"= $time.data.MatchState; "MatchTimeSec"=$time.data.MatchTimeSec;"Shift1"= $shifttiming.Shift1;"Shift2"= $shifttiming.Shift2;"Shift3"= $shifttiming.Shift3;"Shift4"= $shifttiming.Shift4;"mode"=$mode}

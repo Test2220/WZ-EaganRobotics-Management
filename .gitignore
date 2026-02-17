@@ -8,5 +8,5 @@ qualification.csv
 logs.txt
 scratchpad.ps1
 routes/API/Stacklight/test-code.ps1
-./log/*
-./log
+/log/*
+/log
