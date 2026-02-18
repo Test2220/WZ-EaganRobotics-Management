@@ -154,22 +154,30 @@
 </div>
 <div id="FoulSection">
   <div id="RedFouls">
-    <button id="redFoulAdd" type="button" onclick="sendscore(this.id)">+</button>
-    Foul
-    <button id="redFoulMin" type="button" onclick="sendscore(this.id)">-</button>
-
-    <button id="redTFoulAdd" type="button" onclick="sendscore(this.id)">+</button>
-    Tech Foul
-    <button id="redTFoulMin" type="button" onclick="sendscore(this.id)">Foul </button>
+  Red Foul
+    <div id="RedFoulContainer">  
+      <button id="redFoulAdd" type="button" onclick="sendscore(this.id)">+</button>
+      Foul
+      <button id="redFoulMin" type="button" onclick="sendscore(this.id)">-</button>
+    </div>
+    <div id="RedTechFoulConainer">
+      <button id="redTFoulAdd" type="button" onclick="sendscore(this.id)">+</button>
+      Tech Foul
+      <button id="redTFoulMin" type="button" onclick="sendscore(this.id)">-</button>
+    </div>
   </div>
     <div id="BlueFouls">
-    <button id="blueFoulAdd" type="button" onclick="sendscore(this.id)">+</button>
-    Foul
-    <button id="blueFoulMin" type="button" onclick="sendscore(this.id)">-</button>
-
-    <button id="blueTFoulAdd" type="button" onclick="sendscore(this.id)">+</button>
-    Tech Foul
-    <button id="blueTFoulMin" type="button" onclick="sendscore(this.id)">Foul </button>
+    Blue Fouls
+    <div id="BlueFoulContainer">
+      <button id="blueFoulAdd" type="button" onclick="sendscore(this.id)">+</button>
+      Foul
+      <button id="blueFoulMin" type="button" onclick="sendscore(this.id)">-</button>
+    </div>
+    <div id="BlueTechFoulConainer">
+      <button id="blueTFoulAdd" type="button" onclick="sendscore(this.id)">+</button>
+      Tech Foul
+      <button id="blueTFoulMin" type="button" onclick="sendscore(this.id)">-</button>
+    </div>
   </div>
 
 </div>

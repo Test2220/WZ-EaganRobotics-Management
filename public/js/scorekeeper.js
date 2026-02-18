@@ -22,6 +22,13 @@ const BlueTeleL1 = data.BlueTeleL1
 const BlueTeleL2 = data.BlueTeleL2
 const BlueTeleL3 = data.BlueTeleL3
 
+const redMinorFoul = data.redMinorFoul
+const blueMinorFoul = data.blueMinorFoul
+
+const redMajorFoul = data.redMajorFoul
+const blueMajorFoul = data.blueMajorFoul
+
+
 
 
     // 4. Replace the text in the HTML tag
@@ -54,6 +61,17 @@ const BlueTeleL3 = data.BlueTeleL3
     
     document.getElementById('REDtotalScore').innerText = redTotal;
     document.getElementById('blueTotalScore').innerText = blueTotal;
+
+    document.getElementById('redFoulValue').innerText = redMinorFoul;
+    document.getElementById('blueFoulvalue').innerText = blueMinorFoul;
+    document.getElementById('blueFoulScore').innerText = redMinorFoul * 5;
+    document.getElementById('redFoulScore').innerText = blueMinorFoul *5;
+
+    document.getElementById('redTFoulValue').innerText = redMajorFoul;
+    document.getElementById('blueTFoulvalue').innerText = blueMajorFoul;
+    document.getElementById('blueTFoulScore').innerText = redMajorFoul * 5;
+    document.getElementById('redTFoulScore').innerText = blueMajorFoul *5;
+
     
     
 
