@@ -61,7 +61,7 @@ Start-PodeServer -Threads 4 -EnablePool WebSockets {
         catch {Write-Host "Websocket to FMS Software failed check connection and reset server if FMS is up"}
     }else{write-debug "Setting for Websocket is disabled skipping WS connection"}
     
-    if($serverSetting.Music){
+    if($true){
         if (Test-Path -Path "./data/config.json") {
             $playerconfig = Get-Content -Path "./data/config.json" -ErrorAction SilentlyContinue | ConvertFrom-Json
             $MPIP = $playerconfig.MusicPlayerIP 
