@@ -146,6 +146,10 @@ Start-PodeServer -Threads 4 -EnablePool WebSockets {
                     $fileselection = $webevent.data.sound
                     Send-PodeSignal -Value @{"type"="playaudio";"data"=$fileselection}
                 }
+                Add-PodeRoute -Method get -Path "/stack" -ScriptBlock {
+                    Write-PodeViewResponse -Path "arena/stacklightTest"
+                }
+
 
 
             }
@@ -166,6 +170,7 @@ Start-PodeServer -Threads 4 -EnablePool WebSockets {
                     Lock-PodeObject -Name "ConfigStateLock" -ScriptBlock {
                         Write-PodeJsonResponse (Get-PodeState -Name "StackState")
                     }
+                    add-poderoute -Path "/update" -Method post -FilePath "./Game2026/routes/API/API-Arena_stackForceUpdate.ps1"
 
                 } 
                Add-PodeRoute -Path "/config" -Method Get,post -FilePath "./routes/API/Stacklight/Config.ps1" 

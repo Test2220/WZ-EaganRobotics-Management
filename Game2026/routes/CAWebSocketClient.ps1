@@ -174,7 +174,6 @@
                     #$StackStateBlue =Invoke-RestMethod -Uri "http://$StackStateBlueIP/state"
                     $StackStateMiddle =Invoke-RestMethod -Uri "http://$StackStateMiddleIP/state"
                         $shifttiming = get-podestate -Name "Shifttiming"
-                        $StackState = Get-PodeState -name "StackState"
                         if (!(($WSJSONPacket.data.MatchState -ge 3) -and ($WSJSONPacket.data.MatchState -le 5))) {
                             if($StackStateMiddle.mappings.hub_red  -notmatch "off"){
                                 Invoke-RestMethod -uri ("http://"+$StackConfigData.MiddleStack+":"+$StackConfigData.MiddleStackPort +"/set/7/off") -Method Post
@@ -400,8 +399,6 @@
                             }
                             
                         }
-                        Set-PodeState -Name "StackConfig" -Value $StackState
-
                 }
             }
             Lock-PodeObject -Name 'FMSArenamatchtime' -ScriptBlock{
@@ -502,8 +499,7 @@
                 write-debug "triger Sound end"
                     Send-PodeSignal -Value @{"type"="playaudio";"data"="end.wav"} 
             }
-            $timer = $WSJSONPacket.data.MatchTimeSec
-            Write-debug  "match time is $timer"
+            Set-PodeState -name "timerData" -Value $WSJSONPacket.data
        }
        else {
         write-host $WSJSONPacket.type
