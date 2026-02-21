@@ -10,7 +10,6 @@
             $shifttiming = get-podestate -Name "Shifttiming"
             $pointState = Get-PodeState -Name "points" 
             $arenaGlobalState = get-podestate -name "ArenaOverride" 
-           
             $time = Get-PodeState -name "FMSArenatimer" | ConvertFrom-Json 
             if ($time.data.MatchState -eq 3) {
                 $mode = "auto"
@@ -26,16 +25,24 @@
             }
             if ($WebEvent.Parameters['team'] -match "red"){
                 if ($mode -match "auto") {
+                    Write-Host "auto red, point updated"
                     $pointState.RedAuto += $WebEvent.Parameters['score']
                 }elseif($mode -match "tele") {
                     if (($shifttiming.shift1 -match "red") -and ((($gametiming.transtionshiftend + $gametiming.Pause) -le $time.data.MatchTimeSec )-and (($gametiming.endshift1 + $gametiming.pause) -gt $time.data.MatchTimeSec))) {
                         $pointState.Redtele += $WebEvent.Parameters['score']
+                        
+                    Write-Host "Valid Tele red, point updated"
                     }elseif (($shifttiming.shift2 -match "red") -and ((($gametiming.endshift1 + $gametiming.Pause) -le $time.data.MatchTimeSec ))-and (($gametiming.endshift2 + $gametiming.pause) -gt $time.data.MatchTimeSec)) {
                         $pointState.Redtele += $WebEvent.Parameters['score']
+                        Write-Host "Valid Tele red, point updated"
                     }elseif (($shifttiming.shift3 -match "red") -and ((($gametiming.endshift2 + $gametiming.Pause) -le $time.data.MatchTimeSec ))-and (($gametiming.endshift3 + $gametiming.pause) -gt $time.data.MatchTimeSec)) {
                         $pointState.Redtele += $WebEvent.Parameters['score']
+                        Write-Host "Valid Tele red, point updated"
                     }elseif (($shifttiming.shift4 -match "red") -and ((($gametiming.endshift3 + $gametiming.Pause) -le $time.data.MatchTimeSec ))-and (($gametiming.endshift4 + $gametiming.pause) -gt $time.data.MatchTimeSec)) {
                         $pointState.Redtele += $WebEvent.Parameters['score']
+                        Write-Host "Valid Tele red, point updated"
+                    }else{
+                        Write-Host "invalid Tele red, point not updated"
                     }    
                 }elseif($mode -match "end") {
                     $pointState.redend += $WebEvent.Parameters['score']
@@ -45,16 +52,23 @@
             }elseif ($WebEvent.Parameters['team'] -match "blue") {
                 if ($mode -match "auto") {
                     $pointState.BlueAuto += $WebEvent.Parameters['score']
+                    Write-Host "auto blue, point updated"
                 }elseif($mode -match "tele") {
                     if (($shifttiming.shift1 -match "blue") -and ((($gametiming.transtionshiftend + $gametiming.Pause) -le $time.data.MatchTimeSec ))-and (($gametiming.endshift1 + $gametiming.pause) -gt $time.data.MatchTimeSec)) {
                         $pointState.BlueTele += $WebEvent.Parameters['score']
+                        Write-Host "Valid Tele Blue, point updated"
                     }elseif (($shifttiming.shift2 -match "blue") -and ((($gametiming.endshift1 + $gametiming.Pause) -le $time.data.MatchTimeSec ))-and (($gametiming.endshift2 + $gametiming.pause) -gt $time.data.MatchTimeSec)) {
                         $pointState.BlueTele += $WebEvent.Parameters['score']
+                        Write-Host "Valid Tele Blue, point updated"
                     }elseif (($shifttiming.shift3 -match "blue") -and ((($gametiming.endshift2 + $gametiming.Pause) -le $time.data.MatchTimeSec ))-and (($gametiming.endshift3 + $gametiming.pause) -gt $time.data.MatchTimeSec)) {
                         $pointState.BlueTele += $WebEvent.Parameters['score']
+                        Write-Host "Valid Tele Blue, point updated"
                     }elseif (($shifttiming.shift4 -match "blue") -and ((($gametiming.endshift3 + $gametiming.Pause) -le $time.data.MatchTimeSec ))-and (($gametiming.endshift4 + $gametiming.pause) -gt $time.data.MatchTimeSec)) {
                         $pointState.BlueTele += $WebEvent.Parameters['score']
-                    }    
+                        Write-Host "Valid Tele Blue, point updated"
+                    }else{
+                        Write-Host "invalid Tele Blue, point not updated"
+                    }        
                 }elseif($mode -match "end") {
                     $pointState.BlueEnd += $WebEvent.Parameters['score']
                 }elseif($mode -match "test"){
