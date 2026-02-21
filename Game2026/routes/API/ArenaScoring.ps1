@@ -6,7 +6,7 @@
 
     if ($webevent.method -eq "post") {
         $gametiming = get-content -Path ./Game2026/config/gametiming.json | ConvertFrom-Json
-        Lock-PodeObject -Name "points" -CheckGlobal -ScriptBlock {
+        Lock-PodeObject -Name "points" -ScriptBlock {
             $shifttiming = get-podestate -Name "Shifttiming"
             $pointState = Get-PodeState -Name "points" 
             $arenaGlobalState = get-podestate -name "ArenaOverride" 
