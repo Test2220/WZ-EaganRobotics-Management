@@ -445,6 +445,9 @@
                         }
                         $newstate = "PreMatch"
                     }elseif ($WSJSONPacket.data.MatchState -eq  "1") {
+                        Invoke-RestMethod -uri "http://172.16.20.6/music/change-song" -Method Post -Body @{"player"="GameOn"}
+ 
+                        
                         $newstate = "StartMatch"
                     }elseif ($WSJSONPacket.data.MatchState -eq  "2") {
                         $newstate = "WarmupPeriod"
@@ -456,7 +459,7 @@
                     }elseif ($WSJSONPacket.data.MatchState -eq  "5") {
                         $newstate = "TeleopPeriod"
                     }elseif ($WSJSONPacket.data.MatchState -eq  "6") {
-
+                        Invoke-RestMethod -uri "http://172.16.20.6/music/change-song" -Method Post -Body @{"player"="Inbetween"}
                         $newstate = "PostMatch"
                     }elseif ($WSJSONPacket.data.MatchState -eq  "7") {
                         $newstate = "TimeoutActive"
