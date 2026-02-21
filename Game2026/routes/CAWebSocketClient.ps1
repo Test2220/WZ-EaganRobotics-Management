@@ -11,141 +11,124 @@
                 Lock-PodeObject -Name "StackConfig" -ScriptBlock{
                     
                     $StackConfigData = Get-Content "./data/Stacklightconfig.json" | Convertfrom-Json
-                    $StackState = Get-PodeState -name "StackState"
+                    $StackStateRedIP = $StackConfigData.RedSCC
+                    $StackStateBlueIP = $StackConfigData.BlueSCC
+                    $StackStateMiddleIP = $StackConfigData.MiddleStack
+                    $StackStateRed =Invoke-RestMethod -Uri "http://$StackStateRedIP/state"
+                    $StackStateBlue =Invoke-RestMethod -Uri "http://$StackStateBlueIP/state"
+                    $StackStateMiddle =Invoke-RestMethod -Uri "http://$StackStateMiddleIP/state"
+
+                    
+
                     $FieldteamStatus = @{"B1"=$false;"B2"=$false;"B3"=$false;"R1"=$false;"R2"=$false;"R3"=$false;}
                     #check for blue 1 ready Status
                     if (($null -ne $WSJSONPacket.data.AllianceStations.B1.DSConn) -and ($WSJSONPacket.data.AllianceStations.B1.Ethernet -eq $true) -and ($WSJSONPacket.data.AllianceStations.B1.Astop -eq $true) -and ($WSJSONPacket.data.AllianceStations.B1.Estop -eq $true) -and ($WSJSONPacket.data.AllianceStations.B1.Bypass -eq $true)){
-                        if ($StackState.B1 -notmatch "off") {
-                            $StackState.B1 = "off"
+                        if ($StackStateBlue.mappings.ds_1 -notmatch "off") {
                             $FieldteamStatus.B1 = $true
-                            $url = "http://"+$StackConfigData.BlueSCC+":"+$StackConfigData.BlueSCCPort +"/set/1/"+$StackState.B1
+                            $url = "http://"+$StackConfigData.BlueSCC+":"+$StackConfigData.BlueSCCPort +"/set/1/off"
                             Invoke-RestMethod -uri $url -Method Post
                         }
                     }elseif (($null -eq $WSJSONPacket.data.AllianceStations.B1.DSConn) -or ($WSJSONPacket.data.AllianceStations.B1.Ethernet -eq $false) -or ($WSJSONPacket.data.AllianceStations.B1.Astop -eq $false) -or ($WSJSONPacket.data.AllianceStations.B1.Estop -eq $false) -and ($WSJSONPacket.data.AllianceStations.B1.Bypass -eq $false)){
-                        if ($StackState.B1 -notmatch "blink") {
-                            $StackState.B1 = "blink"
+                        if ($StackStateBlue.mappings.ds_1 -notmatch "blink") {
                             $FieldteamStatus.B1 = $false
-                            $url = "http://"+$StackConfigData.BlueSCC+":"+$StackConfigData.BlueSCCPort +"/set/1/"+$StackState.B1
+                            $url = "http://"+$StackConfigData.BlueSCC+":"+$StackConfigData.BlueSCCPort +"/set/1/blink"
                             Invoke-RestMethod -uri $url -Method Post
                         }
                     }elseif ((($WSJSONPacket.data.MatchState -gt 0)-and ($WSJSONPacket.data.MatchState -lt 6))-and (($null -ne $WSJSONPacket.data.AllianceStations.B1.DSConn) -and ($WSJSONPacket.data.AllianceStations.B1.Ethernet -eq $true) -and ($WSJSONPacket.data.AllianceStations.B1.Astop -eq $true) -and ($WSJSONPacket.data.AllianceStations.B1.Estop -eq $true) -and ($WSJSONPacket.data.AllianceStations.B1.Bypass -eq $true))){
-                        if ($StackState.B1 -notmatch "on") {
-                            $StackState.B1 = "on"
-                            $url = "http://"+$StackConfigData.BlueSCC+":"+$StackConfigData.BlueSCCPort +"/set/1/"+$StackState.B1
+                        if ($StackStateBlue.mappings.ds_1 -notmatch "on") {
+                            $url = "http://"+$StackConfigData.BlueSCC+":"+$StackConfigData.BlueSCCPort +"/set/1/on"
                             Invoke-RestMethod -uri $url -Method Post
                         }
                     }
                     #check for blue 2 ready Status
                     if (($null -ne $WSJSONPacket.data.AllianceStations.B2.DSConn) -and ($WSJSONPacket.data.AllianceStations.B2.Ethernet -eq $true) -and ($WSJSONPacket.data.AllianceStations.B2.Astop -eq $true) -and ($WSJSONPacket.data.AllianceStations.B2.Estop -eq $true) -and ($WSJSONPacket.data.AllianceStations.B2.Bypass -eq $true)){
-                        if ($StackState.B2 -notmatch "off") {
-                            $StackState.B2 = "off"
+                        if ($StackStateBlue.mappings.ds_2 -notmatch "off") {
                             $FieldteamStatus.B2 = $true
-                            Invoke-RestMethod -uri (("http://"+$StackConfigData.BlueSCC+":"+$StackConfigData.BlueSCCPort +"/set/2/"+$StackState.B2)) -Method Post
+                            Invoke-RestMethod -uri (("http://"+$StackConfigData.BlueSCC+":"+$StackConfigData.BlueSCCPort +"/set/2/off")) -Method Post
                         }
                     }elseif (($null -eq $WSJSONPacket.data.AllianceStations.B2.DSConn) -or ($WSJSONPacket.data.AllianceStations.B2.Ethernet -eq $false) -or ($WSJSONPacket.data.AllianceStations.B2.Astop -eq $false) -or ($WSJSONPacket.data.AllianceStations.B2.Estop -eq $false) -and ($WSJSONPacket.data.AllianceStations.B2.Bypass -eq $false)){
-                        if ($StackState.B2 -notmatch "blink") {
-                            $StackState.B2 = "blink"
+                        if ($StackStateBlue.mappings.ds_2 -notmatch "blink") {
                             $FieldteamStatus.B2 = $false
-                            Invoke-RestMethod -uri (("http://"+$StackConfigData.BlueSCC+":"+$StackConfigData.BlueSCCPort +"/set/2/"+$StackState.B2)) -Method Post
+                            Invoke-RestMethod -uri (("http://"+$StackConfigData.BlueSCC+":"+$StackConfigData.BlueSCCPort +"/set/2/blink")) -Method Post
                         }
                     }elseif ((($WSJSONPacket.data.MatchState -gt 0)-and ($WSJSONPacket.data.MatchState -lt 6))-and (($null -ne $WSJSONPacket.data.AllianceStations.B2.DSConn) -and ($WSJSONPacket.data.AllianceStations.B2.Ethernet -eq $true) -and ($WSJSONPacket.data.AllianceStations.B2.Astop -eq $true) -and ($WSJSONPacket.data.AllianceStations.B2.Estop -eq $true) -and ($WSJSONPacket.data.AllianceStations.B2.Bypass -eq $true))){
-                        if ($StackState.B2 -notmatch "on") {
-                            $StackState.B2 = "on"
-                            Invoke-RestMethod -uri ("http://"+$StackConfigData.BlueSCC+":"+$StackConfigData.BlueSCCPort +"/set/2/"+$StackState.B2) -Method Post
+                        if ($StackStateBlue.mappings.ds_2 -notmatch "on") {
+                            Invoke-RestMethod -uri ("http://"+$StackConfigData.BlueSCC+":"+$StackConfigData.BlueSCCPort +"/set/2/on") -Method Post
                         }
                     }
                     #check for blue 3 ready Status
                     if (($null -ne $WSJSONPacket.data.AllianceStations.B3.DSConn) -and ($WSJSONPacket.data.AllianceStations.B3.Ethernet -eq $true) -and ($WSJSONPacket.data.AllianceStations.B3.Astop -eq $true) -and ($WSJSONPacket.data.AllianceStations.B3.Estop -eq $true) -and ($WSJSONPacket.data.AllianceStations.B3.Bypass -eq $true)){
-                        if ($StackState.B3 -notmatch "off") {
-                            $StackState.B3 = "off"
-                            $FieldteamStatus.B3 = $true
-                            Invoke-RestMethod -uri ("http://"+$StackConfigData.BlueSCC+":"+$StackConfigData.BlueSCCPort +"/set/3/"+$StackState.B3) -Method Post
+                        if ($StackStateBlue.mappings.ds_3 -notmatch "off") {
+                            Invoke-RestMethod -uri ("http://"+$StackConfigData.BlueSCC+":"+$StackConfigData.BlueSCCPort +"/set/3/off") -Method Post
                         }
                     }elseif (($null -eq $WSJSONPacket.data.AllianceStations.B3.DSConn) -or ($WSJSONPacket.data.AllianceStations.B3.Ethernet -eq $false) -or ($WSJSONPacket.data.AllianceStations.B3.Astop -eq $false) -or ($WSJSONPacket.data.AllianceStations.B3.Estop -eq $false) -and ($WSJSONPacket.data.AllianceStations.B3.Bypass -eq $false)){
-                        if ($StackState.B3 -notmatch "blink") {
-                            $StackState.B3 = "blink"
-                            $FieldteamStatus.B3 = $false
-                            Invoke-RestMethod -uri ("http://"+$StackConfigData.BlueSCC+":"+$StackConfigData.BlueSCCPort +"/set/3/"+$StackState.B3) -Method Post
+                        if ($StackStateBlue.mappings.ds_3 -notmatch "blink") {
+                            Invoke-RestMethod -uri ("http://"+$StackConfigData.BlueSCC+":"+$StackConfigData.BlueSCCPort +"/set/3/blink") -Method Post
                         }
                     }elseif ((($WSJSONPacket.data.MatchState -gt 0)-and ($WSJSONPacket.data.MatchState -lt 6))-and (($null -ne $WSJSONPacket.data.AllianceStations.B3.DSConn) -and ($WSJSONPacket.data.AllianceStations.B3.Ethernet -eq $true) -and ($WSJSONPacket.data.AllianceStations.B3.Astop -eq $true) -and ($WSJSONPacket.data.AllianceStations.B3.Estop -eq $true) -and ($WSJSONPacket.data.AllianceStations.B3.Bypass -eq $true))){
-                        if ($StackState.B3 -notmatch "on") {
-                            $StackState.B3 = "on"
-                            Invoke-RestMethod -uri ("http://"+$StackConfigData.BlueSCC+":"+$StackConfigData.BlueSCCPort +"/set/3/"+$StackState.B3) -Method Post
+                        if ($StackStateBlue.mappings.ds_3 -notmatch "on") {
+                            Invoke-RestMethod -uri ("http://"+$StackConfigData.BlueSCC+":"+$StackConfigData.BlueSCCPort +"/set/3/on") -Method Post
                         }
                     }
 
 
                     #check for Red 1 ready Status
                     if (($null -ne $WSJSONPacket.data.AllianceStations.R1.DSConn) -and ($WSJSONPacket.data.AllianceStations.R1.Ethernet -eq $true) -and ($WSJSONPacket.data.AllianceStations.R1.Astop -eq $true) -and ($WSJSONPacket.data.AllianceStations.R1.Estop -eq $true) -and ($WSJSONPacket.data.AllianceStations.R1.Bypass -eq $true)){
-                        if ($StackState.R1 -notmatch "off") {
-                            $StackState.R1 = "off"
+                        if ($StackStateRed.mappings.ds_1 -notmatch "off") {
                             $FieldteamStatus.R1 = $true
-                            Invoke-RestMethod -uri ("http://"+$StackConfigData.RedSCC+":"+$StackConfigData.RedSCCPort +"/set/1/"+$StackState.R1) -Method Post
+                            Invoke-RestMethod -uri ("http://"+$StackConfigData.RedSCC+":"+$StackConfigData.RedSCCPort +"/set/1/off") -Method Post
                         }
                     }elseif (($null -eq $WSJSONPacket.data.AllianceStations.R1.DSConn) -or ($WSJSONPacket.data.AllianceStations.R1.Ethernet -eq $false) -or ($WSJSONPacket.data.AllianceStations.R1.Astop -eq $false) -or ($WSJSONPacket.data.AllianceStations.R1.Estop -eq $false) -and ($WSJSONPacket.data.AllianceStations.R1.Bypass -eq $false)){
-                        if ($StackState.R1 -notmatch "blink") {
-                            $StackState.R1 = "blink"
+                        if ($StackStateRed.mappings.ds_1 -notmatch "blink") {
                             $FieldteamStatus.R1 = $false
-                            Invoke-RestMethod -uri ("http://"+$StackConfigData.RedSCC+":"+$StackConfigData.RedSCCPort +"/set/1/"+$StackState.R1) -Method Post
+                            Invoke-RestMethod -uri ("http://"+$StackConfigData.RedSCC+":"+$StackConfigData.RedSCCPort +"/set/1/blink") -Method Post
                         }
                     }elseif ((($WSJSONPacket.data.MatchState -gt 0)-and ($WSJSONPacket.data.MatchState -lt 6))-and (($null -ne $WSJSONPacket.data.AllianceStations.R1.DSConn) -and ($WSJSONPacket.data.AllianceStations.R1.Ethernet -eq $true) -and ($WSJSONPacket.data.AllianceStations.R1.Astop -eq $true) -and ($WSJSONPacket.data.AllianceStations.R1.Estop -eq $true) -and ($WSJSONPacket.data.AllianceStations.R1.Bypass -eq $true))){
-                        if ($StackState.R1 -notmatch "on") {
-                            $StackState.R1 = "on"
-                            Invoke-RestMethod -uri ("http://"+$StackConfigData.RedSCC+":"+$StackConfigData.RedSCCPort +"/set/1/"+$StackState.R1) -Method Post
+                        if ($StackStateRed.mappings.ds_1 -notmatch "on") {
+                            Invoke-RestMethod -uri ("http://"+$StackConfigData.RedSCC+":"+$StackConfigData.RedSCCPort +"/set/1/on") -Method Post
                         }
                     }
                     #check for Red 2 ready Status
                     if (($null -ne $WSJSONPacket.data.AllianceStations.R2.DSConn) -and ($WSJSONPacket.data.AllianceStations.R2.Ethernet -eq $true) -and ($WSJSONPacket.data.AllianceStations.R2.Astop -eq $true) -and ($WSJSONPacket.data.AllianceStations.R2.Estop -eq $true) -and ($WSJSONPacket.data.AllianceStations.R2.Bypass -eq $true)){
-                        if ($StackState.R2 -notmatch "off") {
-                            $StackState.R2 = "off"
-                            $FieldteamStatus.R2 = $true
-                            Invoke-RestMethod -uri ("http://"+$StackConfigData.RedSCC+":"+$StackConfigData.RedSCCPort +"/set/2/"+$StackState.R2) -Method Post
+                        if ($StackStateRed.mappings.ds_2 -notmatch "off") {
+                            Invoke-RestMethod -uri ("http://"+$StackConfigData.RedSCC+":"+$StackConfigData.RedSCCPort +"/set/2/off") -Method Post
                         }
                     }elseif (($null -eq $WSJSONPacket.data.AllianceStations.R2.DSConn) -or ($WSJSONPacket.data.AllianceStations.R2.Ethernet -eq $false) -or ($WSJSONPacket.data.AllianceStations.R2.Astop -eq $false) -or ($WSJSONPacket.data.AllianceStations.R2.Estop -eq $false) -and ($WSJSONPacket.data.AllianceStations.R2.Bypass -eq $false)){
-                        if ($StackState.R2 -notmatch "blink") {
-                            $StackState.R2 = "blink"
-                            $FieldteamStatus.R2 = $false 
-                            Invoke-RestMethod -uri ("http://"+$StackConfigData.RedSCC+":"+$StackConfigData.RedSCCPort +"/set/2/"+$StackState.R2) -Method Post
+                        if ($StackStateRed.mappings.ds_2 -notmatch "blink") {
+                            Invoke-RestMethod -uri ("http://"+$StackConfigData.RedSCC+":"+$StackConfigData.RedSCCPort +"/set/2/blink") -Method Post
                         }
                     }elseif ((($WSJSONPacket.data.MatchState -gt 0)-and ($WSJSONPacket.data.MatchState -lt 6))-and (($null -ne $WSJSONPacket.data.AllianceStations.R2.DSConn) -and ($WSJSONPacket.data.AllianceStations.R2.Ethernet -eq $true) -and ($WSJSONPacket.data.AllianceStations.R2.Astop -eq $true) -and ($WSJSONPacket.data.AllianceStations.R2.Estop -eq $true) -and ($WSJSONPacket.data.AllianceStations.R2.Bypass -eq $true))){
-                        if ($StackState.R2 -notmatch "on") {
-                            $StackState.R2 = "on"
-                            Invoke-RestMethod -uri ("http://"+$StackConfigData.RedSCC+":"+$StackConfigData.RedSCCPort +"/set/2/"+$StackState.R2) -Method Post
+                        if ($StackStateRed.mappings.ds_2 -notmatch "on") {
+                            Invoke-RestMethod -uri ("http://"+$StackConfigData.RedSCC+":"+$StackConfigData.RedSCCPort +"/set/2/on") -Method Post
                         }
                     }
                     #check for red 3 ready Status
                     if (($null -ne $WSJSONPacket.data.AllianceStations.R3.DSConn) -and ($WSJSONPacket.data.AllianceStations.R3.Ethernet -eq $true) -and ($WSJSONPacket.data.AllianceStations.R3.Astop -eq $true) -and ($WSJSONPacket.data.AllianceStations.R3.Estop -eq $true) -and ($WSJSONPacket.data.AllianceStations.R3.Bypass -eq $true)){
-                        if ($StackState.R3 -notmatch "off") {
-                            $StackState.R3 = "off"
+                        if ($StackStateRed.mappings.ds_3 -notmatch "off") {
                             $FieldteamStatus.R3 = $true
-                            Invoke-RestMethod -uri ("http://"+$StackConfigData.RedSCC+":"+$StackConfigData.RedSCCPort +"/set/3/"+$StackState.R3) -Method Post
+                            Invoke-RestMethod -uri ("http://"+$StackConfigData.RedSCC+":"+$StackConfigData.RedSCCPort +"/set/3/off") -Method Post
                         }
                     }elseif (($null -eq $WSJSONPacket.data.AllianceStations.R3.DSConn) -or ($WSJSONPacket.data.AllianceStations.R3.Ethernet -eq $false) -or ($WSJSONPacket.data.AllianceStations.R3.Astop -eq $false) -or ($WSJSONPacket.data.AllianceStations.R3.Estop -eq $false) -and ($WSJSONPacket.data.AllianceStations.R3.Bypass -eq $false)){
-                        if ($StackState.R3 -notmatch "blink") {
-                            $StackState.R3 = "blink"
+                        if ($StackStateRed.mappings.ds_3 -notmatch "blink") {
                             $FieldteamStatus.R3 = $false
-                            Invoke-RestMethod -uri ("http://"+$StackConfigData.RedSCC+":"+$StackConfigData.RedSCCPort +"/set/3/"+$StackState.R3) -Method Post
+                            Invoke-RestMethod -uri ("http://"+$StackConfigData.RedSCC+":"+$StackConfigData.RedSCCPort +"/set/3/blink") -Method Post
                         }
                     }elseif ((($WSJSONPacket.data.MatchState -gt 0)-and ($WSJSONPacket.data.MatchState -lt 6))-and (($null -ne $WSJSONPacket.data.AllianceStations.R3.DSConn) -and ($WSJSONPacket.data.AllianceStations.R3.Ethernet -eq $true) -and ($WSJSONPacket.data.AllianceStations.R3.Astop -eq $true) -and ($WSJSONPacket.data.AllianceStations.R3.Estop -eq $true) -and ($WSJSONPacket.data.AllianceStations.R3.Bypass -eq $true))){
-                        if ($StackState.R3 -notmatch "on") {
-                            $StackState.R3 = "on"
-                            Invoke-RestMethod -uri ("http://"+$StackConfigData.RedSCC+":"+$StackConfigData.RedSCCPort +"/set/3/"+$StackState.R3) -Method Post
+                        if ($StackStateRed.mappings.ds_3 -notmatch "on") {
+                            Invoke-RestMethod -uri ("http://"+$StackConfigData.RedSCC+":"+$StackConfigData.RedSCCPort +"/set/3/on") -Method Post
                         }
                     }
                     if (($WSJSONPacket.data.CanStartMatch -eq $true)) {
-                        if ($StackState.Cgreen -notmatch "blink") {
-                            $StackState.Cgreen = "blink"
-                            Invoke-RestMethod -uri ("http://"+$StackConfigData.MiddleStack+":"+$StackConfigData.MiddleStackPort +"/set/5/"+$StackState.Cgreen) -Method Post  #get Green Pin ID
+                        if ($StackStateMiddle.mappings.stack_green -notmatch "blink") {
+                            Invoke-RestMethod -uri ("http://"+$StackConfigData.MiddleStack+":"+$StackConfigData.MiddleStackPort +"/set/5/blink") -Method Post  #get Green Pin ID
                         }
                     }elseif ($WSJSONPacket.data.CanStartMatch -eq $false) {
-                        if ($StackState.Cgreen -notmatch "off") {
-                            $StackState.Cgreen = "off"
-                            Invoke-RestMethod -uri ("http://"+$StackConfigData.MiddleStack+":"+$StackConfigData.MiddleStackPort +"/set/5/"+$StackState.Cgreen) -Method Post  #get Green Pin ID
+                        if ($StackStateMiddle.mappings.stack_green -notmatch "off") {
+                            Invoke-RestMethod -uri ("http://"+$StackConfigData.MiddleStack+":"+$StackConfigData.MiddleStackPort +"/set/5/off") -Method Post  #get Green Pin ID
                         }
                     }elseif (($WSJSONPacket.data.MatchState -gt 0)-and ($WSJSONPacket.data.MatchState -lt 6)) {
-                        if ($StackState.Cgreen -notmatch "on") {
-                            $StackState.Cgreen = "on"
-                            Invoke-RestMethod -uri ("http://"+$StackConfigData.MiddleStack+":"+$StackConfigData.MiddleStackPort +"/set/5/"+$StackState.Cgreen) -Method Post #get Green Pin ID
+                        if ($StackStateMiddle.mappings.stack_green -notmatch "on") {
+                            Invoke-RestMethod -uri ("http://"+$StackConfigData.MiddleStack+":"+$StackConfigData.MiddleStackPort +"/set/5/on") -Method Post #get Green Pin ID
                         }
                     }
                             $FieldteamStatus.R2 = $true
@@ -174,7 +157,6 @@
                             Invoke-RestMethod -uri ("http://"+$StackConfigData.MiddleStack+":"+$StackConfigData.MiddleStackPort +"/set/1/"+$StackState.Cblue)  -Method Post #get blue Pin ID
                         }
                     }
-                    Set-PodeState -Name "StackConfig" -Value $StackState
                 }
             }
         }elseif ($WSJSONPacket.type -match "matchTiming") {
@@ -192,29 +174,25 @@
                         $shifttiming = get-podestate -Name "Shifttiming"
                         $StackState = Get-PodeState -name "StackState"
                         if (!(($WSJSONPacket.data.MatchState -ge 3) -and ($WSJSONPacket.data.MatchState -le 5))) {
-                            if($StackState.HubRed -notmatch "off"){
-                                $StackState.HubRed = "off"
-                                Invoke-RestMethod -uri ("http://"+$StackConfigData.MiddleStack+":"+$StackConfigData.MiddleStackPort +"/set/7/"+$StackState.HubRed) -Method Post
+                            if($StackStateMiddle.mappings.hub_red  -notmatch "off"){
+                                Invoke-RestMethod -uri ("http://"+$StackConfigData.MiddleStack+":"+$StackConfigData.MiddleStackPort +"/set/7/off") -Method Post
                                 Write-host "Red hubs off"
                                 #Code to enable both hubs for non ops
                             }
-                            if($StackState.HubBlue -notmatch "off"){
-                                $StackState.HubBlue = "off"
-                                Invoke-RestMethod -uri ("http://"+$StackConfigData.MiddleStack+":"+$StackConfigData.MiddleStackPort +"/set/8/"+$StackState.HubBlue) -Method Post
+                            if($StackStateMiddle.mappings.hub_blue -notmatch "off"){
+                                Invoke-RestMethod -uri ("http://"+$StackConfigData.MiddleStack+":"+$StackConfigData.MiddleStackPort +"/set/8/off") -Method Post
                                 #Code to enable both hubs for no ops
                                 Write-host "Blue hubs off"
                             }                    }
                         #from Start of match to the transtion end
                         if (($WSJSONPacket.data.MatchTimeSec -GT 0) -and ($WSJSONPacket.data.MatchTimeSec -lT ($gametiming.transtionshiftend))) { 
-                            if($StackState.HubRed -notmatch "on"){
-                                $StackState.HubRed = "on"
-                                Invoke-RestMethod -uri ("http://"+$StackConfigData.MiddleStack+":"+$StackConfigData.MiddleStackPort +"/set/7/"+$StackState.HubRed) -Method Post
+                            if($StackStateMiddle.mappings.hub_red  -notmatch "on"){
+                                Invoke-RestMethod -uri ("http://"+$StackConfigData.MiddleStack+":"+$StackConfigData.MiddleStackPort +"/set/7/on") -Method Post
                                 Write-host "Red hubs On"
                                 #Code to enable both hubs for auto
                             }
-                            if($StackState.HubBlue -notmatch "on"){
-                                $StackState.HubBlue = "on"
-                                Invoke-RestMethod -uri ("http://"+$StackConfigData.MiddleStack+":"+$StackConfigData.MiddleStackPort +"/set/8/"+$StackState.HubBlue) -Method Post
+                            if($StackStateMiddle.mappings.hub_blue -notmatch "on"){
+                                Invoke-RestMethod -uri ("http://"+$StackConfigData.MiddleStack+":"+$StackConfigData.MiddleStackPort +"/set/8/on") -Method Post
                                 #Code to enable both hubs for auto
                                 Write-host "Blue hubs On"
                             }
@@ -224,31 +202,27 @@
                         #from Transtionend to 3 second before end of first Shift
                         if (($WSJSONPacket.data.MatchTimeSec -ge ($gametiming.transtionshiftend)) -and ($WSJSONPacket.data.MatchTimeSec -lT ($gametiming.endshift1Warn))) {
                             if ($shifttiming.shift1 -match "blue"){
-                                if($StackState.HubRed -notmatch "off"){
-                                    $StackState.HubRed = "off"
-                                    Invoke-RestMethod -uri ("http://"+$StackConfigData.MiddleStack+":"+$StackConfigData.MiddleStackPort +"/set/7/"+$StackState.HubRed) -Method Post
+                                if($StackStateMiddle.mappings.hub_red  -notmatch "off"){
+                                    Invoke-RestMethod -uri ("http://"+$StackConfigData.MiddleStack+":"+$StackConfigData.MiddleStackPort +"/set/7/off" ) -Method Post
                                     #Code to disable red hubs for shift1
-                                    Write-host " Red hubs $StackState.HubRed for Shift 1"
+                                    Write-host " Red hubs $StackStateMiddle.mappings.hub_red  for Shift 1"
                                 }
-                                if($StackState.HubBlue -notmatch "on"){
-                                    $StackState.HubBlue = "on"
-                                    Invoke-RestMethod -uri ("http://"+$StackConfigData.MiddleStack+":"+$StackConfigData.MiddleStackPort +"/set/8/"+$StackState.HubBlue) -Method Post
+                                if($StackStateMiddle.mappings.hub_blue -notmatch "on"){
+                                    Invoke-RestMethod -uri ("http://"+$StackConfigData.MiddleStack+":"+$StackConfigData.MiddleStackPort +"/set/8/on") -Method Post
                                     #Code to enable Blue hubs for shift1
-                                    write-host " Blue hubs $StackState.HubBlue for Shift 1"
+                                    write-host " Blue hubs $StackStateMiddle.mappings.hub_blue for Shift 1"
                                     
                                 }
                             }if ($shifttiming.shift1 -match "red"){
-                                if($StackState.HubRed -notmatch "on"){
-                                    $StackState.Hubred = "on"
-                                    Invoke-RestMethod -uri ("http://"+$StackConfigData.MiddleStack+":"+$StackConfigData.MiddleStackPort +"/set/7/"+$StackState.HubRed) -Method Post
+                                if($StackStateMiddle.mappings.hub_red  -notmatch "on"){
+                                    Invoke-RestMethod -uri ("http://"+$StackConfigData.MiddleStack+":"+$StackConfigData.MiddleStackPort +"/set/7/on" ) -Method Post
                                     #Code to enable red hubs for shift1
-                                    Write-host " Red hubs $StackState.HubRed"
+                                    Write-host " Red hubs $StackStateMiddle.mappings.hub_red "
                                 }
-                                if($StackState.HubBlue -notmatch "off"){
-                                    $StackState.HubBlue = "off"
-                                    Invoke-RestMethod -uri ("http://"+$StackConfigData.MiddleStack+":"+$StackConfigData.MiddleStackPort +"/set/8/"+$StackState.HubBlue) -Method Post
+                                if($StackStateMiddle.mappings.hub_blue -notmatch "off"){
+                                    Invoke-RestMethod -uri ("http://"+$StackConfigData.MiddleStack+":"+$StackConfigData.MiddleStackPort +"/set/8/off") -Method Post
                                     #Code to disable Blue hubs for shift1
-                                    write-host " Blue hubs $StackState.HubBlue"
+                                    write-host " Blue hubs $StackStateMiddle.mappings.hub_blue"
                                     
                                 }
                             }
@@ -259,28 +233,24 @@
                         #3 Second before End First Shift to end of first shift
                         if (($WSJSONPacket.data.MatchTimeSec -ge ($gametiming.endshift1Warn)) -and ($WSJSONPacket.data.MatchTimeSec -lT ($gametiming.endshift1))) {
                             if ($shifttiming.shift1 -match "blue"){
-                                if($StackState.HubRed -notmatch "off"){
-                                    $StackState.HubRed = "off"
-                                    Invoke-RestMethod -uri ("http://"+$StackConfigData.MiddleStack+":"+$StackConfigData.MiddleStackPort +"/set/7/"+$StackState.HubRed) -Method Post
+                                if($StackStateMiddle.mappings.hub_red  -notmatch "off"){
+                                    Invoke-RestMethod -uri ("http://"+$StackConfigData.MiddleStack+":"+$StackConfigData.MiddleStackPort +"/set/7/off" ) -Method Post
                                     #Code to disable red hubs for shift1
                                     
                                 }
-                                if($StackState.HubBlue -notmatch "blink"){
-                                    $StackState.HubBlue = "blink"
-                                    Invoke-RestMethod -uri ("http://"+$StackConfigData.MiddleStack+":"+$StackConfigData.MiddleStackPort +"/set/8/"+$StackState.HubBlue) -Method Post
+                                if($StackStateMiddle.mappings.hub_blue -notmatch "blink"){
+                                    Invoke-RestMethod -uri ("http://"+$StackConfigData.MiddleStack+":"+$StackConfigData.MiddleStackPort +"/set/8/blink") -Method Post
                                     #Code to enable Blue hubs for shift1
                                     
                                 }
                             }if ($shifttiming.shift1 -match "red"){
-                                if($StackState.HubRed -notmatch "blink"){
-                                    $StackState.Hubred = "blink"
-                                    Invoke-RestMethod -uri ("http://"+$StackConfigData.MiddleStack+":"+$StackConfigData.MiddleStackPort +"/set/7/"+$StackState.HubRed) -Method Post
+                                if($StackStateMiddle.mappings.hub_red  -notmatch "blink"){
+                                    Invoke-RestMethod -uri ("http://"+$StackConfigData.MiddleStack+":"+$StackConfigData.MiddleStackPort +"/set/7/blink" ) -Method Post
                                     #Code to enable red hubs for shift1
                                     
                                 }
-                                if($StackState.HubBlue -notmatch "off"){
-                                    $StackState.HubBlue = "off"
-                                    Invoke-RestMethod -uri ("http://"+$StackConfigData.MiddleStack+":"+$StackConfigData.MiddleStackPort +"/set/8/"+$StackState.HubBlue) -Method Post
+                                if($StackStateMiddle.mappings.hub_blue -notmatch "off"){
+                                    Invoke-RestMethod -uri ("http://"+$StackConfigData.MiddleStack+":"+$StackConfigData.MiddleStackPort +"/set/8/off") -Method Post
                                     #Code to disable Blue hubs for shift1
                                     
                                 }
@@ -289,28 +259,24 @@
                         }# End First Shift to  three sec before end of 2nd shift
                         if (($WSJSONPacket.data.MatchTimeSec -ge ($gametiming.endshift1)) -and ($WSJSONPacket.data.MatchTimeSec -lT ($gametiming.endshift2warn ))) {
                             if ($shifttiming.shift2 -match "blue"){
-                                if($StackState.HubRed -notmatch "off"){
-                                    $StackState.HubRed = "off"
-                                    Invoke-RestMethod -uri ("http://"+$StackConfigData.MiddleStack+":"+$StackConfigData.MiddleStackPort +"/set/7/"+$StackState.HubRed) -Method Post
+                                if($StackStateMiddle.mappings.hub_red  -notmatch "off"){
+                                    Invoke-RestMethod -uri ("http://"+$StackConfigData.MiddleStack+":"+$StackConfigData.MiddleStackPort +"/set/7/off" ) -Method Post
                                     #Code to disable red hubs for shift1
                                     
                                 }
-                                if($StackState.HubBlue -notmatch "on"){
-                                    $StackState.HubBlue = "on"
-                                    Invoke-RestMethod -uri ("http://"+$StackConfigData.MiddleStack+":"+$StackConfigData.MiddleStackPort +"/set/8/"+$StackState.HubBlue) -Method Post
+                                if($StackStateMiddle.mappings.hub_blue -notmatch "on"){
+                                    Invoke-RestMethod -uri ("http://"+$StackConfigData.MiddleStack+":"+$StackConfigData.MiddleStackPort +"/set/8/on") -Method Post
                                     #Code to enable Blue hubs for shift1
                                     
                                 }
                             }if ($shifttiming.shift2 -match "red"){
-                                if($StackState.HubRed -notmatch "on"){
-                                    $StackState.Hubred = "on"
-                                    Invoke-RestMethod -uri ("http://"+$StackConfigData.MiddleStack+":"+$StackConfigData.MiddleStackPort +"/set/7/"+$StackState.HubRed) -Method Post
+                                if($StackStateMiddle.mappings.hub_red  -notmatch "on"){
+                                    Invoke-RestMethod -uri ("http://"+$StackConfigData.MiddleStack+":"+$StackConfigData.MiddleStackPort +"/set/7/on" ) -Method Post
                                     #Code to enable red hubs for shift1
                                     
                                 }
-                                if($StackState.HubBlue -notmatch "off"){
-                                    $StackState.HubBlue = "off"
-                                    Invoke-RestMethod -uri ("http://"+$StackConfigData.MiddleStack+":"+$StackConfigData.MiddleStackPort +"/set/8/"+$StackState.HubBlue) -Method Post
+                                if($StackStateMiddle.mappings.hub_blue -notmatch "off"){
+                                    Invoke-RestMethod -uri ("http://"+$StackConfigData.MiddleStack+":"+$StackConfigData.MiddleStackPort +"/set/8/off") -Method Post
                                     #Code to disable Blue hubs for shift1
                                     
                                 }
@@ -319,28 +285,24 @@
                         }#3 Second before End of 2nd Shift to end of 2nd shift
                         if (($WSJSONPacket.data.MatchTimeSec -ge ($gametiming.endshift2warn)) -and ($WSJSONPacket.data.MatchTimeSec -lT ($gametiming.endshift2))) {
                             if ($shifttiming.shift2 -match "blue"){
-                                if($StackState.HubRed -notmatch "off"){
-                                    $StackState.HubRed = "off"
-                                    Invoke-RestMethod -uri ("http://"+$StackConfigData.MiddleStack+":"+$StackConfigData.MiddleStackPort +"/set/7/"+$StackState.HubRed) -Method Post
+                                if($StackStateMiddle.mappings.hub_red  -notmatch "off"){
+                                    Invoke-RestMethod -uri ("http://"+$StackConfigData.MiddleStack+":"+$StackConfigData.MiddleStackPort +"/set/7/off" ) -Method Post
                                     #Code to disable red hubs for shift1
                                     
                                 }
-                                if($StackState.HubBlue -notmatch "blink"){
-                                    $StackState.HubBlue = "blink"
-                                    Invoke-RestMethod -uri ("http://"+$StackConfigData.MiddleStack+":"+$StackConfigData.MiddleStackPort +"/set/8/"+$StackState.HubBlue) -Method Post
+                                if($StackStateMiddle.mappings.hub_blue -notmatch "blink"){
+                                    Invoke-RestMethod -uri ("http://"+$StackConfigData.MiddleStack+":"+$StackConfigData.MiddleStackPort +"/set/8/blink") -Method Post
                                     #Code to enable Blue hubs for shift1
                                     
                                 }
                             }if ($shifttiming.shift2 -match "red"){
-                                if($StackState.HubRed -notmatch "blink"){
-                                    $StackState.Hubred = "blink"
-                                    Invoke-RestMethod -uri ("http://"+$StackConfigData.MiddleStack+":"+$StackConfigData.MiddleStackPort +"/set/7/"+$StackState.HubRed) -Method Post
+                                if($StackStateMiddle.mappings.hub_red  -notmatch "blink"){
+                                    Invoke-RestMethod -uri ("http://"+$StackConfigData.MiddleStack+":"+$StackConfigData.MiddleStackPort +"/set/7/blink" ) -Method Post
                                     #Code to enable red hubs for shift1
                                     
                                 }
-                                if($StackState.HubBlue -notmatch "off"){
-                                    $StackState.HubBlue = "off"
-                                    Invoke-RestMethod -uri ("http://"+$StackConfigData.MiddleStack+":"+$StackConfigData.MiddleStackPort +"/set/8/"+$StackState.HubBlue) -Method Post
+                                if($StackStateMiddle.mappings.hub_blue -notmatch "off"){
+                                    Invoke-RestMethod -uri ("http://"+$StackConfigData.MiddleStack+":"+$StackConfigData.MiddleStackPort +"/set/8/off") -Method Post
                                     #Code to disable Blue hubs for shift1
                                     
                                 }
@@ -349,28 +311,24 @@
                         }# End 2rd Shift to  three sec before end of 3nd shift
                         if (($WSJSONPacket.data.MatchTimeSec -ge ($gametiming.endshift2)) -and ($WSJSONPacket.data.MatchTimeSec -lT ($gametiming.endshift3warn))) {
                             if ($shifttiming.shift3 -match "blue"){
-                                if($StackState.HubRed -notmatch "off"){
-                                    $StackState.HubRed = "off"
-                                    Invoke-RestMethod -uri ("http://"+$StackConfigData.MiddleStack+":"+$StackConfigData.MiddleStackPort +"/set/7/"+$StackState.HubRed) -Method Post
+                                if($StackStateMiddle.mappings.hub_red  -notmatch "off"){
+                                    Invoke-RestMethod -uri ("http://"+$StackConfigData.MiddleStack+":"+$StackConfigData.MiddleStackPort +"/set/7/off" ) -Method Post
                                     #Code to disable red hubs for shift1
                                     
                                 }
-                                if($StackState.HubBlue -notmatch "on"){
-                                    $StackState.HubBlue = "on"
-                                    Invoke-RestMethod -uri ("http://"+$StackConfigData.MiddleStack+":"+$StackConfigData.MiddleStackPort +"/set/8/"+$StackState.HubBlue) -Method Post
+                                if($StackStateMiddle.mappings.hub_blue -notmatch "on"){
+                                    Invoke-RestMethod -uri ("http://"+$StackConfigData.MiddleStack+":"+$StackConfigData.MiddleStackPort +"/set/8/on") -Method Post
                                     #Code to enable Blue hubs for shift1
                                     
                                 }
                             }if ($shifttiming.shift3 -match "red"){
-                                if($StackState.HubRed -notmatch "on"){
-                                    $StackState.Hubred = "on"
-                                    Invoke-RestMethod -uri ("http://"+$StackConfigData.MiddleStack+":"+$StackConfigData.MiddleStackPort +"/set/7/"+$StackState.HubRed) -Method Post
+                                if($StackStateMiddle.mappings.hub_red  -notmatch "on"){
+                                    Invoke-RestMethod -uri ("http://"+$StackConfigData.MiddleStack+":"+$StackConfigData.MiddleStackPort +"/set/7/on" ) -Method Post
                                     #Code to enable red hubs for shift1
                                     
                                 }
-                                if($StackState.HubBlue -notmatch "off"){
-                                    $StackState.HubBlue = "off"
-                                    Invoke-RestMethod -uri ("http://"+$StackConfigData.MiddleStack+":"+$StackConfigData.MiddleStackPort +"/set/8/"+$StackState.HubBlue) -Method Post
+                                if($StackStateMiddle.mappings.hub_blue -notmatch "off"){
+                                    Invoke-RestMethod -uri ("http://"+$StackConfigData.MiddleStack+":"+$StackConfigData.MiddleStackPort +"/set/8/off") -Method Post
                                     #Code to disable Blue hubs for shift1
                                     
                                 }
@@ -379,28 +337,24 @@
                         }#3 Second before End 3rd Shift to end of 3rd shift
                         if (($WSJSONPacket.data.MatchTimeSec -ge ($gametiming.endshift3warn)) -and ($WSJSONPacket.data.MatchTimeSec -lT ($gametiming.endshift3))) {
                             if ($shifttiming.shift3 -match "blue"){
-                                if($StackState.HubRed -notmatch "off"){
-                                    $StackState.HubRed = "off"
-                                    Invoke-RestMethod -uri ("http://"+$StackConfigData.MiddleStack+":"+$StackConfigData.MiddleStackPort +"/set/7/"+$StackState.HubRed) -Method Post
+                                if($StackStateMiddle.mappings.hub_red  -notmatch "off"){
+                                    Invoke-RestMethod -uri ("http://"+$StackConfigData.MiddleStack+":"+$StackConfigData.MiddleStackPort +"/set/7/off" ) -Method Post
                                     #Code to disable red hubs for shift1
                                     
                                 }
-                                if($StackState.HubBlue -notmatch "blink"){
-                                    $StackState.HubBlue = "blink"
-                                    Invoke-RestMethod -uri ("http://"+$StackConfigData.MiddleStack+":"+$StackConfigData.MiddleStackPort +"/set/8/"+$StackState.HubBlue) -Method Post
+                                if($StackStateMiddle.mappings.hub_blue -notmatch "blink"){
+                                    Invoke-RestMethod -uri ("http://"+$StackConfigData.MiddleStack+":"+$StackConfigData.MiddleStackPort +"/set/8/blink") -Method Post
                                     #Code to enable Blue hubs for shift1
                                     
                                 }
                             }if ($shifttiming.shift3 -match "red"){
-                                if($StackState.HubRed -notmatch "blink"){
-                                    $StackState.Hubred = "blink"
-                                    Invoke-RestMethod -uri ("http://"+$StackConfigData.MiddleStack+":"+$StackConfigData.MiddleStackPort +"/set/7/"+$StackState.HubRed) -Method Post
+                                if($StackStateMiddle.mappings.hub_red  -notmatch "blink"){
+                                    Invoke-RestMethod -uri ("http://"+$StackConfigData.MiddleStack+":"+$StackConfigData.MiddleStackPort +"/set/7/blink" ) -Method Post
                                     #Code to enable red hubs for shift1
                                     
                                 }
-                                if($StackState.HubBlue -notmatch "off"){
-                                    $StackState.HubBlue = "off"
-                                    Invoke-RestMethod -uri ("http://"+$StackConfigData.MiddleStack+":"+$StackConfigData.MiddleStackPort +"/set/8/"+$StackState.HubBlue) -Method Post
+                                if($StackStateMiddle.mappings.hub_blue -notmatch "off"){
+                                    Invoke-RestMethod -uri ("http://"+$StackConfigData.MiddleStack+":"+$StackConfigData.MiddleStackPort +"/set/8/off") -Method Post
                                     #Code to disable Blue hubs for shift1
                                     
                                 }
@@ -409,28 +363,24 @@
                         }# End 3rd Shift to  4th shift
                         if (($WSJSONPacket.data.MatchTimeSec -ge ($gametiming.endshift3)) -and ($WSJSONPacket.data.MatchTimeSec -lT ($gametiming.endshift4))) {
                             if ($shifttiming.shift3 -match "blue"){
-                                if($StackState.HubRed -notmatch "off"){
-                                    $StackState.HubRed = "off"
-                                    Invoke-RestMethod -uri ("http://"+$StackConfigData.MiddleStack+":"+$StackConfigData.MiddleStackPort +"/set/7/"+$StackState.HubRed) -Method Post
+                                if($StackStateMiddle.mappings.hub_red  -notmatch "off"){
+                                    Invoke-RestMethod -uri ("http://"+$StackConfigData.MiddleStack+":"+$StackConfigData.MiddleStackPort +"/set/7/off" ) -Method Post
                                     #Code to disable red hubs for shift1
                                     
                                 }
-                                if($StackState.HubBlue -notmatch "on"){
-                                    $StackState.HubBlue = "on"
-                                    Invoke-RestMethod -uri ("http://"+$StackConfigData.MiddleStack+":"+$StackConfigData.MiddleStackPort +"/set/8/"+$StackState.HubBlue) -Method Post
+                                if($StackStateMiddle.mappings.hub_blue -notmatch "on"){
+                                    Invoke-RestMethod -uri ("http://"+$StackConfigData.MiddleStack+":"+$StackConfigData.MiddleStackPort +"/set/8/on") -Method Post
                                     #Code to enable Blue hubs for shift1
                                     
                                 }
                             }if ($shifttiming.shift3 -match "red"){
-                                if($StackState.HubRed -notmatch "on"){
-                                    $StackState.Hubred = "on"
-                                    Invoke-RestMethod -uri ("http://"+$StackConfigData.MiddleStack+":"+$StackConfigData.MiddleStackPort +"/set/7/"+$StackState.HubRed) -Method Post
+                                if($StackStateMiddle.mappings.hub_red  -notmatch "on"){
+                                    Invoke-RestMethod -uri ("http://"+$StackConfigData.MiddleStack+":"+$StackConfigData.MiddleStackPort +"/set/7/on" ) -Method Post
                                     #Code to enable red hubs for shift1
                                     
                                 }
-                                if($StackState.HubBlue -notmatch "off"){
-                                    $StackState.HubBlue = "off"
-                                    Invoke-RestMethod -uri ("http://"+$StackConfigData.MiddleStack+":"+$StackConfigData.MiddleStackPort +"/set/8/"+$StackState.HubBlue) -Method Post
+                                if($StackStateMiddle.mappings.hub_blue -notmatch "off"){
+                                    Invoke-RestMethod -uri ("http://"+$StackConfigData.MiddleStack+":"+$StackConfigData.MiddleStackPort +"/set/8/off") -Method Post
                                     #Code to disable Blue hubs for shift1
                                     
                                 }
@@ -438,14 +388,12 @@
                             
                         }
                         if (($WSJSONPacket.data.MatchTimeSec -ge ($gametiming.endshift4))) {
-                            if($StackState.HubRed -notmatch "on"){
-                                $StackState.HubRed = "on"
-                                Invoke-RestMethod -uri ("http://"+$StackConfigData.MiddleStack+":"+$StackConfigData.MiddleStackPort +"/set/7/"+$StackState.HubRed) -Method Post
+                            if($StackStateMiddle.mappings.hub_red  -notmatch "on"){
+                                Invoke-RestMethod -uri ("http://"+$StackConfigData.MiddleStack+":"+$StackConfigData.MiddleStackPort +"/set/7/on" ) -Method Post
                                 #Code to enable both hubs for auto
                             }
-                            if($StackState.HubBlue -notmatch "on"){
-                                $StackState.HubBlue = "on"
-                                Invoke-RestMethod -uri ("http://"+$StackConfigData.MiddleStack+":"+$StackConfigData.MiddleStackPort +"/set/8/"+$StackState.HubBlue) -Method Post
+                            if($StackStateMiddle.mappings.hub_blue -notmatch "on"){
+                                Invoke-RestMethod -uri ("http://"+$StackConfigData.MiddleStack+":"+$StackConfigData.MiddleStackPort +"/set/8/on") -Method Post
                                 #Code to enable both hubs for auto
                             }
                             
@@ -491,7 +439,7 @@
                             $arena = get-podeState -name "FMSArenaStatus" | ConvertFrom-Json
                             $matchid = ($arena.data.MatchId)
                             Get-PodeState -name "points"| convertto-JSON | Out-File -FilePath ./log/$matchid.json -Force
-                            Set-PodeState -Name 'points' -Value @{ 'RedAuto' = 0;'blueauto' = 0;'Redtele' = 0;'bluetele' = 0;'redend' = 0;'blueend' = 0;'redAutoL1' = 0;'redTeleL1' = 0;'redTeleL2' = 0;'redTeleL3' = 0;'BlueAutoL1' = 0;'BlueTeleL1' = 0;'BlueTeleL2' = 0;'BlueTeleL3' = 0; 'redMinorFoul' = 0;'redMajorFoul' = 0; 'blueMinorFoul'=0;'blueMajorFoul' = 0; } | Out-Null
+                            Set-PodeState -Name 'points' -Value @{ 'RedAuto' = 0;'blueauto' = 0;'Redtele' = 0;'bluetele' = 0;'redend' = 0;'blueend' = 0;'redAutoL1' = 0;'redTeleL1' = 0;'redTeleL2' = 0;'redTeleL3' = 0;'BlueAutoL1' = 0;'BlueTeleL1' = 0;'BlueTeleL2' = 0;'BlueTeleL3' = 0; 'redMinorFoul' = 0;'redMajorFoul' = 0; 'blueMinorFoul'=0;'blueMajorFoul' = 0; "mode"="nonops"} | Out-Null
                         }
                         $newstate = "PreMatch"
                     }elseif ($WSJSONPacket.data.MatchState -eq  "1") {
