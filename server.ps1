@@ -14,7 +14,7 @@ if(Test-Path -Path "./data/server.json"){
 }else {
     Write-Debug "Writing Server.JSON"
     Write-Host "server config file created update config to new settings"
-    '{"server":"localhost","FMS":"localhost","FMSConnect":true,"Music":false}'| Out-File -FilePath "./data/server.json" -Force
+    '{"server":"localhost","FMS":"localhost","FMSConnect":true,"Music":false,"stacklight":false}'| Out-File -FilePath "./data/server.json" -Force
     exit 99 
 }
     Write-Debug "Getting loading Server Config"
@@ -38,6 +38,7 @@ Start-PodeServer -Threads 4 -EnablePool WebSockets {
     set-podestate -Name "PlayerConfig" |Out-Null
     set-podestate -Name "PlaylistConfig" |Out-Null
     set-podestate -Name "Nexuslink" |Out-Null
+    set-podestate -name "TestarenaState"|Out-Null
     New-PodeLockable -name "NexusLock"
     New-PodeLockable -name "playlistLock"
     New-PodeLockable -name "playerconfigLock"
@@ -48,6 +49,7 @@ Start-PodeServer -Threads 4 -EnablePool WebSockets {
     New-PodeLockable -Name 'ConfigStateLock'
     New-PodeLockable -Name 'arenaQueueLock'
     New-PodeLockable -Name 'FMSArenamatchtime'
+    New-PodeLockable -Name  "TestArenaLock"
  
 
     . "./Game2026/init-Gamecode.ps1" #Game2026 State and Lock table
@@ -107,24 +109,15 @@ Start-PodeServer -Threads 4 -EnablePool WebSockets {
     }
     Add-PodeRoute -Method get -Path "/" -ScriptBlock{Write-PodeViewResponse -Path "index"}
 
-
     Add-PodeRouteGroup -Path "/arena" -Routes {
-        Add-PodeRoute -Method Get -Path "/scorekeeper" -ScriptBlock {
-            Write-PodeViewResponse -Path "arena/Scorekeeper"
-        }
-        Add-PodeRoute -Method Get -Path "/Announcer" -ScriptBlock {
-            Write-PodeViewResponse -Path "arena/AnnouncerDisplay"
-        }
-        Add-PodeRoute -method get -Path "/points" -ScriptBlock{
-            Write-PodeViewResponse -Path "arena/ScoreDashboard"
-        }
+        Add-PodeRoute -Method Get -Path "/scorekeeper" -ScriptBlock {Write-PodeViewResponse -Path "arena/Scorekeeper"}
+        Add-PodeRoute -Method Get -Path "/Announcer" -ScriptBlock {Write-PodeViewResponse -Path "arena/AnnouncerDisplay"}
+        Add-PodeRoute -method get -Path "/points" -ScriptBlock{Write-PodeViewResponse -Path "arena/ScoreDashboard"}
+        add-poderoute -Method Get -Path "/Test" -ScriptBlock {Write-PodeViewResponse -Path "arena/testArena"}
         Add-PodeRouteGroup -Path "/Audiance" -Routes {
             Add-PodeRoute -Path "/game" -Method Get -ScriptBlock {Write-PodeViewResponse -Path "arena/AudianceGameBug"}
             Add-PodeRoute -Path "/AudioPlayback" -Method Get -ScriptBlock {Write-PodeViewResponse -Path "arena/soundplayer"}
-
         }
-        
-
     }
     Add-PodeRouteGroup -Path '/api' -Routes  {
         Add-PodeRoute -Method get -Path "/Music" -ScriptBlock {
@@ -141,6 +134,15 @@ Start-PodeServer -Threads 4 -EnablePool WebSockets {
         }
         Add-PodeRoute -Method Get,Post -Path "/arena" -ContentType 'application/json' -FilePath "./routes/API/api-arena.ps1"
         Add-PodeRouteGroup -Path "/arena" -Routes{
+            Add-PodeRoute -Method get,Post -path "/test" -FilePath "./routes/Arena/Test-Arena.ps1"
+            Add-PodeRouteGroup -Path "/test" -Routes{
+                Add-PodeRoute -Method Post -Path "/playSound" -ScriptBlock {
+                    $fileselection = $webevent.data.sound
+                    Send-PodeSignal -Value @{"type"="playaudio";"data"=$fileselection}
+                }
+
+
+            }
             Add-PodeRoute -Method get -Path "/points" -FilePath "./routes/API/Arenapoints.ps1"
             Add-PodeRoute -Method get,Post -Path "/points/:team/:score" -FilePath "./Game2026/routes/API/ArenaScoring.ps1"
             Add-PodeRoute -Method get -Path "/score" -FilePath "./Game2026/routes/API/api-score.ps1"
@@ -148,14 +150,14 @@ Start-PodeServer -Threads 4 -EnablePool WebSockets {
             add-poderoute -Method get -Path "/queue/read" -ContentType 'application/json' -FilePath "./routes/API/Api-arenaReadqueue.ps1"
             add-poderoute -Method get,post -Path "/state" -ContentType 'application/json' -FilePath "./routes/API/API-ArenaStateChange.ps1"
             Add-PodeRoute -Method get,post -Path "/scorekeeper" -ContentType 'application/json' -filepath "./Game2026/routes/API/api-scorekeeper.ps1"
-            Add-PodeRoute -Method get -Path "/bypass/:pos" -ScriptBlock {Send-PodeWebSocket -Name "CA" -Message @{"type"="toggleBypass";"data"=$WebEvent.Parameters['pos']}}
+            Add-PodeRoute -Method get,post -Path "/bypass/:pos" -FilePath "./routes/Arena/FMS-Bypass.ps1"
+            add-poderoute -Method Get -Path "/team/:pos" -FilePath "./routes/Arena/FMS-TeamList.ps1"
             Add-PodeRoute -Method Get -Path "/matchstart" -ScriptBlock {Send-PodeWebSocket -name "CA" -Message @{"type"="startMatch";"data"=@{"muteMatchSounds"=$false}}}
             Add-PodeRoute -Method Get -Path "/abortmatch" -ScriptBlock {Send-PodeWebSocket -name "CA" -Message @{"type"="abortMatch"}}
             Add-PodeRoute -Method Get -Path "/AudianceDisplay" -FilePath "./routes/API/API-AudianceDisplay.ps1"
             Add-PodeRouteGroup -Path "/Stack"-Routes{
                 Add-PodeRoute -Path "/state" -Method Get -ScriptBlock{
                     Lock-PodeObject -Name "ConfigStateLock" -ScriptBlock {
-                        
                         Write-PodeJsonResponse (Get-PodeState -Name "StackState")
                     }
 

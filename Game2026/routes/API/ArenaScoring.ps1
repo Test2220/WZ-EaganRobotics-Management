@@ -9,7 +9,7 @@
         Lock-PodeObject -Name "points" -CheckGlobal -ScriptBlock {
             $shifttiming = get-podestate -Name "Shifttiming"
             $pointState = Get-PodeState -Name "points" 
-            $arenaGlobalState = get-podestate -name "ArenaOverride"
+            $arenaGlobalState = get-podestate -name "ArenaOverride" 
            
             $time = Get-PodeState -name "FMSArenatimer" | ConvertFrom-Json 
             if ($time.data.MatchState -eq 3) {
@@ -22,7 +22,6 @@
                 $mode = "test"
             }
             else{
-
                 $mode ="nonOps"
             }
             if ($WebEvent.Parameters['team'] -match "red"){
@@ -63,7 +62,6 @@
                 }
             }
             $responseTable = @{ 'RedAuto' = $pointState.RedAuto;'blueauto' = $pointState.BlueAuto;'Redtele' = $pointState.RedTele;'bluetele' = $pointState.BlueTele;'redend' = $pointState.RedEnd;'blueend' = $pointState.BlueEnd; "MatchState"= $time.data.MatchState; "MatchTimeSec"=$time.data.MatchTimeSec;"Shift1"= $shifttiming.Shift1;"Shift2"= $shifttiming.Shift2;"Shift3"= $shifttiming.Shift3;"Shift4"= $shifttiming.Shift4;"mode"=$mode}
-
             Set-PodeState -Name "points" -Value $pointState
             Write-PodeJsonResponse $responseTable
         

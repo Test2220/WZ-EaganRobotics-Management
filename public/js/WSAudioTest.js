@@ -1,22 +1,15 @@
-$(document).ready(() => {
-    // bind submit on the form to send message to the server
-    $('#bc-form').submit(function(e) {
-        e.preventDefault();
+function connect() {
+    var url =  "ws://"+window.location.hostname+":81/"
+  var ws = new WebSocket(url);
+  ws.onopen = function() {
+    // subscribe to some channels
+    ws.send(JSON.stringify({
+        //.... some message the I must send when I connect ....
+    }));
+  };
 
-        ws.send(JSON.stringify({
-            message: $('input[name=message]').val()
-        }));
-
-        $('input[name=message]').val('');
-    });
-
-    // create the websocket
-    var url = "ws://"+window.location.hostname+":81/";
-    var ws = new WebSocket(url);
-
-    // event for inbound messages to append them
-    ws.onmessage = function(evt) {
-        if (typeof evt.data === 'string') {
+  ws.onmessage = function(evt) {
+            if (typeof evt.data === 'string') {
         try {
         const data = JSON.parse(evt.data);
             if(data.type === "playaudio"){
@@ -31,13 +24,12 @@ $(document).ready(() => {
         // Handle non-JSON text message
         }
     }
-  // ... handle binary data
-};
+  };
+
   ws.onclose = function(e) {
     console.log('Socket is closed. Reconnect will be attempted in 1 second.', e.reason);
     setTimeout(function() {
-    var url = "ws://"+window.location.hostname+":81/";
-    var ws = new WebSocket(url);
+      connect();
     }, 1000);
   };
 
@@ -45,4 +37,6 @@ $(document).ready(() => {
     console.error('Socket encountered error: ', err.message, 'Closing socket');
     ws.close();
   };
-});
+}
+
+connect();

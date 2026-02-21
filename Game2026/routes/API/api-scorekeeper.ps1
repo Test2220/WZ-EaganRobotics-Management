@@ -119,19 +119,35 @@ blueteleL3Sub
                     }elseif ($webevent.data.element -match "blueFoulAdd"){
                         $pointState.blueMinorFoul++
                     }elseif ($webevent.data.element -match "blueFoulMin"){
-                        $pointState.blueMinorFoul--
+                        if($pointState.blueMinorFoul -le 0){
+                            $pointState.blueMinorFoul = 0
+                        }else{
+                            $pointState.blueMinorFoul--
+                        }
                     }elseif ($webevent.data.element -match "redFoulAdd"){
                         $pointState.redMinorFoul++
                     }elseif ($webevent.data.element -match "redFoulMin"){
-                        $pointState.redMinorFoul--
+                        if($pointState.redMinorFoul -le 0){
+                            $pointState.redMinorFoul = 0
+                        }else{
+                            $pointState.redMinorFoul--
+                        }
                     }elseif ($webevent.data.element -match "blueTFoulAdd"){
                         $pointState.blueMajorFoul++
                     }elseif ($webevent.data.element -match "blueTFoulMin"){
-                        $pointState.blueMajorFoul--
+                        if($pointState.blueMajorFoul -le 0){
+                            $pointState.blueMajorFoul = 0
+                        }else{
+                            $pointState.blueMajorFoul--
+                        }
                     }elseif ($webevent.data.element -match "redTFoulAdd"){
                         $pointState.redMajorFoul++
                     }elseif ($webevent.data.element -match "redTFoulMin"){
-                        $pointState.redMajorFoul--
+                        if($pointState.redMajorFoul -le 0){
+                            $pointState.redMajorFoul = 0
+                        }else{
+                            $pointState.redMajorFoul--
+                        }
                     }
 
                     Set-PodeState -Name "points" -Value $pointState
@@ -141,12 +157,13 @@ blueteleL3Sub
             }else{
                 Lock-PodeObject -name "points" -ScriptBlock{
                     $pointState = Get-PodeState -Name "points" 
+
                     $redFuel = $pointState.RedAuto + $pointState.Redtele +$pointState.redend
                     $blueFuel = $pointState.blueAuto + $pointState.bluetele +$pointState.blueend
                     $Redtotal = ($pointState.RedAuto) + ($pointState.Redtele) + ($pointState.redend) +($pointState.RedAutoL1 * 15) + ($pointState.redTeleL1 * 10) + ($pointState.redTeleL2 * 20) + ($pointState.redTeleL3 * 30) + ($pointState.blueMinorFoul *5) +($pointState.blueMajorFoul * 15)
                     $Bluetotal = ($pointState.blueAuto) + ($pointState.bluetele) + ($pointState.blueend) +($pointState.blueAutoL1 * 15) + ($pointState.blueTeleL1 * 10) + ($pointState.blueTeleL2 * 20) + ($pointState.blueTeleL3 * 30) + ($pointState.redMinorFoul *5) +($pointState.redMajorFoul * 15)
     
-                    $responce = @{'redTotal'=$Redtotal;'bluetotal'=$bluetotal; 'RedFuel' = $redFuel;'blueFuel' = $blueFuel;'redAutoL1' = $pointState.redAutoL1;'redTeleL1' = $pointState.redTeleL1;'redTeleL2' = $pointState.redTeleL2;'redTeleL3' = $pointState.redTeleL3;'BlueAutoL1' = $pointState.blueAutoL1;'BlueTeleL1' = $pointState.blueTeleL1;'BlueTeleL2' = $pointState.blueTeleL2;'BlueTeleL3' = $pointState.blueTeleL3; 'redMinorFoul' = $pointState.redMinorFoul;'redMajorFoul' = $pointState.redMajorFoul; 'blueMinorFoul'=$pointState.blueMinorFoul;'blueMajorFoul' = $pointState.blueMajorFoul; }
+                    $responce = @{'redTotal'=$Redtotal;'bluetotal'=$bluetotal; 'RedFuel' = $redFuel;'blueFuel' = $blueFuel;'redAutoL1' = $pointState.redAutoL1;'redTeleL1' = $pointState.redTeleL1;'redTeleL2' = $pointState.redTeleL2;'redTeleL3' = $pointState.redTeleL3;'BlueAutoL1' = $pointState.blueAutoL1;'BlueTeleL1' = $pointState.blueTeleL1;'BlueTeleL2' = $pointState.blueTeleL2;'BlueTeleL3' = $pointState.blueTeleL3; 'redMinorFoul' = $pointState.redMinorFoul;'redMajorFoul' = $pointState.redMajorFoul; 'blueMinorFoul'=$pointState.blueMinorFoul;'blueMajorFoul' = $pointState.blueMajorFoul;"mode"= $pointState.mode; }
                     Write-PodeJsonResponse -Value $responce
                 }
             }
