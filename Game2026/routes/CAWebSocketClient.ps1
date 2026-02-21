@@ -7,7 +7,7 @@
             Set-PodeState -Name 'FMSArenaStatus' -Value $WsEvent.Request.body
             }
             $serverstate = Get-Content -path "./data/server.json"  | ConvertFrom-Json
-            if ($serverstate.stacklight) {            
+            if ($true) {            
                 Lock-PodeObject -Name "StackConfig" -ScriptBlock{
                     
                     $StackConfigData = Get-Content "./data/Stacklightconfig.json" | Convertfrom-Json
@@ -183,7 +183,7 @@
         }elseif ($WSJSONPacket.type -match "ping") {
         Write-Debug "WSMadepingrequest"
         }elseif ($WSJSONPacket.type -match "matchTime") {
-            if ($serverstate.stacklight) {
+            if ($true) {
                 Lock-PodeObject -name "StackState" -ScriptBlock {
                     $StackConfigData = Get-PodeState -Name "StackConfig"
                         if($null -eq $StackConfigData.MiddleStack){
