@@ -118,6 +118,12 @@ Start-PodeServer -Threads 4 -EnablePool WebSockets {
             Add-PodeRoute -Path "/game" -Method Get -ScriptBlock {Write-PodeViewResponse -Path "arena/AudianceGameBug"}
             Add-PodeRoute -Path "/AudioPlayback" -Method Get -ScriptBlock {Write-PodeViewResponse -Path "arena/soundplayer"}
         }
+        Add-PodeRoute -Method get -Path "/log" -scriptblock {Write-PodeDirectoryResponse -Path "./log"        }
+        add-podeRoute -method get -Path "/log/:filename" -ScriptBlock{
+            $file = $WebEvent.Parameters['filename']
+            $filelocation = get-content -Path "./log/$file"
+            Write-PodetextResponse $filelocation
+        }
     }
     Add-PodeRouteGroup -Path '/api' -Routes  {
         Add-PodeRoute -Method get -Path "/Music" -ScriptBlock {
