@@ -163,17 +163,16 @@
         Write-Debug "WSMadepingrequest"
         }elseif ($WSJSONPacket.type -match "matchTime") {
             if ($true) {
+
+                Lock-PodeObject -name "StackState" -ScriptBlock {
+                    $StackConfigData = Get-Content "./data/Stacklightconfig.json" | Convertfrom-Json
+
                     $StackStateRedIP = $StackConfigData.RedSCC
                     $StackStateBlueIP = $StackConfigData.BlueSCC
                     $StackStateMiddleIP = $StackConfigData.MiddleStack
                     $StackStateRed =Invoke-RestMethod -Uri "http://$StackStateRedIP/state"
                     $StackStateBlue =Invoke-RestMethod -Uri "http://$StackStateBlueIP/state"
                     $StackStateMiddle =Invoke-RestMethod -Uri "http://$StackStateMiddleIP/state"
-                Lock-PodeObject -name "StackState" -ScriptBlock {
-                    $StackConfigData = Get-PodeState -Name "StackConfig"
-                        if($null -eq $StackConfigData.MiddleStack){
-                            $StackConfigData = Get-Content "./data/Stacklightconfig.json" | Convertfrom-Json
-                        }
                         $shifttiming = get-podestate -Name "Shifttiming"
                         $StackState = Get-PodeState -name "StackState"
                         if (!(($WSJSONPacket.data.MatchState -ge 3) -and ($WSJSONPacket.data.MatchState -le 5))) {
