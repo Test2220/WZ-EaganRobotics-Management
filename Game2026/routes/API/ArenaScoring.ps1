@@ -46,13 +46,13 @@
                 if ($mode -match "auto") {
                     $pointState.BlueAuto += $WebEvent.Parameters['score']
                 }elseif($mode -match "tele") {
-                    if (($shifttiming.shift1 -match "red") -and ((($gametiming.transtionshiftend + $gametiming.Pause) -le $time.data.MatchTimeSec ))-and (($gametiming.endshift1 + $gametiming.pause) -gt $time.data.MatchTimeSec)) {
+                    if (($shifttiming.shift1 -match "blue") -and ((($gametiming.transtionshiftend + $gametiming.Pause) -le $time.data.MatchTimeSec ))-and (($gametiming.endshift1 + $gametiming.pause) -gt $time.data.MatchTimeSec)) {
                         $pointState.BlueTele += $WebEvent.Parameters['score']
-                    }elseif (($shifttiming.shift2 -match "red") -and ((($gametiming.endshift1 + $gametiming.Pause) -le $time.data.MatchTimeSec ))-and (($gametiming.endshift2 + $gametiming.pause) -gt $time.data.MatchTimeSec)) {
+                    }elseif (($shifttiming.shift2 -match "blue") -and ((($gametiming.endshift1 + $gametiming.Pause) -le $time.data.MatchTimeSec ))-and (($gametiming.endshift2 + $gametiming.pause) -gt $time.data.MatchTimeSec)) {
                         $pointState.BlueTele += $WebEvent.Parameters['score']
-                    }elseif (($shifttiming.shift3 -match "red") -and ((($gametiming.endshift2 + $gametiming.Pause) -le $time.data.MatchTimeSec ))-and (($gametiming.endshift3 + $gametiming.pause) -gt $time.data.MatchTimeSec)) {
+                    }elseif (($shifttiming.shift3 -match "blue") -and ((($gametiming.endshift2 + $gametiming.Pause) -le $time.data.MatchTimeSec ))-and (($gametiming.endshift3 + $gametiming.pause) -gt $time.data.MatchTimeSec)) {
                         $pointState.BlueTele += $WebEvent.Parameters['score']
-                    }elseif (($shifttiming.shift4 -match "red") -and ((($gametiming.endshift3 + $gametiming.Pause) -le $time.data.MatchTimeSec ))-and (($gametiming.endshift4 + $gametiming.pause) -gt $time.data.MatchTimeSec)) {
+                    }elseif (($shifttiming.shift4 -match "blue") -and ((($gametiming.endshift3 + $gametiming.Pause) -le $time.data.MatchTimeSec ))-and (($gametiming.endshift4 + $gametiming.pause) -gt $time.data.MatchTimeSec)) {
                         $pointState.BlueTele += $WebEvent.Parameters['score']
                     }    
                 }elseif($mode -match "end") {
