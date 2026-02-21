@@ -206,8 +206,8 @@
             
         }# End 3rd Shift to  4th shift
         if (($time.MatchTimeSec -ge ($gametiming.endshift3)) -and ($time.MatchTimeSec -lT ($gametiming.endshift4warn))) {
-            if ($shifttiming.shift3 -match "blue"){
-                if($StackStateMiddle.mappings.hub_red  -notmatch "off"){
+            if ($shifttiming.shift3 -match "red"){#inverted due to unknonwn bug
+                if($StackStateMiddle.mappings.hub_red  -notmatch "on"){
                     Invoke-RestMethod -uri ("http://"+$StackConfigData.MiddleStack+":"+$StackConfigData.MiddleStackPort +"/set/7/off" ) -Method Post
                     #Code to disable red hubs for shift1
                     
@@ -217,7 +217,7 @@
                     #Code to enable Blue hubs for shift1
                     
                 }
-            }if ($shifttiming.shift3 -match "red"){
+            }if ($shifttiming.shift3 -match "blue"){ #inverted due to unknown bug
                 if($StackStateMiddle.mappings.hub_red  -notmatch "on"){
                     Invoke-RestMethod -uri ("http://"+$StackConfigData.MiddleStack+":"+$StackConfigData.MiddleStackPort +"/set/7/on" ) -Method Post
                     #Code to enable red hubs for shift1
@@ -232,7 +232,7 @@
             
             
         }        if (($time.MatchTimeSec -ge ($gametiming.endshift4warn)) -and ($time.MatchTimeSec -lT ($gametiming.endshift4))) {
-            if ($shifttiming.shift3 -match "blue"){
+            if ($shifttiming.shift3 -match "red"){
                 if($StackStateMiddle.mappings.hub_red  -notmatch "off"){
                     Invoke-RestMethod -uri ("http://"+$StackConfigData.MiddleStack+":"+$StackConfigData.MiddleStackPort +"/set/7/off" ) -Method Post
                     #Code to disable red hubs for shift1
@@ -243,7 +243,7 @@
                     #Code to enable Blue hubs for shift1
                     
                 }
-            }if ($shifttiming.shift3 -match "red"){
+            }if ($shifttiming.shift3 -match "blue"){
                 if($StackStateMiddle.mappings.hub_red  -notmatch "blink"){
                     Invoke-RestMethod -uri ("http://"+$StackConfigData.MiddleStack+":"+$StackConfigData.MiddleStackPort +"/set/7/blink" ) -Method Post
                     #Code to enable red hubs for shift1
