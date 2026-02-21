@@ -133,28 +133,25 @@
                     }
                             $FieldteamStatus.R2 = $true
                     if ($FieldteamStatus.R1 -and $FieldteamStatus.R2 - $FieldteamStatus.R2) {
-                        if ($StackState.Cred -notmatch "on") {
-                            $StackState.CRed = "on"
-                            Invoke-RestMethod -uri ("http://"+$StackConfigData.MiddleStack+":"+$StackConfigData.MiddleStackPort +"/set/2/"+$StackState.Cred) -Method Post #get red Pin ID
+                        if ($StackStateMiddle.mappings.stack_red -notmatch "on") {
+                            $StackStateMiddle.mappings.stack_Red = "on"
+                            Invoke-RestMethod -uri ("http://"+$StackConfigData.MiddleStack+":"+$StackConfigData.MiddleStackPort +"/set/2/on") -Method Post #get red Pin ID
                         }
                     }else {
-                        if ($StackState.Cred -notmatch "off") {
-                            $StackState.CRed = "off"
-                            $url = ("http://"+$StackConfigData.MiddleStack+":"+$StackConfigData.MiddleStackPort +"/set/2/"+$StackState.Cred) 
+                        if ($StackStateMiddle.mappings.stack_red -notmatch "off") {
+                            $url = ("http://"+$StackConfigData.MiddleStack+":"+$StackConfigData.MiddleStackPort +"/set/2/off") 
 
                             Invoke-RestMethod -uri $url -Method Post  #get red Pin ID
                         }
                     }
 
                     if ($FieldteamStatus.B1 -and $FieldteamStatus.B2 - $FieldteamStatus.B2) {
-                        if ($StackState.Cblue -notmatch "on") {
-                            $StackState.Cblue = "on"
-                            Invoke-RestMethod -uri ("http://"+$StackConfigData.MiddleStack+":"+$StackConfigData.MiddleStackPort +"/set/1/"+$StackState.Cblue) -Method Post  #get Blue Pin ID
+                        if ($StackStateMiddle.mappings.stack_blue -notmatch "on") {
+                            Invoke-RestMethod -uri ("http://"+$StackConfigData.MiddleStack+":"+$StackConfigData.MiddleStackPort +"/set/1/on") -Method Post  #get Blue Pin ID
                         }
                     }else {
-                        if ($StackState.Cred -notmatch "off") {
-                            $StackState.CRed = "off"
-                            Invoke-RestMethod -uri ("http://"+$StackConfigData.MiddleStack+":"+$StackConfigData.MiddleStackPort +"/set/1/"+$StackState.Cblue)  -Method Post #get blue Pin ID
+                        if ($StackStateMiddle.mappings.stack_red -notmatch "off") {
+                            Invoke-RestMethod -uri ("http://"+$StackConfigData.MiddleStack+":"+$StackConfigData.MiddleStackPort +"/set/1/off")  -Method Post #get blue Pin ID
                         }
                     }
                 }
@@ -210,19 +207,19 @@
                                 if($StackStateMiddle.mappings.hub_blue -notmatch "on"){
                                     Invoke-RestMethod -uri ("http://"+$StackConfigData.MiddleStack+":"+$StackConfigData.MiddleStackPort +"/set/8/on") -Method Post
                                     #Code to enable Blue hubs for shift1
-                                    write-host " Blue hubs $StackStateMiddle.mappings.hub_blue for Shift 1"
+                                    write-host " Blue hubs $StackStateMiddle.mappings.hub_blue" for Shift 1"
                                     
                                 }
                             }if ($shifttiming.shift1 -match "red"){
                                 if($StackStateMiddle.mappings.hub_red  -notmatch "on"){
                                     Invoke-RestMethod -uri ("http://"+$StackConfigData.MiddleStack+":"+$StackConfigData.MiddleStackPort +"/set/7/on" ) -Method Post
                                     #Code to enable red hubs for shift1
-                                    Write-host " Red hubs $StackStateMiddle.mappings.hub_red "
+                                    Write-host " Red hubs "$StackStateMiddle.mappings.hub_red 
                                 }
                                 if($StackStateMiddle.mappings.hub_blue -notmatch "off"){
                                     Invoke-RestMethod -uri ("http://"+$StackConfigData.MiddleStack+":"+$StackConfigData.MiddleStackPort +"/set/8/off") -Method Post
                                     #Code to disable Blue hubs for shift1
-                                    write-host " Blue hubs $StackStateMiddle.mappings.hub_blue"
+                                    write-host " Blue hubs $StackStateMiddle.mappings.hub_blue
                                     
                                 }
                             }
