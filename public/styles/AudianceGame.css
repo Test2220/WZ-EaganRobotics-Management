@@ -79,26 +79,26 @@ position: absolute;
     justify-content: center;
 
 }#teamRight{
-  left: -25%;
+  left: -10%;
   bottom: 170;
   position: absolute;
   background-color: white;
-  width: 360;
+  width: 260;
   height: 50;
   text-align: center;
-   font-size: 2.35rem;
+   font-size: 1.6rem;
    z-index: -20;
    padding-top: 10;
 
 }#teamLeft{
-  right: -25%;
+  right: -10%;
   bottom: 170;
   position: absolute;
   background-color: white;
-  width: 360;
+  width: 260;
   height: 50;
   text-align: center;
-   font-size: 2.35rem;
+   font-size: 1.6rem;
    z-index: -20;
    padding-top: 10;
 }
