@@ -1,6 +1,100 @@
 {
     $responce = @{"redscore" = 0;"bluescore" = 0; "b1"= 0;"b2"= 0;"b3"= 0;"r1"= 0;"r2"= 0;"r3"= 0;"matchtimer"=0}
-    $arena= ConvertFrom-Json (Get-PodeState -Name "FMSArenaStatus")
+    $arenaStatus= (Get-PodeState -Name "FMSArenaStatus")
+    if($null -eq $arenaStatus){
+        $arena = '{
+  "type": "arenaStatus",
+  "data": {
+    "MatchId": 0,
+    "AllianceStations": {
+      "B1": {
+        "DsConn": null,
+        "Ethernet": false,
+        "Astop": false,
+        "Estop": false,
+        "Bypass": false,
+        "Team": null
+      },
+      "B2": {
+        "DsConn": null,
+        "Ethernet": false,
+        "Astop": false,
+        "Estop": false,
+        "Bypass": false,
+        "Team": null
+      },
+      "B3": {
+        "DsConn": null,
+        "Ethernet": false,
+        "Astop": false,
+        "Estop": false,
+        "Bypass": false,
+        "Team": null
+      },
+      "R1": {
+        "DsConn": null,
+        "Ethernet": false,
+        "Astop": false,
+        "Estop": false,
+        "Bypass": false,
+        "Team": null
+      },
+      "R2": {
+        "DsConn": null,
+        "Ethernet": false,
+        "Astop": false,
+        "Estop": false,
+        "Bypass": false,
+        "Team": null
+      },
+      "R3": {
+        "DsConn": null,
+        "Ethernet": false,
+        "Astop": false,
+        "Estop": false,
+        "Bypass": false,
+        "Team": null
+      }
+    },
+    "TeamWifiStatuses": {
+      "B1": {
+        "TeamId": 0,
+        "RadioLinked": false
+      },
+      "B2": {
+        "TeamId": 0,
+        "RadioLinked": false
+      },
+      "B3": {
+        "TeamId": 0,
+        "RadioLinked": false
+      },
+      "R1": {
+        "TeamId": 0,
+        "RadioLinked": false
+      },
+      "R2": {
+        "TeamId": 0,
+        "RadioLinked": false
+      },
+      "R3": {
+        "TeamId": 0,
+        "RadioLinked": false
+      }
+    },
+    "MatchState": 0,
+    "CanStartMatch": false,
+    "PlcIsHealthy": false,
+    "FieldEstop": false,
+    "PlcArmorBlockStatuses": {
+      "BlueDs": false,
+      "RedDs": false
+    }
+  }
+}'| ConvertFrom-Json
+    }else{
+        $arena = $arenaStatus | ConvertFrom-Json
+    }
     $pointState = Get-PodeState -Name "points" 
     if ($null -eq $pointState){$pointState = @{ 'RedAuto' = 0;'blueauto' = 0;'Redtele' = 0;'bluetele' = 0;'redend' = 0;'blueend' = 0;'redAutoL1' = 0;'redTeleL1' = 0;'redTeleL2' = 0;'redTeleL3' = 0;'BlueAutoL1' = 0;'BlueTeleL1' = 0;'BlueTeleL2' = 0;'BlueTeleL3' = 0; 'redMinorFoul' = 0;'redMajorFoul' = 0; 'blueMinorFoul'=0;'blueMajorFoul' = 0; }}
     if ($pointState.redAutoL1 -ge 2) {
