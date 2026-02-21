@@ -165,6 +165,30 @@ Start-PodeServer -Threads 4 -EnablePool WebSockets {
             Add-PodeRoute -Method Get -Path "/matchstart" -ScriptBlock {Send-PodeWebSocket -name "CA" -Message @{"type"="startMatch";"data"=@{"muteMatchSounds"=$false}}}
             Add-PodeRoute -Method Get -Path "/abortmatch" -ScriptBlock {Send-PodeWebSocket -name "CA" -Message @{"type"="abortMatch"}}
             Add-PodeRoute -Method Get -Path "/AudianceDisplay" -FilePath "./routes/API/API-AudianceDisplay.ps1"
+             Add-PodeRoute -Method Get -Path "/Shifttiming" -scriptblock{
+                $shifts = get-podestate -Name "Shifttiming"
+                $time = Set-PodeState -name "timerData" | convertfrom-json 
+                 if (($time.MatchTimeSec -ge ($gametiming.transtionshiftend)) -and ($time.MatchTimeSec -lT ($gametiming.endshift1))) {
+                    $currentShift = "shift1"
+                }
+                if (($time.MatchTimeSec -ge ($gametiming.endshift1)) -and ($time.MatchTimeSec -lT ($gametiming.endshift2))) {
+                    $currentShift = "shift2"
+                }
+                if (($time.MatchTimeSec -ge ($gametiming.endshift2)) -and ($time.MatchTimeSec -lT ($gametiming.endshift3))) {
+                    $currentShift = "shift3"
+                }
+                
+                if (($time.MatchTimeSec -ge ($gametiming.endshift3)) -and ($time.MatchTimeSec -lT ($gametiming.endshift4))) {
+                    $currentShift = "shift4"
+                }
+                if (($time.MatchTimeSec -ge ($gametiming.endshift4))) {
+                    $currentShift = "endgame"
+                }
+
+                Write-PodeJsonResponse -Value @{"currentshift"=$currentShift;"shift1"=$shifts.shift1;"shift2"=$shifts.shift2;"shift3"=$shifts.shift3;"shift4"=$shifts.shift4;}
+
+
+            }
             Add-PodeRouteGroup -Path "/Stack"-Routes{
                 Add-PodeRoute -Path "/state" -Method Get -ScriptBlock{
                     Lock-PodeObject -Name "ConfigStateLock" -ScriptBlock {

@@ -11,25 +11,26 @@
         if (!(($time.MatchState -ge 3) -and ($time.MatchState -le 5))) {
             if($StackStateMiddle.mappings.hub_red  -notmatch "off"){
                 Invoke-RestMethod -uri ("http://"+$StackConfigData.MiddleStack+":"+$StackConfigData.MiddleStackPort +"/set/7/off") -Method Post
-                Write-host "Red hubs off"
+                Write-host "Red hubs off for non ops"
                 #Code to enable both hubs for non ops
             }
             if($StackStateMiddle.mappings.hub_blue -notmatch "off"){
                 Invoke-RestMethod -uri ("http://"+$StackConfigData.MiddleStack+":"+$StackConfigData.MiddleStackPort +"/set/8/off") -Method Post
                 #Code to enable both hubs for no ops
-                Write-host "Blue hubs off"
-            }                    }
+                Write-host "Blue hubs off non ops"
+            }                    
+        }
         #from Start of match to the transtion end
         if (($time.MatchTimeSec -GT 0) -and ($time.MatchTimeSec -lT ($gametiming.transtionshiftend))) { 
             if($StackStateMiddle.mappings.hub_red  -notmatch "on"){
                 Invoke-RestMethod -uri ("http://"+$StackConfigData.MiddleStack+":"+$StackConfigData.MiddleStackPort +"/set/7/on") -Method Post
-                Write-host "Red hubs On"
+                Write-host "Red hubs On for Start of match"
                 #Code to enable both hubs for auto
             }
             if($StackStateMiddle.mappings.hub_blue -notmatch "on"){
                 Invoke-RestMethod -uri ("http://"+$StackConfigData.MiddleStack+":"+$StackConfigData.MiddleStackPort +"/set/8/on") -Method Post
                 #Code to enable both hubs for auto
-                Write-host "Blue hubs On"
+                Write-host "Blue hubs On for start of match"
             }
             
         }
@@ -40,7 +41,7 @@
                 if($StackStateMiddle.mappings.hub_red  -notmatch "off"){
                     Invoke-RestMethod -uri ("http://"+$StackConfigData.MiddleStack+":"+$StackConfigData.MiddleStackPort +"/set/7/off" ) -Method Post
                     #Code to disable red hubs for shift1
-                    Write-host "Red hub active for Shift 1"
+                    Write-host "Red hub off for Shift 1"
                 }
                 if($StackStateMiddle.mappings.hub_blue -notmatch "on"){
                     Invoke-RestMethod -uri ("http://"+$StackConfigData.MiddleStack+":"+$StackConfigData.MiddleStackPort +"/set/8/on") -Method Post
@@ -52,12 +53,12 @@
                 if($StackStateMiddle.mappings.hub_red  -notmatch "on"){
                     Invoke-RestMethod -uri ("http://"+$StackConfigData.MiddleStack+":"+$StackConfigData.MiddleStackPort +"/set/7/on" ) -Method Post
                     #Code to enable red hubs for shift1
-                    Write-host " Red hubs active" 
+                    Write-host " Red hubs on for shift one" 
                 }
                 if($StackStateMiddle.mappings.hub_blue -notmatch "off"){
                     Invoke-RestMethod -uri ("http://"+$StackConfigData.MiddleStack+":"+$StackConfigData.MiddleStackPort +"/set/8/off") -Method Post
                     #Code to disable Blue hubs for shift1
-                    write-host " Blue hubs active"
+                    write-host " Blue hubs off for shift one"
                     
                 }
             }
@@ -71,23 +72,29 @@
                 if($StackStateMiddle.mappings.hub_red  -notmatch "off"){
                     Invoke-RestMethod -uri ("http://"+$StackConfigData.MiddleStack+":"+$StackConfigData.MiddleStackPort +"/set/7/off" ) -Method Post
                     #Code to disable red hubs for shift1
+                    Write-host " Red hubs off for end shift one" 
+
                     
                 }
                 if($StackStateMiddle.mappings.hub_blue -notmatch "blink"){
                     Invoke-RestMethod -uri ("http://"+$StackConfigData.MiddleStack+":"+$StackConfigData.MiddleStackPort +"/set/8/blink") -Method Post
                     #Code to enable Blue hubs for shift1
+                   Write-host " Blue hubs Blinking for end shift one" 
+
                     
                 }
             }if ($shifttiming.shift1 -match "red"){
                 if($StackStateMiddle.mappings.hub_red  -notmatch "blink"){
                     Invoke-RestMethod -uri ("http://"+$StackConfigData.MiddleStack+":"+$StackConfigData.MiddleStackPort +"/set/7/blink" ) -Method Post
                     #Code to enable red hubs for shift1
-                    
+                                       Write-host " Red hubs Blinking for end shift one" 
+
                 }
                 if($StackStateMiddle.mappings.hub_blue -notmatch "off"){
                     Invoke-RestMethod -uri ("http://"+$StackConfigData.MiddleStack+":"+$StackConfigData.MiddleStackPort +"/set/8/off") -Method Post
                     #Code to disable Blue hubs for shift1
-                    
+                                       Write-host " Blue hubs off for end shift one" 
+
                 }
             }
             
@@ -96,7 +103,9 @@
             if ($shifttiming.shift2 -match "blue"){
                 if($StackStateMiddle.mappings.hub_red  -notmatch "off"){
                     Invoke-RestMethod -uri ("http://"+$StackConfigData.MiddleStack+":"+$StackConfigData.MiddleStackPort +"/set/7/off" ) -Method Post
-                    #Code to disable red hubs for shift1
+                    #Code to disable red hubs for shift2
+                                       Write-host " red hubs off for end shift one" 
+
                     
                 }
                 if($StackStateMiddle.mappings.hub_blue -notmatch "on"){

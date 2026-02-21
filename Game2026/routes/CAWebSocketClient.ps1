@@ -132,7 +132,7 @@
                         }
                     }
                             $FieldteamStatus.R2 = $true
-                    if ($FieldteamStatus.R1 -and $FieldteamStatus.R2 - $FieldteamStatus.R2) {
+                    if ($FieldteamStatus.R1 -and $FieldteamStatus.R2 -and $FieldteamStatus.R2) {
                         if ($StackStateMiddle.mappings.stack_red -notmatch "on") {
                             $StackStateMiddle.mappings.stack_Red = "on"
                             Invoke-RestMethod -uri ("http://"+$StackConfigData.MiddleStack+":"+$StackConfigData.MiddleStackPort +"/set/2/on") -Method Post #get red Pin ID
@@ -145,7 +145,7 @@
                         }
                     }
 
-                    if ($FieldteamStatus.B1 -and $FieldteamStatus.B2 - $FieldteamStatus.B2) {
+                    if ($FieldteamStatus.B1 -and $FieldteamStatus.B2 -and $FieldteamStatus.B2) {
                         if ($StackStateMiddle.mappings.stack_blue -notmatch "on") {
                             Invoke-RestMethod -uri ("http://"+$StackConfigData.MiddleStack+":"+$StackConfigData.MiddleStackPort +"/set/1/on") -Method Post  #get Blue Pin ID
                         }
