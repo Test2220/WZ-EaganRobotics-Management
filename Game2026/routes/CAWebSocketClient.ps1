@@ -416,7 +416,7 @@
                             $Fuelleader ="red"
                             $FuelRunnerup = "blue"
                         }elseif (($currentpoints.RedAuto) -lt ($currentpoints.BlueAuto)) {
-                            write-host "red is leading setting leader to red"
+                            write-host "Blue is leading setting leader to Blue"
                             $Fuelleader = "blue"
                             $FuelRunnerup = "red"
                         }else{
