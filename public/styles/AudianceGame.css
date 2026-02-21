@@ -79,7 +79,7 @@ position: absolute;
     justify-content: center;
 
 }#teamRight{
-  right: -25%;
+  left: -25%;
   bottom: 170;
   position: absolute;
   background-color: white;
@@ -91,7 +91,7 @@ position: absolute;
    padding-top: 10;
 
 }#teamLeft{
-  left: -25%;
+  right: -25%;
   bottom: 170;
   position: absolute;
   background-color: white;
@@ -178,14 +178,14 @@ text-align: center;
 margin: auto;
   position: absolute;
   bottom: 0;           /* Positions the element at the bottom edge */
-  left: 0%;           /* Moves the left edge to the horizontal center */
+  right: 0%;           /* Moves the left edge to the horizontal center */
  
 
 }#pointsRightContainer{
 margin: auto;
   position: absolute;
   bottom: 0;           /* Positions the element at the bottom edge */
-  right: 0%;           /* Moves the left edge to the horizontal center */
+  left: 0%;           /* Moves the left edge to the horizontal center */
  
 
 }
