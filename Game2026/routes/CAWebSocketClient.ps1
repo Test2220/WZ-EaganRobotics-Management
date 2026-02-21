@@ -444,14 +444,13 @@
                             Set-PodeState -Name 'points' -Value @{ 'RedAuto' = 0;'blueauto' = 0;'Redtele' = 0;'bluetele' = 0;'redend' = 0;'blueend' = 0;'redAutoL1' = 0;'redTeleL1' = 0;'redTeleL2' = 0;'redTeleL3' = 0;'BlueAutoL1' = 0;'BlueTeleL1' = 0;'BlueTeleL2' = 0;'BlueTeleL3' = 0; 'redMinorFoul' = 0;'redMajorFoul' = 0; 'blueMinorFoul'=0;'blueMajorFoul' = 0; "mode"="nonops"} | Out-Null
                         }
                         $newstate = "PreMatch"
-                    }elseif ($WSJSONPacket.data.MatchState -eq  "1") {
-                        Invoke-RestMethod -uri "http://172.16.20.6/music/change-song" -Method Post -Body @{"player"="Gameon"}
- 
+                    }elseif ($WSJSONPacket.data.MatchState -eq  "1") { 
                         
                         $newstate = "StartMatch"
                     }elseif ($WSJSONPacket.data.MatchState -eq  "2") {
                         $newstate = "WarmupPeriod"
                     }elseif ($WSJSONPacket.data.MatchState -eq  "3") {
+                                                Invoke-RestMethod -uri "http://172.16.20.6/music/change-song" -Method Post -Body @{"player"="Gameon"}
 
                         $newstate = "AutoPeriod"
                     }elseif ($WSJSONPacket.data.MatchState -eq  "4") {
