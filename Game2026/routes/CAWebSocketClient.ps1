@@ -163,6 +163,12 @@
         Write-Debug "WSMadepingrequest"
         }elseif ($WSJSONPacket.type -match "matchTime") {
             if ($true) {
+                    $StackStateRedIP = $StackConfigData.RedSCC
+                    $StackStateBlueIP = $StackConfigData.BlueSCC
+                    $StackStateMiddleIP = $StackConfigData.MiddleStack
+                    $StackStateRed =Invoke-RestMethod -Uri "http://$StackStateRedIP/state"
+                    $StackStateBlue =Invoke-RestMethod -Uri "http://$StackStateBlueIP/state"
+                    $StackStateMiddle =Invoke-RestMethod -Uri "http://$StackStateMiddleIP/state"
                 Lock-PodeObject -name "StackState" -ScriptBlock {
                     $StackConfigData = Get-PodeState -Name "StackConfig"
                         if($null -eq $StackConfigData.MiddleStack){
@@ -202,24 +208,24 @@
                                 if($StackStateMiddle.mappings.hub_red  -notmatch "off"){
                                     Invoke-RestMethod -uri ("http://"+$StackConfigData.MiddleStack+":"+$StackConfigData.MiddleStackPort +"/set/7/off" ) -Method Post
                                     #Code to disable red hubs for shift1
-                                    Write-host " Red hubs $StackStateMiddle.mappings.hub_red  for Shift 1"
+                                    Write-host "Red hub active for Shift 1"
                                 }
                                 if($StackStateMiddle.mappings.hub_blue -notmatch "on"){
                                     Invoke-RestMethod -uri ("http://"+$StackConfigData.MiddleStack+":"+$StackConfigData.MiddleStackPort +"/set/8/on") -Method Post
                                     #Code to enable Blue hubs for shift1
-                                    write-host " Blue hubs $StackStateMiddle.mappings.hub_blue" for Shift 1"
+                                    write-host "Blue hub active for Shift 1"
                                     
                                 }
                             }if ($shifttiming.shift1 -match "red"){
                                 if($StackStateMiddle.mappings.hub_red  -notmatch "on"){
                                     Invoke-RestMethod -uri ("http://"+$StackConfigData.MiddleStack+":"+$StackConfigData.MiddleStackPort +"/set/7/on" ) -Method Post
                                     #Code to enable red hubs for shift1
-                                    Write-host " Red hubs "$StackStateMiddle.mappings.hub_red 
+                                    Write-host " Red hubs active" 
                                 }
                                 if($StackStateMiddle.mappings.hub_blue -notmatch "off"){
                                     Invoke-RestMethod -uri ("http://"+$StackConfigData.MiddleStack+":"+$StackConfigData.MiddleStackPort +"/set/8/off") -Method Post
                                     #Code to disable Blue hubs for shift1
-                                    write-host " Blue hubs $StackStateMiddle.mappings.hub_blue
+                                    write-host " Blue hubs active"
                                     
                                 }
                             }
@@ -444,6 +450,7 @@
                     }elseif ($WSJSONPacket.data.MatchState -eq  "2") {
                         $newstate = "WarmupPeriod"
                     }elseif ($WSJSONPacket.data.MatchState -eq  "3") {
+
                         $newstate = "AutoPeriod"
                     }elseif ($WSJSONPacket.data.MatchState -eq  "4") {
                         $newstate = "PausePeriod"
@@ -471,23 +478,23 @@
                 write-debug "triger Sound end"
                     Send-PodeSignal -Value @{"type"="playaudio";"data"="end.wav"}
             }
-            if($WSJSONPacket.data.MatchTimeSec -eq ($gametiming.Autoend + $gametiming.pause)){
+            if($WSJSONPacket.data.MatchTimeSec -eq ($gametiming.Autoend - $gametiming.pause)){
                     write-debug "triger Sound resume"
                     Send-PodeSignal -Value @{"type"="playaudio";"data"="resume.wav"}
-            }if($WSJSONPacket.data.MatchTimeSec -eq ($gametiming.transtionshiftend + $gametiming.pause)){
+            }if($WSJSONPacket.data.MatchTimeSec -eq ($gametiming.transtionshiftend - $gametiming.pause)){
                 write-debug "triger Sound powerup-force"
                     Send-PodeSignal -Value @{"type"="playaudio";"data"="powerup-force.wav"}
             }
-            if($WSJSONPacket.data.MatchTimeSec -eq ($gametiming.endshift1 + $gametiming.pause)){
+            if($WSJSONPacket.data.MatchTimeSec -eq ($gametiming.endshift1 - $gametiming.pause)){
                 write-debug "triger Sound powerup-force"
                     Send-PodeSignal -Value @{"type"="playaudio";"data"="powerup-force.wav"}
-            }if($WSJSONPacket.data.MatchTimeSec -eq ($gametiming.endshift2 + $gametiming.pause)){
+            }if($WSJSONPacket.data.MatchTimeSec -eq ($gametiming.endshift2 -$gametiming.pause)){
                 write-debug "triger Sound powerup-force"
                     Send-PodeSignal -Value @{"type"="playaudio";"data"="powerup-force.wav"}
-            }if($WSJSONPacket.data.MatchTimeSec -eq ($gametiming.endshift3 + $gametiming.pause)){
+            }if($WSJSONPacket.data.MatchTimeSec -eq ($gametiming.endshift3 - $gametiming.pause)){
                 write-debug "triger Sound powerup-force"
                     Send-PodeSignal -Value @{"type"="playaudio";"data"="powerup-force.wav"}
-            }if($WSJSONPacket.data.MatchTimeSec -eq ($gametiming.endshift4 + $gametiming.pause)){
+            }if($WSJSONPacket.data.MatchTimeSec -eq ($gametiming.endshift4 - $gametiming.pause)){
                 write-debug "triger Sound warning"
                     Send-PodeSignal -Value @{"type"="playaudio";"data"="warning.wav"}
             }if($WSJSONPacket.data.MatchState -eq 6){
