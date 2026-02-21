@@ -2,6 +2,7 @@
     $responce = @{"redscore" = 0;"bluescore" = 0; "b1"= 0;"b2"= 0;"b3"= 0;"r1"= 0;"r2"= 0;"r3"= 0;"matchtimer"=0}
     $arena= ConvertFrom-Json (Get-PodeState -Name "FMSArenaStatus")
     $pointState = Get-PodeState -Name "points" 
+    if ($null -eq $pointState){$pointState = @{ 'RedAuto' = 0;'blueauto' = 0;'Redtele' = 0;'bluetele' = 0;'redend' = 0;'blueend' = 0;'redAutoL1' = 0;'redTeleL1' = 0;'redTeleL2' = 0;'redTeleL3' = 0;'BlueAutoL1' = 0;'BlueTeleL1' = 0;'BlueTeleL2' = 0;'BlueTeleL3' = 0; 'redMinorFoul' = 0;'redMajorFoul' = 0; 'blueMinorFoul'=0;'blueMajorFoul' = 0; }}
     if ($pointState.redAutoL1 -ge 2) {
         $pointState.redAutoL1 = 2
     }
