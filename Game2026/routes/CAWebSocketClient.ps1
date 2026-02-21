@@ -365,7 +365,7 @@
                         if (($WSJSONPacket.data.MatchTimeSec -ge ($gametiming.endshift3)) -and ($WSJSONPacket.data.MatchTimeSec -lT ($gametiming.endshift4))) {
                             if ($shifttiming.shift3 -match "blue"){
                                 if($StackStateMiddle.mappings.hub_red  -notmatch "off"){
-                                    Invoke-RestMethod -uri ("http://"+$StackConfigData.MiddleStack+":"+$StackConfigData.MiddleStackPort +"/set/7/off" ) -Method Post
+                                    Invoke-RestMethod -uri ("http://"+$StackConfigData.MiddleStack+":"+$StackConfigData.MiddleStackPort +"/set/7/0ff" ) -Method Post
                                     #Code to disable red hubs for shift1
                                     
                                 }

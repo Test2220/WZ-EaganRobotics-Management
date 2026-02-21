@@ -168,7 +168,7 @@ Start-PodeServer -Threads 4 -EnablePool WebSockets {
              Add-PodeRoute -Method Get -Path "/Shifttiming" -scriptblock{
                 $shifts = get-podestate -Name "Shifttiming"
                 $time = Set-PodeState -name "timerData" | convertfrom-json 
-                 if (($time.MatchTimeSec -ge ($gametiming.transtionshiftend)) -and ($time.MatchTimeSec -lT ($gametiming.endshift1))) {
+                if (($time.MatchTimeSec -ge ($gametiming.transtionshiftend)) -and ($time.MatchTimeSec -lT ($gametiming.endshift1))) {
                     $currentShift = "shift1"
                 }
                 if (($time.MatchTimeSec -ge ($gametiming.endshift1)) -and ($time.MatchTimeSec -lT ($gametiming.endshift2))) {
@@ -177,7 +177,6 @@ Start-PodeServer -Threads 4 -EnablePool WebSockets {
                 if (($time.MatchTimeSec -ge ($gametiming.endshift2)) -and ($time.MatchTimeSec -lT ($gametiming.endshift3))) {
                     $currentShift = "shift3"
                 }
-                
                 if (($time.MatchTimeSec -ge ($gametiming.endshift3)) -and ($time.MatchTimeSec -lT ($gametiming.endshift4))) {
                     $currentShift = "shift4"
                 }
