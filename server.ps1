@@ -223,7 +223,7 @@ Start-PodeServer -Threads 4 -EnablePool WebSockets {
             }
             Lock-PodeObject -ScriptBlock {
                 Save-PodeState -Path './data/state.json'
-            }
+            } Disconnect-PodeWebSocket -name "CA"
             restart-podeServer
         }
         add-poderoute -Method get -path "/reset" -ScriptBlock{
