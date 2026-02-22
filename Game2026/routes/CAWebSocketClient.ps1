@@ -22,102 +22,119 @@
 
                     $FieldteamStatus = @{"B1"=$false;"B2"=$false;"B3"=$false;"R1"=$false;"R2"=$false;"R3"=$false;}
                     #check for blue 1 ready Status
-                    if (($null -ne $WSJSONPacket.data.AllianceStations.B1.DSConn) -and ($WSJSONPacket.data.AllianceStations.B1.Ethernet -eq $true) -and ($WSJSONPacket.data.AllianceStations.B1.Astop -eq $true) -and ($WSJSONPacket.data.AllianceStations.B1.Estop -eq $true) -and ($WSJSONPacket.data.AllianceStations.B1.Bypass -eq $true)){
+                    if (($WSJSONPacket.data.AllianceStations.B1.DSConn.RobotLinked -eq $true) -and ($WSJSONPacket.data.AllianceStations.B1.Bypass -eq $false)){
                         if ($StackStateBlue.mappings.ds_1 -notmatch "off") {
                             $FieldteamStatus.B1 = $true
                             $url = "http://"+$StackConfigData.BlueSCC+":"+$StackConfigData.BlueSCCPort +"/set/1/off"
                             Invoke-RestMethod -uri $url -Method Post
                         }
-                    }elseif (($null -eq $WSJSONPacket.data.AllianceStations.B1.DSConn) -or ($WSJSONPacket.data.AllianceStations.B1.Ethernet -eq $false) -or ($WSJSONPacket.data.AllianceStations.B1.Astop -eq $false) -or ($WSJSONPacket.data.AllianceStations.B1.Estop -eq $false) -and ($WSJSONPacket.data.AllianceStations.B1.Bypass -eq $false)){
+                    }elseif (($null -eq $WSJSONPacket.data.AllianceStations.B1.DSConn.RobotLinked) -or ($WSJSONPacket.data.AllianceStations.B1.Bypass -eq $true)){
                         if ($StackStateBlue.mappings.ds_1 -notmatch "blink") {
                             $FieldteamStatus.B1 = $false
                             $url = "http://"+$StackConfigData.BlueSCC+":"+$StackConfigData.BlueSCCPort +"/set/1/blink"
                             Invoke-RestMethod -uri $url -Method Post
                         }
-                    }elseif ((($WSJSONPacket.data.MatchState -gt 0)-and ($WSJSONPacket.data.MatchState -lt 6))-and (($null -ne $WSJSONPacket.data.AllianceStations.B1.DSConn) -and ($WSJSONPacket.data.AllianceStations.B1.Ethernet -eq $true) -and ($WSJSONPacket.data.AllianceStations.B1.Astop -eq $true) -and ($WSJSONPacket.data.AllianceStations.B1.Estop -eq $true) -and ($WSJSONPacket.data.AllianceStations.B1.Bypass -eq $true))){
+                    }elseif (($WSJSONPacket.data.AllianceStations.B1.DSConn.Enabled -eq $true) ){
                         if ($StackStateBlue.mappings.ds_1 -notmatch "on") {
                             $url = "http://"+$StackConfigData.BlueSCC+":"+$StackConfigData.BlueSCCPort +"/set/1/on"
                             Invoke-RestMethod -uri $url -Method Post
                         }
                     }
+                    
                     #check for blue 2 ready Status
-                    if (($null -ne $WSJSONPacket.data.AllianceStations.B2.DSConn) -and ($WSJSONPacket.data.AllianceStations.B2.Ethernet -eq $true) -and ($WSJSONPacket.data.AllianceStations.B2.Astop -eq $true) -and ($WSJSONPacket.data.AllianceStations.B2.Estop -eq $true) -and ($WSJSONPacket.data.AllianceStations.B2.Bypass -eq $true)){
+                    if (($WSJSONPacket.data.AllianceStations.B2.DSConn.RobotLinked -eq $true) -and ($WSJSONPacket.data.AllianceStations.B2.Bypass -eq $false)){
                         if ($StackStateBlue.mappings.ds_2 -notmatch "off") {
                             $FieldteamStatus.B2 = $true
-                            Invoke-RestMethod -uri (("http://"+$StackConfigData.BlueSCC+":"+$StackConfigData.BlueSCCPort +"/set/2/off")) -Method Post
+                            $url = "http://"+$StackConfigData.BlueSCC+":"+$StackConfigData.BlueSCCPort +"/set/2/off"
+                            Invoke-RestMethod -uri $url -Method Post
                         }
-                    }elseif (($null -eq $WSJSONPacket.data.AllianceStations.B2.DSConn) -or ($WSJSONPacket.data.AllianceStations.B2.Ethernet -eq $false) -or ($WSJSONPacket.data.AllianceStations.B2.Astop -eq $false) -or ($WSJSONPacket.data.AllianceStations.B2.Estop -eq $false) -and ($WSJSONPacket.data.AllianceStations.B2.Bypass -eq $false)){
+                    }elseif (($null -eq $WSJSONPacket.data.AllianceStations.B2.DSConn.RobotLinked) -or ($WSJSONPacket.data.AllianceStations.B2.Bypass -eq $true)){
                         if ($StackStateBlue.mappings.ds_2 -notmatch "blink") {
                             $FieldteamStatus.B2 = $false
-                            Invoke-RestMethod -uri (("http://"+$StackConfigData.BlueSCC+":"+$StackConfigData.BlueSCCPort +"/set/2/blink")) -Method Post
+                            $url = "http://"+$StackConfigData.BlueSCC+":"+$StackConfigData.BlueSCCPort +"/set/2/blink"
+                            Invoke-RestMethod -uri $url -Method Post
                         }
-                    }elseif ((($WSJSONPacket.data.MatchState -gt 0)-and ($WSJSONPacket.data.MatchState -lt 6))-and (($null -ne $WSJSONPacket.data.AllianceStations.B2.DSConn) -and ($WSJSONPacket.data.AllianceStations.B2.Ethernet -eq $true) -and ($WSJSONPacket.data.AllianceStations.B2.Astop -eq $true) -and ($WSJSONPacket.data.AllianceStations.B2.Estop -eq $true) -and ($WSJSONPacket.data.AllianceStations.B2.Bypass -eq $true))){
+                    }elseif (($WSJSONPacket.data.AllianceStations.B2.DSConn.Enabled -eq $true) ){
                         if ($StackStateBlue.mappings.ds_2 -notmatch "on") {
-                            Invoke-RestMethod -uri ("http://"+$StackConfigData.BlueSCC+":"+$StackConfigData.BlueSCCPort +"/set/2/on") -Method Post
-                        }
-                    }
-                    #check for blue 3 ready Status
-                    if (($null -ne $WSJSONPacket.data.AllianceStations.B3.DSConn) -and ($WSJSONPacket.data.AllianceStations.B3.Ethernet -eq $true) -and ($WSJSONPacket.data.AllianceStations.B3.Astop -eq $true) -and ($WSJSONPacket.data.AllianceStations.B3.Estop -eq $true) -and ($WSJSONPacket.data.AllianceStations.B3.Bypass -eq $true)){
-                        if ($StackStateBlue.mappings.ds_3 -notmatch "off") {
-                            Invoke-RestMethod -uri ("http://"+$StackConfigData.BlueSCC+":"+$StackConfigData.BlueSCCPort +"/set/3/off") -Method Post
-                        }
-                    }elseif (($null -eq $WSJSONPacket.data.AllianceStations.B3.DSConn) -or ($WSJSONPacket.data.AllianceStations.B3.Ethernet -eq $false) -or ($WSJSONPacket.data.AllianceStations.B3.Astop -eq $false) -or ($WSJSONPacket.data.AllianceStations.B3.Estop -eq $false) -and ($WSJSONPacket.data.AllianceStations.B3.Bypass -eq $false)){
-                        if ($StackStateBlue.mappings.ds_3 -notmatch "blink") {
-                            Invoke-RestMethod -uri ("http://"+$StackConfigData.BlueSCC+":"+$StackConfigData.BlueSCCPort +"/set/3/blink") -Method Post
-                        }
-                    }elseif ((($WSJSONPacket.data.MatchState -gt 0)-and ($WSJSONPacket.data.MatchState -lt 6))-and (($null -ne $WSJSONPacket.data.AllianceStations.B3.DSConn) -and ($WSJSONPacket.data.AllianceStations.B3.Ethernet -eq $true) -and ($WSJSONPacket.data.AllianceStations.B3.Astop -eq $true) -and ($WSJSONPacket.data.AllianceStations.B3.Estop -eq $true) -and ($WSJSONPacket.data.AllianceStations.B3.Bypass -eq $true))){
-                        if ($StackStateBlue.mappings.ds_3 -notmatch "on") {
-                            Invoke-RestMethod -uri ("http://"+$StackConfigData.BlueSCC+":"+$StackConfigData.BlueSCCPort +"/set/3/on") -Method Post
+                            $url = "http://"+$StackConfigData.BlueSCC+":"+$StackConfigData.BlueSCCPort +"/set/2/on"
+                            Invoke-RestMethod -uri $url -Method Post
                         }
                     }
 
+                    #check for blue 3 ready Status
+                    if (($WSJSONPacket.data.AllianceStations.B3.DSConn.RobotLinked -eq $true) -and ($WSJSONPacket.data.AllianceStations.B3.Bypass -eq $false)){
+                        if ($StackStateBlue.mappings.ds_3 -notmatch "off") {
+                            $FieldteamStatus.B3 = $true
+                            $url = "http://"+$StackConfigData.BlueSCC+":"+$StackConfigData.BlueSCCPort +"/set/1/off"
+                            Invoke-RestMethod -uri $url -Method Post
+                        }
+                    }elseif (($null -eq $WSJSONPacket.data.AllianceStations.B3.DSConn.RobotLinked) -or ($WSJSONPacket.data.AllianceStations.B3.Bypass -eq $true)){
+                        if ($StackStateBlue.mappings.ds_3 -notmatch "blink") {
+                            $FieldteamStatus.B3 = $false
+                            $url = "http://"+$StackConfigData.BlueSCC+":"+$StackConfigData.BlueSCCPort +"/set/1/blink"
+                            Invoke-RestMethod -uri $url -Method Post
+                        }
+                    }elseif (($WSJSONPacket.data.AllianceStations.B3.DSConn.Enabled -eq $true) ){
+                        if ($StackStateBlue.mappings.ds_3 -notmatch "on") {
+                            $url = "http://"+$StackConfigData.BlueSCC+":"+$StackConfigData.BlueSCCPort +"/set/3/on"
+                            Invoke-RestMethod -uri $url -Method Post
+                        }
+                    }
 
                     #check for Red 1 ready Status
-                    if (($null -ne $WSJSONPacket.data.AllianceStations.R1.DSConn) -and ($WSJSONPacket.data.AllianceStations.R1.Ethernet -eq $true) -and ($WSJSONPacket.data.AllianceStations.R1.Astop -eq $true) -and ($WSJSONPacket.data.AllianceStations.R1.Estop -eq $true) -and ($WSJSONPacket.data.AllianceStations.R1.Bypass -eq $true)){
+                    if (($WSJSONPacket.data.AllianceStations.R1.DSConn.RobotLinked -eq $true) -and ($WSJSONPacket.data.AllianceStations.R1.Bypass -eq $false)){
                         if ($StackStateRed.mappings.ds_1 -notmatch "off") {
                             $FieldteamStatus.R1 = $true
                             Invoke-RestMethod -uri ("http://"+$StackConfigData.RedSCC+":"+$StackConfigData.RedSCCPort +"/set/1/off") -Method Post
                         }
-                    }elseif (($null -eq $WSJSONPacket.data.AllianceStations.R1.DSConn) -or ($WSJSONPacket.data.AllianceStations.R1.Ethernet -eq $false) -or ($WSJSONPacket.data.AllianceStations.R1.Astop -eq $false) -or ($WSJSONPacket.data.AllianceStations.R1.Estop -eq $false) -and ($WSJSONPacket.data.AllianceStations.R1.Bypass -eq $false)){
+                    }elseif (($null -eq $WSJSONPacket.data.AllianceStations.R1.DSConn.RobotLinked) -or ($WSJSONPacket.data.AllianceStations.R1.Bypass -eq $true)){
                         if ($StackStateRed.mappings.ds_1 -notmatch "blink") {
                             $FieldteamStatus.R1 = $false
                             Invoke-RestMethod -uri ("http://"+$StackConfigData.RedSCC+":"+$StackConfigData.RedSCCPort +"/set/1/blink") -Method Post
                         }
-                    }elseif ((($WSJSONPacket.data.MatchState -gt 0)-and ($WSJSONPacket.data.MatchState -lt 6))-and (($null -ne $WSJSONPacket.data.AllianceStations.R1.DSConn) -and ($WSJSONPacket.data.AllianceStations.R1.Ethernet -eq $true) -and ($WSJSONPacket.data.AllianceStations.R1.Astop -eq $true) -and ($WSJSONPacket.data.AllianceStations.R1.Estop -eq $true) -and ($WSJSONPacket.data.AllianceStations.R1.Bypass -eq $true))){
+                    }elseif (($WSJSONPacket.data.AllianceStations.R1.DSConn.Enabled -eq $true)){
                         if ($StackStateRed.mappings.ds_1 -notmatch "on") {
                             Invoke-RestMethod -uri ("http://"+$StackConfigData.RedSCC+":"+$StackConfigData.RedSCCPort +"/set/1/on") -Method Post
                         }
                     }
+                    
                     #check for Red 2 ready Status
-                    if (($null -ne $WSJSONPacket.data.AllianceStations.R2.DSConn) -and ($WSJSONPacket.data.AllianceStations.R2.Ethernet -eq $true) -and ($WSJSONPacket.data.AllianceStations.R2.Astop -eq $true) -and ($WSJSONPacket.data.AllianceStations.R2.Estop -eq $true) -and ($WSJSONPacket.data.AllianceStations.R2.Bypass -eq $true)){
+                    if (($WSJSONPacket.data.AllianceStations.R2.DSConn.RobotLinked -eq $true) -and ($WSJSONPacket.data.AllianceStations.R2.Bypass -eq $false)){
                         if ($StackStateRed.mappings.ds_2 -notmatch "off") {
+                            $FieldteamStatus.R2 = $true
                             Invoke-RestMethod -uri ("http://"+$StackConfigData.RedSCC+":"+$StackConfigData.RedSCCPort +"/set/2/off") -Method Post
                         }
-                    }elseif (($null -eq $WSJSONPacket.data.AllianceStations.R2.DSConn) -or ($WSJSONPacket.data.AllianceStations.R2.Ethernet -eq $false) -or ($WSJSONPacket.data.AllianceStations.R2.Astop -eq $false) -or ($WSJSONPacket.data.AllianceStations.R2.Estop -eq $false) -and ($WSJSONPacket.data.AllianceStations.R2.Bypass -eq $false)){
+                    }elseif (($null -eq $WSJSONPacket.data.AllianceStations.R2.DSConn.RobotLinked) -or ($WSJSONPacket.data.AllianceStations.R2.Bypass -eq $true)){
                         if ($StackStateRed.mappings.ds_2 -notmatch "blink") {
+                            $FieldteamStatus.R2 = $false
                             Invoke-RestMethod -uri ("http://"+$StackConfigData.RedSCC+":"+$StackConfigData.RedSCCPort +"/set/2/blink") -Method Post
                         }
-                    }elseif ((($WSJSONPacket.data.MatchState -gt 0)-and ($WSJSONPacket.data.MatchState -lt 6))-and (($null -ne $WSJSONPacket.data.AllianceStations.R2.DSConn) -and ($WSJSONPacket.data.AllianceStations.R2.Ethernet -eq $true) -and ($WSJSONPacket.data.AllianceStations.R2.Astop -eq $true) -and ($WSJSONPacket.data.AllianceStations.R2.Estop -eq $true) -and ($WSJSONPacket.data.AllianceStations.R2.Bypass -eq $true))){
-                        if ($StackStateRed.mappings.ds_2 -notmatch "on") {
+                    }elseif (($WSJSONPacket.data.AllianceStations.R2.DSConn.Enabled -eq $true)){
+                        if ($StackStateRed.mappings.ds_1 -notmatch "on") {
                             Invoke-RestMethod -uri ("http://"+$StackConfigData.RedSCC+":"+$StackConfigData.RedSCCPort +"/set/2/on") -Method Post
                         }
                     }
-                    #check for red 3 ready Status
-                    if (($null -ne $WSJSONPacket.data.AllianceStations.R3.DSConn) -and ($WSJSONPacket.data.AllianceStations.R3.Ethernet -eq $true) -and ($WSJSONPacket.data.AllianceStations.R3.Astop -eq $true) -and ($WSJSONPacket.data.AllianceStations.R3.Estop -eq $true) -and ($WSJSONPacket.data.AllianceStations.R3.Bypass -eq $true)){
+                    
+                    
+                    #check for Red 3 ready Status
+                    if (($WSJSONPacket.data.AllianceStations.R3.DSConn.RobotLinked -eq $true) -and ($WSJSONPacket.data.AllianceStations.R3.Bypass -eq $false)){
                         if ($StackStateRed.mappings.ds_3 -notmatch "off") {
                             $FieldteamStatus.R3 = $true
                             Invoke-RestMethod -uri ("http://"+$StackConfigData.RedSCC+":"+$StackConfigData.RedSCCPort +"/set/3/off") -Method Post
                         }
-                    }elseif (($null -eq $WSJSONPacket.data.AllianceStations.R3.DSConn) -or ($WSJSONPacket.data.AllianceStations.R3.Ethernet -eq $false) -or ($WSJSONPacket.data.AllianceStations.R3.Astop -eq $false) -or ($WSJSONPacket.data.AllianceStations.R3.Estop -eq $false) -and ($WSJSONPacket.data.AllianceStations.R3.Bypass -eq $false)){
+                    }elseif (($null -eq $WSJSONPacket.data.AllianceStations.R3.DSConn.RobotLinked) -or ($WSJSONPacket.data.AllianceStations.R3.Bypass -eq $true)){
                         if ($StackStateRed.mappings.ds_3 -notmatch "blink") {
                             $FieldteamStatus.R3 = $false
                             Invoke-RestMethod -uri ("http://"+$StackConfigData.RedSCC+":"+$StackConfigData.RedSCCPort +"/set/3/blink") -Method Post
                         }
-                    }elseif ((($WSJSONPacket.data.MatchState -gt 0)-and ($WSJSONPacket.data.MatchState -lt 6))-and (($null -ne $WSJSONPacket.data.AllianceStations.R3.DSConn) -and ($WSJSONPacket.data.AllianceStations.R3.Ethernet -eq $true) -and ($WSJSONPacket.data.AllianceStations.R3.Astop -eq $true) -and ($WSJSONPacket.data.AllianceStations.R3.Estop -eq $true) -and ($WSJSONPacket.data.AllianceStations.R3.Bypass -eq $true))){
+                    }elseif (($WSJSONPacket.data.AllianceStations.R2.DSConn.Enabled -eq $true)){
                         if ($StackStateRed.mappings.ds_3 -notmatch "on") {
                             Invoke-RestMethod -uri ("http://"+$StackConfigData.RedSCC+":"+$StackConfigData.RedSCCPort +"/set/3/on") -Method Post
                         }
                     }
+
+
+
                     if (($WSJSONPacket.data.CanStartMatch -eq $true)) {
                         if ($StackStateMiddle.mappings.stack_green -notmatch "blink") {
                             Invoke-RestMethod -uri ("http://"+$StackConfigData.MiddleStack+":"+$StackConfigData.MiddleStackPort +"/set/5/blink") -Method Post  #get Green Pin ID
@@ -184,7 +201,8 @@
                                 Invoke-RestMethod -uri ("http://"+$StackConfigData.MiddleStack+":"+$StackConfigData.MiddleStackPort +"/set/8/off") -Method Post
                                 #Code to enable both hubs for no ops
                                 Write-host "Blue hubs off"
-                            }                    }
+                            }
+                        }
                         #from Start of match to the transtion end
                         if (($WSJSONPacket.data.MatchTimeSec -GT 0) -and ($WSJSONPacket.data.MatchTimeSec -lT ($gametiming.transtionshiftend))) { 
                             if($StackStateMiddle.mappings.hub_red  -notmatch "on"){

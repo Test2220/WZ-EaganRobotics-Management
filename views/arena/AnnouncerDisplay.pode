@@ -8,8 +8,6 @@
 <div id="mainview">
 
 </div>
-
-<div id="ScoreStats">
 <div id="ScoreStats">
 <table id="Scorematrix">
   <tr>
@@ -89,6 +87,5 @@
 
 </div>
 
-</div>
 </body>
 </html>
