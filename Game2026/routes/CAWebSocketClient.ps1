@@ -492,7 +492,7 @@
             }if($WSJSONPacket.data.MatchTimeSec -eq ($gametiming.endshift3 )){
                 write-debug "triger Sound powerup-force"
                     Send-PodeSignal -Value @{"type"="playaudio";"data"="powerup-force.wav"}
-            }if($WSJSONPacket.data.MatchTimeSec -eq ($gametiming.endshift4 )){
+            }if($WSJSONPacket.data.MatchTimeSec -eq ($gametiming.endshift4 + $gametiming.PausePeriod)){
                 write-debug "triger Sound warning"
                     Send-PodeSignal -Value @{"type"="playaudio";"data"="warning.wav"}
             }if($WSJSONPacket.data.MatchState -eq 6){
