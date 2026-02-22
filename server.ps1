@@ -205,7 +205,10 @@ Start-PodeServer -Threads 4 -EnablePool WebSockets {
         
     }
     Add-PodeRouteGroup -path "/pode" -Routes{
-
+                Add-PodeRoute -Method Get -Path "/update" -ScriptBlock {
+            $response = git pull
+            Write-PodeTextResponse $response
+        }
         Add-PodeRoute -Method Get -Path "/save" -ScriptBlock {
             if(!(Test-Path ./data/)){
                 mkdir ./data
@@ -227,6 +230,7 @@ Start-PodeServer -Threads 4 -EnablePool WebSockets {
             if((Test-Path ./data/)){
                 Remove-Item "./data/state.json"
             }
+            Disconnect-PodeWebSocket -name "CA"
             restart-podeServer
         }
     }
