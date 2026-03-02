@@ -4,10 +4,10 @@
         if($WSJSONPacket.type -match "arenastatus"){
             Write-Debug "ArenaStatus Obtained"
             Lock-PodeObject -Name 'FMSArenaStatusLock' -ScriptBlock{
-            Set-PodeState -Name 'FMSArenaStatus' -Value $WsEvent.Request.body
+                Set-PodeState -Name 'FMSArenaStatus' -Value $WsEvent.Request.body
             }
-#            $serverstate = Get-Content -path "./data/server.json"  | ConvertFrom-Json
-            if ($true) {            
+            $serverstate = Get-Content -path "./data/server.json"  | ConvertFrom-Json
+            if ($serverstate.stacklight) {            
                 Lock-PodeObject -Name "StackConfig" -ScriptBlock{
                     
                     $StackConfigData = Get-Content "./data/Stacklightconfig.json" | Convertfrom-Json
@@ -179,16 +179,10 @@
         }elseif ($WSJSONPacket.type -match "ping") {
         Write-Debug "WSMadepingrequest"
         }elseif ($WSJSONPacket.type -match "matchTime") {
-            if ($true) {
-
+            if ($serverstate.stacklight) {
                 Lock-PodeObject -name "StackState" -ScriptBlock {
                     $StackConfigData = Get-Content "./data/Stacklightconfig.json" | Convertfrom-Json
-
-                    #$StackStateRedIP = $StackConfigData.RedSCC
-                    #$StackStateBlueIP = $StackConfigData.BlueSCC
                     $StackStateMiddleIP = $StackConfigData.MiddleStack
-                    #$StackStateRed =Invoke-RestMethod -Uri "http://$StackStateRedIP/state"
-                    #$StackStateBlue =Invoke-RestMethod -Uri "http://$StackStateBlueIP/state"
                     $StackStateMiddle =Invoke-RestMethod -Uri "http://$StackStateMiddleIP/state"
                         $shifttiming = get-podestate -Name "Shifttiming"
                         if (!(($WSJSONPacket.data.MatchState -ge 3) -and ($WSJSONPacket.data.MatchState -le 5))) {

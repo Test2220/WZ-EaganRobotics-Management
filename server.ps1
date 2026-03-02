@@ -24,7 +24,7 @@ $FMSAddress = $serverSettings.FMS #address to pull websocket for CA
 Start-PodeServer -Threads 4 -EnablePool WebSockets {
     # attach to port 80 for http
     Add-PodeEndpoint -Address $podeServer -Port 80 -Protocol Http
-        Add-PodeEndpoint -Address $podeServer -Port 81 -Protocol Ws
+    Add-PodeEndpoint -Address $podeServer -Port 81 -Protocol Ws
 
     Set-PodeViewEngine -Type Pode
     New-PodeLoggingMethod -Terminal | Enable-PodeErrorLogging
