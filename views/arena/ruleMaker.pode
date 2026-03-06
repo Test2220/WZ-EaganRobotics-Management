@@ -1,0 +1,44 @@
+<html>
+<head>
+
+    <link rel="stylesheet" href="style.css" />
+    <script src="https://ajax.googleapis.com/ajax/libs/jquery/3.7.1/jquery.min.js"></script>
+</head>
+<body>
+<div id="mainview">
+<form action="/api/arena/ruleadd" id="newrule" method="post">
+<h2>Manual add</h2>
+    <div class="form-row'>
+        <label for="RuleID">Rule ID</label>
+        <input type="text" class="input-text input-text-block" id="RuleID" name="RuleID"/>
+    </div>
+    <div class="form-row'>
+        <label for="Short">Short Discription</label>
+        <input type="text" class="input-text input-text-block" id="Short" name="Short"/>
+    </div>
+        <div class="form-row'>
+        <label for="Long">Detailed Discription</label>
+        <input type="text" class="input-text input-text-block" id="Long" name="Long"/>
+    </div>
+        <div class="form-row'>
+        <label for="Ranking">Foul Level</label>
+        <input type="text" class="input-text input-text-block" id="Ranking" name="Ranking"/>
+    </div>
+        <div class="form-row'>
+        <label for="Enhanced">Repeated</label>
+        <input type="text" class="input-text input-text-block" id="Enhanced" name="Enhanced"/>
+    </div>
+        <div class="form-row'>
+        <label for="Visability">Rule Visable on Dashboard</label>
+        <input type="text" class="input-text input-text-block" id="Visability" name="Visability"/>
+    </div>
+    
+    <div class="form-row mx-auto">
+        <input type="submit" class="btn-submit" id="btn-submit" />
+    </div>
+
+
+</form>
+</div>
+</body>
+</html>

@@ -1,11 +1,59 @@
-﻿<#
+<#
 References:
     - https://docs.microsoft.com/en-us/dotnet/api/system.net.websockets.clientwebsocket?view=netframework-4.5
     - https://github.com/poshbotio/PoshBot/blob/master/PoshBot/Implementations/Slack/SlackConnection.ps1
     - https://www.leeholmes.com/blog/2018/09/05/producer-consumer-parallelism-in-powershell/
-#>
 
+
+    17 : {'name' : 'Red', 'state' : GPIO.HIGH},
+    27 : {'name' : 'Blue', 'state' : GPIO.HIGH},
+    22 : {'name' : 'Amber', 'state' : GPIO.HIGH},
+    23 : {'name' : 'White', 'state' : GPIO.HIGH},
+    24 : {'name' : 'Green', 'state' : GPIO.HIGH},
+    25 : {'name' : 'Buzzer', 'state' : GPIO.HIGH},
+    6 : {'name' : 'Aux1', 'state' : GPIO.HIGH},
+    12 : {'name' : 'Aux2', 'state' : GPIO.HIGH} 
+
+    BevrLink Table
+
+    Relay   GPIOPin Stack   SCC   
+    Relay1  GPIO5   Red     A1
+    Relay2  GPIO6   Blue    A2
+    Relay3  GPIO13  Amber   A3
+    Relay4  GPIO16  white   
+    Relay5  GPIO19  Green 
+    Relay6  GPIO20  Buzzer
+    Relay7  GPIO21  Aux1
+    Relay8  GPIO26  Aux2
+
+
+#>
 $ProgressPreference = "SilentlyContinue"
+function updatePinState {
+    param (
+        [int]$Pin,
+        [bool]$CoilState,
+        [bool]$invert = $false,
+        [string]$PLCIP,
+        [PSCustomObject[]]$LightState
+    )
+    if($invert){
+        if (($CoilState -eq $false)){
+            Invoke-RestMethod -Uri "http://$PLCIP/api/$Pin/off"|Out-Null
+        }elseif($CoilState -eq $true){
+            Invoke-RestMethod -Uri "http://$PLCIP/api/$Pin/on"|Out-Null
+        }
+    }else {
+        if (($CoilState -eq $false)){
+            Invoke-RestMethod -Uri "http://$PLCIP/api/$Pin/off"|Out-Null
+        }elseif($CoilState -eq $true){
+            Invoke-RestMethod -Uri "http://$PLCIP/api/$Pin/on"|Out-Null
+        }
+    }
+
+   # Write-Host "Pin is $Pin and relays are inverted is $Pininverted the state of the Pin is $pinStateCast"
+}
+
 function out-TerminalLog {
     param (
         [string]$msg  
@@ -28,6 +76,13 @@ $companionPort = "8000"
 $companionAddress = $companionIP + ":" + $companionPort
 $CompanionActive = $true
 $playerAuotmationFlag = Invoke-RestMethod -uri "http://$APIAddress/api/music/automation"
+$alliancestatus = ""
+
+
+
+$StackIP = "172.16.20.73"
+$redSCCIP = "172.16.20.71"
+$blueSCCIP = "172.16.20.72"
 
 if (!(Test-Path -Path .\qualification.csv)) {
     $data = Invoke-WebRequest -Uri "http://$FMSAddress/reports/csv/schedule/qualification" 
@@ -123,28 +178,23 @@ $oldR3Byp = "init"
 $oldB1Byp = "init"
 $oldB2Byp = "init"
 $oldB3Byp = "init"
+
+$R1Ready = $false
+$R2Ready = $false
+$R3Ready = $false
+
+$B1Ready = $false
+$B2Ready = $false
+$B3Ready = $false
+
     
 $oldMatchState = "init"
 $arenareadyFlag = $false
 $gameonFlag = $false
 $PostgameFlag = $false
 $LastPull = Get-Date
+$greenBlinkTime = Get-Date
 
-$StackLightRed = $false
-$StackLightBlue = $false
-$StackLightGreen = $false
-$StackLightWhite = $false
-$StackLightAmber = $false
-
-$B1Ready = $false
-$B2Ready = $false
-$B3Ready = $false
-
-$R1Ready = $false
-$R2Ready = $false
-$R3Ready = $false
-
-$OpenFieldLED = $false
 
 
 try {
@@ -330,29 +380,163 @@ try {
                     ##Start of PLC Section
 
                     #get info from CA on Arena State
-                    if ($psobject.data.AllianceStations.B1.Bypass -eq $false){ #check if B1 is not in Bypass
-                        $B1Ready = (((!$null -eq $psobject.data.AllianceStations.B1.DsConn) -and ($psobject.data.AllianceStations.B1.Ethernet) -and ($psobject.data.TeamWifiStatuses.B1.RadioLinked)))
+                    if (($psobject.data.AllianceStations.B1.Bypass -eq $false) -and ($null -ne $psobject.data.AllianceStations.B1.DsConn)){ #check if B1 is not in Bypass
+                        $B1Ready = (($psobject.data.AllianceStations.B1.DsConn.RadioLinked) -and ($psobject.data.AllianceStations.B1.DsConn.RioLinked) -and ($psobject.data.AllianceStations.B1.DsConn.RobotLinked))
                         #if so Check if DS is not Null, and Ethernet is conencted, and Radio is linked and set the restulting checks to the ready status.
 
                     }elseif ($psobject.data.AllianceStations.B1.Bypass -eq $true) {
                         $B1Ready = $True
                     }
+                    if (($psobject.data.AllianceStations.B2.Bypass -eq $false) -and ($null -ne $psobject.data.AllianceStations.B2.DsConn)){ #check if B2 is not in Bypass
+                        $B2Ready = (($psobject.data.AllianceStations.B2.DsConn.RadioLinked) -and ($psobject.data.AllianceStations.B2.DsConn.RioLinked) -and ($psobject.data.AllianceStations.B2.DsConn.RobotLinked))
+                        #if so Check if DS is not Null, and Ethernet is conencted, and Radio is linked and set the restulting checks to the ready status.
 
+                    }elseif ($psobject.data.AllianceStations.B2.Bypass -eq $true) {
+                        $B2Ready = $True
+                    }
+
+                    if (($psobject.data.AllianceStations.B3.Bypass -eq $false) -and ($null -ne $psobject.data.AllianceStations.B3.DsConn)){ #check if B1 is not in Bypass
+                        $B3Ready = (($psobject.data.AllianceStations.B3.DsConn.RadioLinked) -and ($psobject.data.AllianceStations.B3.DsConn.RioLinked) -and ($psobject.data.AllianceStations.B3.DsConn.RobotLinked))
+                        #if so Check if DS is not Null, and Ethernet is conencted, and Radio is linked and set the restulting checks to the ready status.
+
+                    }elseif ($psobject.data.AllianceStations.B3.Bypass -eq $true) {
+                        $B3Ready = $True
+                    }
+
+                    if (($psobject.data.AllianceStations.R1.Bypass -eq $false) -and ($null -ne $psobject.data.AllianceStations.R1.DsConn)){ #check if R1 is not in Bypass
+                        $R1Ready = (($psobject.data.AllianceStations.R1.DsConn.RadioLinked) -and ($psobject.data.AllianceStations.R1.DsConn.RioLinked) -and ($psobject.data.AllianceStations.R1.DsConn.RobotLinked))
+                        #if so Check if DS is not Null, and Ethernet is conencted, and Radio is linked and set the restulting checks to the ready status.
+
+                    }elseif ($psobject.data.AllianceStations.R1.Bypass -eq $true) {
+                        $R1Ready = $True
+                    }
+
+                    if (($psobject.data.AllianceStations.R2.Bypass -eq $false) -and ($null -ne $psobject.data.AllianceStations.R2.DsConn)){ #check if R2 is not in Bypass
+                        $R2Ready = (($psobject.data.AllianceStations.R2.DsConn.RadioLinked) -and ($psobject.data.AllianceStations.R2.DsConn.RioLinked) -and ($psobject.data.AllianceStations.R2.DsConn.RobotLinked))
+                        #if so Check if DS is not Null, and Ethernet is conencted, and Radio is linked and set the restulting checks to the ready status.
+
+                    }elseif ($psobject.data.AllianceStations.R2.Bypass -eq $true) {
+                        $R2Ready = $True
+                    }
+
+                    if (($psobject.data.AllianceStations.R3.Bypass -eq $false) -and ($null -ne $psobject.data.AllianceStations.R3.DsConn)){ #check if R3 is not in Bypass
+                        $R3Ready = (($psobject.data.AllianceStations.R3.DsConn.RadioLinked) -and ($psobject.data.AllianceStations.R3.DsConn.RioLinked) -and ($psobject.data.AllianceStations.R3.DsConn.RobotLinked))
+                        #if so Check if DS is not Null, and Ethernet is conencted, and Radio is linked and set the restulting checks to the ready status.
+
+                    }elseif ($psobject.data.AllianceStations.R3.Bypass -eq $true) {
+                        $R1Ready = $True
+                    }
 
 
                     ##Start of PLC Logic
                     if ($R1Ready -and $R2Ready -and $R3Ready){
 
                         $StackLightRed = $false
+                    }else {
+                        $StackLightRed = $true
                     }
+
                     if ($B1Ready -and $B2Ready -and $B3Ready){
 
                         $StackLightBlue = $false
+                    }else {
+                        $StackLightBlue = $true
+                    }
+                    if ($psobject.data.CanStartMatch){
+                        $greentimespan = New-TimeSpan -Start $greenBlinkTime -end $currenttime
+                        if ($greentimespan.Milliseconds -ge 500) {
+                            $StackLightGreen = !$StackLightGreen
+                        }
+                
+                    }else {
+                        $StackLightGreen = $false
+                    }
+                    if (($psobject.data.MatchState -ge 1) -and ($psobject.data.MatchState -le 5)) {
+                        $StackLightGreen = $true
                     }
 
+                    if ($alliancestatus -eq "fieldReset") {
+                        $StackLightWhite =$true
+                    }else {
+                        $StackLightWhite = $false
+                    }
+                    $StackLightOrange =$false
                     #End of PLC Logic
                     #Send to Stack
 
+                    $stackState = Invoke-RestMethod -uri "http://$StackIP/api" -ErrorAction Ignore
+                    $RedSCCState = Invoke-RestMethod -uri "http://$RedSccIP/api" -ErrorAction Ignore
+                    $BlueSCCState = Invoke-RestMethod -uri "http://$blueSCCIP/api" -ErrorAction Ignore
+
+
+   
+                        if ($StackLightRed -ne $stackState.'5'.state) {
+                            updatePinState -Pin 5 -CoilState $StackLightRed -PLCIP $StackIP
+                            Write-Host "Red Changed State"
+                        }
+                        if ($StackLightBlue -ne $stackState.'6'.state) {
+                            updatePinState -Pin 6  -CoilState  $StackLightBlue -PLCIP $StackIP
+                            Write-Host "blue Changed State"
+                        }
+                        if ($StackLightOrange -ne $stackState.'13'.state) {
+                            updatePinState -Pin 13  -CoilState  $StackLightOrange -PLCIP $StackIP
+                            Write-Host "Amber Changed State"
+                        }
+                        if ($StackLightGreen -ne $stackState.'19'.state) {
+                            updatePinState -Pin 19  -CoilState  $StackLightGreen -PLCIP $StackIP
+                            Write-Host "green Changed State"
+                        }
+                        if($StackLightWhite -ne $stackState.'16'.state){
+
+                            updatePinState -Pin 16  -CoilState  $StackLightWhite -PLCIP $StackIP
+                            Write-Host "Field reset change state"
+                        }
+                        if ($R1Ready -ne $RedSCCState.'5'.state) {
+                            if ($B3Ready -eq $false) {
+                                updatePinState -Pin 5  -CoilState $true -PLCIP $redSCCIP
+                            }else {
+                                updatePinState -Pin 5  -CoilState $false -PLCIP $redSCCIP                         
+                            }                            Write-Host "Red 1 Changed State"
+                        }
+                        if ($R2Ready -ne $RedSCCState.'6'.state) {
+                            if ($B3Ready -eq $false) {
+                                updatePinState -Pin 6  -CoilState $true -PLCIP $redSCCIP
+                            }else {
+                                updatePinState -Pin 6  -CoilState $false -PLCIP $redSCCIP                         
+                            }                            Write-Host "Red 2 Changed State"
+                        }
+                        if ($R3Ready -ne $RedSCCState.'13'.state) {
+                            if ($B3Ready -eq $false) {
+                                updatePinState -Pin 13  -CoilState $true -PLCIP $redSCCIP
+                            }else {
+                                updatePinState -Pin 13  -CoilState $false -PLCIP $redSCCIP                         
+                            }
+                            Write-Host "Red 3 Changed State"
+                        }
+                        if ($B1Ready -ne $BlueSCCState.'5'.state) {
+                            if ($B3Ready -eq $false) {
+                                updatePinState -Pin 5  -CoilState $true -PLCIP $blueSCCIP
+                            }else {
+                                updatePinState -Pin 5  -CoilState $false -PLCIP $blueSCCIP                         
+                            }                            Write-Host "Blue 1 Changed State"
+                        }
+                        if ($B2Ready -ne $BlueSCCState.'6'.state) {
+                            if ($B3Ready -eq $false) {
+                                updatePinState -Pin 6  -CoilState $true -PLCIP $blueSCCIP
+                            }else {
+                                updatePinState -Pin 6  -CoilState $false -PLCIP $blueSCCIP                         
+                            }
+                            Write-Host "Blue 2 Changed State"
+                        }
+                        if ($B3Ready -ne $RedSCCState.'13'.state) {
+                            if ($B3Ready -eq $false) {
+                                updatePinState -Pin 13  -CoilState $true -PLCIP $blueSCCIP
+                            }else {
+                                updatePinState -Pin 13  -CoilState $false -PLCIP $blueSCCIP                         
+                            }
+                            updatePinState -Pin 13  -CoilState $B3Ready -PLCIP $blueSCCIP
+                            Write-Host "blue 3 Changed State"
+                        }
 
 
 
@@ -405,6 +589,7 @@ try {
                 if ($verboselogging) {
                     out-TerminalLog -msg $msg
                 }
+                $alliancestatus = $psobject.data
                 
             }
             elseif ($psobject.type -eq "matchTiming") {

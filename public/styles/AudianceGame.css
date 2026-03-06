@@ -1,0 +1,191 @@
+body{
+    width: 100vw;
+  height: 100vw;
+  overflow: hidden;
+  font-size: large;
+  font-family: Impact, Haettenschweiler, 'Arial Narrow Bold', sans-serif;
+  background-color: rgb(0, 255, 0);
+}
+#mainview{
+  width: 100vw;
+  height: 100vw;
+ display: flex;
+}
+
+#circle {
+  width: 100px;
+  height: 100px;
+  background: rgb(255, 255, 255);
+  border-radius: 50%;
+  border: 2px;
+}
+#Pointcontainer{
+  position: absolute;
+  bottom: 0;           /* Positions the element at the bottom edge */
+  left: 50%;           /* Moves the left edge to the horizontal center */
+  transform: translateX(-50%); /* Pulls the element back by half of its own width */
+  width: 600px;
+  height: 220px;
+  border: 1px;
+  border-color: red;
+  display: flex;
+}
+#gamelogoPNG{
+  height: 85%;
+  margin: auto;
+  position: absolute;
+  bottom: 0;           /* Positions the element at the bottom edge */
+  left: 50%;           /* Moves the left edge to the horizontal center */
+  transform: translateX(-50%); /* Pulls the element back by half of its own width */
+}
+#LogoSpace{
+width: 200;
+height: 230;
+margin: auto;
+background-color: white;
+border: 5px;
+border-color: black;
+position: absolute;
+  bottom: 0;           /* Positions the element at the bottom edge */
+  left: 50%;           /* Moves the left edge to the horizontal center */
+  transform: translateX(-50%); /* Pulls the element back by half of its own width */
+
+}#pointsRight{
+  margin: auto;
+    width: 100%;
+  height: 100%;
+ left: 0%;
+  right: 0%;
+  top: 0%;
+  display: flex;
+  font-size: 6rem;
+  position: absolute;
+  color: white;
+  align-items: center;
+  justify-content: center;
+
+}#pointsLeft{
+  margin: auto;
+  width: 100%;
+  height: 100%;
+  left: 0%;
+  right: 0%;
+  top: 0%;
+  display: flex;
+    font-size: 6rem;
+    position: absolute;
+    color:white;
+  align-items: center;
+    justify-content: center;
+
+}#teamRight{
+  left: -10%;
+  bottom: 170;
+  position: absolute;
+  background-color: white;
+  width: 260;
+  height: 50;
+  text-align: center;
+   font-size: 1.6rem;
+   z-index: -20;
+   padding-top: 10;
+
+}#teamLeft{
+  right: -10%;
+  bottom: 170;
+  position: absolute;
+  background-color: white;
+  width: 260;
+  height: 50;
+  text-align: center;
+   font-size: 1.6rem;
+   z-index: -20;
+   padding-top: 10;
+}
+
+#B1{
+margin: auto;
+position: absolute;
+left: 1%;
+width: 32%;
+}
+#B2{
+  margin: auto;
+  position: absolute;
+  left: 33%;
+  width: 32%;
+}#B3{
+  margin: auto;
+  position: absolute;
+  left: 65%;
+  width: 32%;
+}
+#R1{
+  margin: auto;
+  position: absolute;
+  left: 2%;
+  width: 33%;
+}
+#R2{
+  margin: auto;
+  position: absolute;
+  left: 33%;
+  width: 33%;
+}#R3{
+  margin: auto;
+  position: absolute;
+  left: 66%;
+  width: 33%;
+}
+
+
+.Redpoints{
+  background-color: red;
+width: 200;
+height: 170;
+display: flex;
+text-align: center;
+position: relative;
+}
+.Bluepoints{
+  background-color: blue;
+  width: 200;
+height: 170;
+display: flex;
+text-align: center;
+position: relative;
+}
+#TimerContainer{
+margin: auto;
+width: 110px;
+padding: 5px;
+padding-left: 10px;
+padding-right: 10px;
+padding-bottom: 6px;
+padding-top: 6px;
+background-color: white;
+border: 5px;
+border-color: black;
+position: absolute;
+  bottom: 200px;           /* Positions the element at the bottom edge */
+  left: 50%;           /* Moves the left edge to the horizontal center */
+  transform: translateX(-50%); /* Pulls the element back by half of its own width */
+font-size: 3rem;
+z-index: 100;
+text-align: center;
+}
+#pointsLeftContainer{
+margin: auto;
+  position: absolute;
+  bottom: 0;           /* Positions the element at the bottom edge */
+  right: 0%;           /* Moves the left edge to the horizontal center */
+ 
+
+}#pointsRightContainer{
+margin: auto;
+  position: absolute;
+  bottom: 0;           /* Positions the element at the bottom edge */
+  left: 0%;           /* Moves the left edge to the horizontal center */
+ 
+
+}
