@@ -8,22 +8,15 @@
     Write-Debug "init Pode State and Lock Tables"
     #init the podestate and lock table
     Restore-PodeState -Path "./data/state.json"
-   
-    Set-PodeState -Name 'FMSArenaStatus' -Value @{ 'values' = @(); } | Out-Null
-    Set-PodeState -Name 'AutomationStatus' -Value @{ 'automation' = $true } | Out-Null
-    set-podestate -Name "arenaQueue" -Value @{} | Out-Null
+
+
     set-podestate -Name "Nexuslink" |Out-Null
-    set-podestate -name "TestarenaState"|Out-Null
+    
 
     New-PodeLockable -name "NexusLock"
-    New-PodeLockable -Name 'workstationLock'
-    New-PodeLockable -Name 'FMSArenaStatusLock'
-    New-PodeLockable -Name 'ConfigStateLock'
-    New-PodeLockable -Name 'arenaQueueLock'
-    New-PodeLockable -Name 'FMSArenamatchtime'
-    New-PodeLockable -Name  "TestArenaLock"
+   
     . "./module/music/init.ps1" #music state and lock table init code
-
+    . "./module/arena/init.ps1" #arena state init
     . "./module/Game2026/init-Gamecode.ps1" #Game2026 State and Lock table
     
     $WSURL = "ws://" + $FMSAddress +":8080/match_play/websocket"
