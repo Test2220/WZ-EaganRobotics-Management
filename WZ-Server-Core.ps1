@@ -75,21 +75,21 @@
     Add-PodeRoute -Method get -Path "/" -ScriptBlock{Write-PodeViewResponse -Path "index"}
 
     Add-PodeRouteGroup -Path "/arena" -Routes {
-        Add-PodeRoute -Method Get -Path "/scorekeeper" -ScriptBlock {Write-PodeViewResponse -Path "Scorekeeper" -Folder "./module/arena/view"}
-        Add-PodeRoute -Method Get -Path "/Announcer" -ScriptBlock {Write-PodeViewResponse -Path "AnnouncerDisplay" -Folder "./module/arena/view"}
-        Add-PodeRoute -method get -Path "/points" -ScriptBlock{Write-PodeViewResponse -Path "ScoreDashboard" -Folder "./module/arena/view"}
-        add-poderoute -Method Get -Path "/Test" -ScriptBlock {Write-PodeViewResponse -Path "testArena" -Folder "./module/arena/view"}
+        Add-PodeRoute -Method Get -Path "/scorekeeper" -ScriptBlock {Write-PodeViewResponse -Path "arena/Scorekeeper"}
+        Add-PodeRoute -Method Get -Path "/Announcer" -ScriptBlock {Write-PodeViewResponse -Path "arena/AnnouncerDisplay"}
+        Add-PodeRoute -method get -Path "/points" -ScriptBlock{Write-PodeViewResponse -Path "arena/ScoreDashboard"}
+        Add-PodeRoute -method get -Path "/final" -ScriptBlock{Write-PodeViewResponse -Path "arena/FullscreenDisplay"}
+        add-poderoute -Method Get -Path "/Test" -ScriptBlock {Write-PodeViewResponse -Path "arena/testArena"}
         Add-PodeRouteGroup -Path "/Audiance" -Routes {
-            Add-PodeRoute -Path "/game" -Method Get -ScriptBlock {Write-PodeViewResponse -Path "AudianceGameBug" -Folder "./module/arena/view"}
-            Add-PodeRoute -Path "/AudioPlayback" -Method Get -ScriptBlock {Write-PodeViewResponse -Path "soundplayer" -Folder "./module/arena/view"}
+            Add-PodeRoute -Path "/game" -Method Get -ScriptBlock {Write-PodeViewResponse -Path "arena/AudianceGameBug"}
+            Add-PodeRoute -Path "/AudioPlayback" -Method Get -ScriptBlock {Write-PodeViewResponse -Path "arena/soundplayer"}
         }
-        Add-PodeRoute -Method get -Path "/stack" -ScriptBlock {Write-PodeViewResponse -Path "arena/stacklightTest" -Folder "./module/arena/view"}
+        Add-PodeRoute -Method get -Path "/stack" -ScriptBlock {Write-PodeViewResponse -Path "arena/stacklightTest"}
 
         Add-PodeRoute -Method get -Path "/log" -scriptblock {Write-PodeDirectoryResponse -Path "./log"} 
         add-podeRoute -method get -Path "/log/:filename" -ScriptBlock{#need to debug on why this errors out
             $filepath = "./log/"+$WebEvent.Parameters['filename']
-            $filelocation = get-content -Path $filepath
-            Write-PodetextResponse $filelocation
+            Write-PodejsonResponse -path $filepath 
         }
     }
     Add-PodeRouteGroup -Path '/api' -Routes  {
@@ -180,7 +180,9 @@
             }
             Lock-PodeObject -ScriptBlock {
                 Save-PodeState -Path './data/state.json'
-            } Disconnect-PodeWebSocket -name "CA"
+            } 
+            
+            if($serverSettings.FMSConnect){Disconnect-PodeWebSocket -name "CA"}
             restart-podeServer
         }
         add-poderoute -Method get -path "/reset" -ScriptBlock{

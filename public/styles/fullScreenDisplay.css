@@ -1,0 +1,340 @@
+body{
+    width: 100vw;
+  height: 100vw;
+  overflow: hidden;
+  font-size: large;
+  font-family: Impact, Haettenschweiler, 'Arial Narrow Bold', sans-serif;
+  background-color: rgb(0, 255, 0);
+}
+#mainview{
+  width: 100vw;
+  height: 100vw;
+ display: flex;
+}
+
+#circle {
+  width: 100px;
+  height: 100px;
+  background: rgb(255, 255, 255);
+  border-radius: 50%;
+  border: 2px;
+}
+#topBarContainer{
+  position: absolute;
+  top: 0;
+  left: 0;
+  width: 100%;
+  height: 50px;
+  background-color: black;
+}#topBarLogoLeft{
+  position: absolute;
+  top: 0;
+  left: 0;
+  height: 50px;
+  background-color: white;
+}
+#topBarLogoRight{
+  position: absolute;
+  top: 0;
+  right: 0;
+  height: 46px;
+  background-color: white;
+  padding: 2px;
+  padding-right: 6px;
+  padding-left: 6px;
+}
+#centerTBText{
+  color: white;
+  position: absolute;
+text-align: center;
+z-index: 100;
+font-size: 32pt;
+width: 100%;
+top: 0;
+}#MidLeftRedSection{
+  position: absolute;
+width: 50%;
+height: 100%;
+left: 0%;
+top: 50px;
+background-color: #ed1d26;
+z-index: -1000;
+}#RedTotalContainer{
+  position: absolute;
+  Right: 0;
+  top: 10px;
+  width: 300px;
+  height: 150px;
+  text-align: center;
+  color: white;
+  background-color: #ed1d26;
+
+}#RedoffsetBackground{
+  position: absolute;
+  background-color: #820e11;
+  z-index: -999;
+  width: 100%;
+  height: 98%;
+  bottom: 0px;
+}#RedPointTitle{
+  position: absolute;
+  height: 30%;
+  width: 100%;
+  font-size: 25pt;
+}#RedPointCount{
+  position: absolute;
+  bottom: 0;
+  height: 70%;
+  width: 100%;
+  font-size: 56pt;
+}
+
+#MidRightBlueSection{
+position: absolute;
+height: 100%;
+width: 50%;
+right: 0%;
+top: 50px;
+background-color: 0166b3;
+z-index: -1000;
+}#BlueoffsetBackground{
+  position: absolute;
+  background-color: #004172;
+  z-index: -999;
+  width: 100%;
+  height: 98%;
+  bottom: 0px;
+}#BlueTotalContainer{
+  position: absolute;
+  left: 0;
+  top: 10px;
+  width: 300px;
+  height: 150px;
+  text-align: center;
+  color: white;
+  background-color: #0166b3;
+
+}#BluePointTitle{
+  position: absolute;
+  height: 30%;
+  width: 100%;
+  font-size: 25pt;
+}#BluePointCount{
+  position: absolute;
+  bottom: 0;
+  height: 70%;
+  width: 100%;
+  font-size: 56pt;
+}
+  #bottomBarContainer{
+  position: absolute;
+  bottom: 0;
+  left: 0;
+  width: 100%;
+  height: 50px;
+  background-color: black;
+}#bottomBarLogoleft{
+    position: absolute;
+  top: 0;
+  left: 0;
+  height: 46px;
+  background-color: white;
+  padding: 2px;
+  padding-left: 4px;
+  padding-right: 4px;
+}
+#pointMatrix{
+  position: absolute;
+  width: 600px;
+  height: 600px;
+  background-color: beige;
+  top:210px;
+ left: 34.3%;
+ font-size: 35pt;
+}#AutoTitleConainer{
+  text-align: center;
+  height: 14.28%;
+  width: 100%;
+  position: relative;
+  top: 0;
+  background-color: #d9d9d9;
+
+}#AutoTitleDiv{
+    position: absolute;
+  width: auto;
+    height:auto;
+  left: 42%;
+  top:10%;
+  bottom: 10%;
+}
+#AutoFuelConainer{
+  text-align: center;
+  height: 14.28%;
+  width: 100%;
+  position: relative;
+  top: 0%;
+}#AutoFuelTitle{
+  position: absolute;
+  width: 100;
+    height: 100%;
+  left: 42%;
+  top:10%;
+}
+#RedAutoFuel{
+  height: 100%;
+  width: 33%;
+  position: absolute;
+  left: 10px;
+  text-align: left;
+  top: 10%;
+
+}#BlueAutoFuel{
+  height: 100%;
+  width: 33%;
+  position: absolute;
+  right: 10px;
+    text-align: right;
+    top: 10%;
+
+
+}#AutoTowerConainer{
+  text-align: center;
+  height: 14.28%;
+  width: 100%;
+  position: relative;
+  top: 0%;
+
+}#AutoTowerTitle{
+  position: absolute;
+  width: 100;
+    height: 100%;
+  left: 42%;
+  top:10%;
+}
+#RedAutoTower{
+  height: 100%;
+  width: 33%;
+  position: absolute;
+  left: 10px;
+  text-align: left;
+  top: 10%;
+
+}#BlueAutoTower{
+  height: 100%;
+  width: 33%;
+  position: absolute;
+  right: 10px;
+    text-align: right;
+    top: 10%;
+
+
+}#TeleopTitleConainer{
+  text-align: center;
+  height: 14.28%;
+  width: 100%;
+  position: relative;
+  top: 0;
+  background-color: #d9d9d9;
+}#TeleopTitleDiv{
+  position: absolute;
+  width: 100;
+    height: 100%;
+  left: 42%;
+  top:10%;
+}
+#TeleopFuelConainer{
+  text-align: center;
+  height: 14.28%;
+  width: 100%;
+  position: relative;
+  top: 0;}
+
+  #TeleoFuelTitle{
+  position: absolute;
+  width: 100;
+    height: 100%;
+  left: 42%;
+  top:10%;
+}
+#RedTeleoFuel{
+  height: 100%;
+  width: 33%;
+  position: absolute;
+  left: 10px;
+  text-align: left;
+  top: 10%;
+
+}#BlueTeleoFuel{
+  height: 100%;
+  width: 33%;
+  position: absolute;
+  right: 10px;
+    text-align: right;
+    top: 10%;
+
+
+}
+
+#TeleopTowerConainer{
+  text-align: center;
+  height: 14.28%;
+  width: 100%;
+  position: relative;
+  top: 0%;}
+    #TeleopTowerTitle{
+  position: absolute;
+  width: 100;
+    height: 100%;
+  left: 42%;
+  top:10%;
+}
+#RedTeleopTower{
+  height: 100%;
+  width: 33%;
+  position: absolute;
+  left: 10px;
+  text-align: left;
+  top: 10%;
+
+}#BlueTeleopTower{
+  height: 100%;
+  width: 33%;
+  position: absolute;
+  right: 10px;
+    text-align: right;
+    top: 10%;
+
+
+}
+#FoulPointConainer{
+  text-align: center;
+  height: 14.28%;
+  width: 100%;
+  position: relative;
+  top: 0%;
+  background-color: #d9d9d9;}
+      #FoulPointrTitle{
+  position: absolute;
+  width: 100;
+    height: 100%;
+  left: 42%;
+  top:10%;
+}
+#RedFoulPoint{
+  height: 100%;
+  width: 33%;
+  position: absolute;
+  left: 10px;
+  text-align: left;
+  top: 10%;
+
+}#BlueFoulPoint{
+  height: 100%;
+  width: 33%;
+  position: absolute;
+  right: 10px;
+    text-align: right;
+    top: 10%;
+
+
+}
