@@ -1,6 +1,9 @@
 {
-        $gametiming = get-content -Path ./Game2026/config/gametiming.json | ConvertFrom-Json
+        $gametiming = get-content -Path ./module/Game2026/config/gametiming.json | ConvertFrom-Json
         $WSJSONPacket = $WsEvent.Request.body| ConvertFrom-Json
+            $serverSettings = Get-Content -Path "./data/server.json"  |ConvertFrom-Json
+    $podeServer = $serverSettings.server
+
         if($WSJSONPacket.type -match "arenastatus"){
             Write-Debug "ArenaStatus Obtained"
             Lock-PodeObject -Name 'FMSArenaStatusLock' -ScriptBlock{
@@ -447,9 +450,11 @@
                     
                     if ($WSJSONPacket.data.MatchState -eq "0") {
                         if ($prevstate.data.MatchState -eq  "6"){
-                            $arena = get-podeState -name "FMSArenaStatus" | ConvertFrom-Json
+                            $arena = get-podestate -name "arenarecorder"
                             $matchid = ($arena.data.MatchId)
-                            Get-PodeState -name "points"| convertto-JSON | Out-File -FilePath ./log/$matchid.json -Force
+                            $points = Get-PodeState -name "points"
+                            $payload = @{ 'R1'=$arena.data.AllianceStations.R1.Team.Id;'R2'=$arena.data.AllianceStations.R2.Team.Id;'R3'=$arena.data.AllianceStations.R3.Team.Id;'B1'=$arena.data.AllianceStations.B1.Team.Id;'B2'=$arena.data.AllianceStations.B2.Team.Id;'B3'=$arena.data.AllianceStations.B3.Team.Id;'Points' = $points;}
+                            $payload | convertto-JSON | Out-File -FilePath ./log/$matchid.json -Force
                             Set-PodeState -Name 'points' -Value @{ 'RedAuto' = 0;'blueauto' = 0;'Redtele' = 0;'bluetele' = 0;'redend' = 0;'blueend' = 0;'redAutoL1' = 0;'redTeleL1' = 0;'redTeleL2' = 0;'redTeleL3' = 0;'BlueAutoL1' = 0;'BlueTeleL1' = 0;'BlueTeleL2' = 0;'BlueTeleL3' = 0; 'redMinorFoul' = 0;'redMajorFoul' = 0; 'blueMinorFoul'=0;'blueMajorFoul' = 0; "mode"="nonops"} | Out-Null
                         }
                         $newstate = "PreMatch"
@@ -459,15 +464,20 @@
                     }elseif ($WSJSONPacket.data.MatchState -eq  "2") {
                         $newstate = "WarmupPeriod"
                     }elseif ($WSJSONPacket.data.MatchState -eq  "3") {
-                                                Invoke-RestMethod -uri "http://172.16.20.6/music/change-song" -Method Post -Body @{"player"="Gameon"}
+                        #Invoke-RestMethod -uri "http://$podeServer/music/change-song" -Method Post -Body @{"player"="Gameon"} 
 
                         $newstate = "AutoPeriod"
+                        Lock-PodeObject -Name "FMSArenaStatusLock" -ScriptBlock {
+                            $payload = get-podestate -name "FMSArenaStatus" |convertfrom-JSON
+                        set-podestate -name "arenarecorder" -value $payload
+                        }
                     }elseif ($WSJSONPacket.data.MatchState -eq  "4") {
                         $newstate = "PausePeriod"
                     }elseif ($WSJSONPacket.data.MatchState -eq  "5") {
                         $newstate = "TeleopPeriod"
                     }elseif ($WSJSONPacket.data.MatchState -eq  "6") {
-                        Invoke-RestMethod -uri "http://172.16.20.6/music/change-song" -Method Post -Body @{"player"="Inbetween"}
+                        #Invoke-RestMethod -uri "http://$podeServer/music/change-song" -Method Post -Body @{"player"="Inbetween"}
+
                         $newstate = "PostMatch"
                     }elseif ($WSJSONPacket.data.MatchState -eq  "7") {
                         $newstate = "TimeoutActive"
@@ -479,7 +489,6 @@
                 }
                 Set-PodeState -Name 'FMSArenatimer' -Value $WsEvent.Request.body
             }
-
             if (($WSJSONPacket.data.MatchTimeSec -eq 0)-and (($WSJSONPacket.data.MatchState -eq 3) )) {
                 write-debug "triger Sound Start"
                         Send-PodeSignal -Value @{"type"="playaudio";"data"="start.wav"}

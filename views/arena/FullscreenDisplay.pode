@@ -19,14 +19,32 @@
       <div id="BluePointTitle">Blue</div>
       <div id="BluePointCount">999</div>
     </div>
-  <div id="BlueoffsetBackground"> </div>
+  <div id="BlueoffsetBackground">
+    <div id="BlueTeamContainer">
+      <div id="Blue1" class="teams">1111</div>
+      <div id="Blue2" class="teams">2222</div>
+      <div id="Blue3" class="teams">3333</div>
+    </div>
+    <div id="BlueArrowContainer" class="ArrowContainer">
+    <div id="blueArrow" class="Rarrow"></div>
+    </div>
+  </div>
   </div>
   <div id="MidLeftRedSection">
     <div id="RedTotalContainer">
         <div id="RedPointTitle">Red</div>
         <div id="RedPointCount">999</div>
       </div>
-    <div id="RedoffsetBackground"> </div>
+    <div id="RedoffsetBackground">
+    <div id="RedTeamContainer">
+      <div id="Red1" class="teams">4444</div>
+      <div id="Red2" class="teams">5555</div>
+      <div id="Red3" class="teams">6666</div>
+    </div>
+    <div id="RedArrowContainer" class="ArrowContainer">
+      <div id="redArrow" class="larrow"></div>
+    </div>  
+    </div>
     </div>
   <div id="pointMatrix">
     <div id="AutoTitleConainer"><div id="AutoTitleDiv">
@@ -34,41 +52,44 @@
     </div></div>
     
     <div id="AutoFuelConainer">
-    <div id="AutoFuelTitle">FUEL</div>
+      <div id="AutoFuelTitle">FUEL</div>
       <div id="RedAutoFuel">999</div>
-     <div id="BlueAutoFuel">999</div>
-    
+      <div id="BlueAutoFuel">999</div>  
     </div>
     
     <div id="AutoTowerConainer">
-    <div id="AutoTowerTitle">TOWER</div>
-    <div id="RedAutoTower">999</div>
-    <div id="BlueAutoTower">999</div>
+      <div id="AutoTowerTitle">TOWER</div>
+      <div id="RedAutoTower">999</div>
+      <div id="BlueAutoTower">999</div>
     </div>
     
     <div id="TeleopTitleConainer"><div id="TeleopTitleDiv">TELEOP</div></div>
     
     <div id="TeleopFuelConainer">
-    <div id="TeleoFuelTitle">FUEL</div>
-    <div id="RedTeleoFuel">999</div>
-     <div id="BlueTeleoFuel">999</div>
-     </div>
+      <div id="TeleoFuelTitle">FUEL</div>
+      <div id="RedTeleoFuel">999</div>
+      <div id="BlueTeleoFuel">999</div>
+    </div>
     
     <div id="TeleopTowerConainer">
-    <div id="TeleopTowerTitle">TOWER</div>
-    <div id="RedTeleopTower">999</div>
-    <div id="BlueTeleopTower">999</div></div>
-    
-    <div id="FoulPointConainer">
-    <div id="FoulPointrTitle">PENALTY</div>
-    <div id="RedFoulPoint">999</div>
-    <div id="BlueFoulPoint">999</div>
+      <div id="TeleopTowerTitle">TOWER</div>
+      <div id="RedTeleopTower">999</div>
+      <div id="BlueTeleopTower">999</div>
     </div>
-  
+      
+    <div id="FoulPointConainer">
+      <div id="FoulPointrTitle">PENALTY</div>
+      <div id="RedFoulPoint">999</div>
+      <div id="BlueFoulPoint">999</div>
+    </div>
+    <div id="TimerContainer">
+    <div id="TimerValue">0:00</div>
+  </div>
   </div>
   </div>
   <div id="bottomBarContainer">
 <image id="bottomBarLogoleft"src="/img/BB-Logo-Left.png"/>
+<div id = "bottomTextContainer" >Blue Twilight Reloaded</div>
 </div>
 </div>
 

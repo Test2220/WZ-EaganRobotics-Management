@@ -3,7 +3,7 @@ body{
   height: 100vw;
   overflow: hidden;
   font-size: large;
-  font-family: Impact, Haettenschweiler, 'Arial Narrow Bold', sans-serif;
+  font-family:  Impact,'Arial Bold', sans-serif;
   background-color: rgb(0, 255, 0);
 }
 #mainview{
@@ -26,6 +26,8 @@ body{
   width: 100%;
   height: 50px;
   background-color: black;
+   font-family:   'Arial','Arial Narrow Bold', sans-serif;
+ font-weight: bold;
 }#topBarLogoLeft{
   position: absolute;
   top: 0;
@@ -81,6 +83,8 @@ z-index: -1000;
   height: 30%;
   width: 100%;
   font-size: 25pt;
+   font-family:   'Arial','Arial Narrow Bold', sans-serif;
+ font-weight: bold;
 }#RedPointCount{
   position: absolute;
   bottom: 0;
@@ -119,6 +123,8 @@ z-index: -1000;
   height: 30%;
   width: 100%;
   font-size: 25pt;
+   font-family:   'Arial','Arial Narrow Bold', sans-serif;
+ font-weight: bold;
 }#BluePointCount{
   position: absolute;
   bottom: 0;
@@ -131,17 +137,15 @@ z-index: -1000;
   bottom: 0;
   left: 0;
   width: 100%;
-  height: 50px;
+  height: 75px;
   background-color: black;
 }#bottomBarLogoleft{
     position: absolute;
   top: 0;
   left: 0;
-  height: 46px;
+  height: 61px;
   background-color: white;
-  padding: 2px;
-  padding-left: 4px;
-  padding-right: 4px;
+  padding: 7px;
 }
 #pointMatrix{
   position: absolute;
@@ -149,9 +153,12 @@ z-index: -1000;
   height: 600px;
   background-color: beige;
   top:210px;
- left: 34.3%;
+ left: 50%;
+ transform: translateX(-50%); /* Pulls the element back by half of its own width */
  font-size: 35pt;
-}#AutoTitleConainer{
+ font-family:   'Arial','Arial Narrow Bold', sans-serif;
+ font-weight: bold;
+}#AutoTitleConainer{  
   text-align: center;
   height: 14.28%;
   width: 100%;
@@ -161,11 +168,9 @@ z-index: -1000;
 
 }#AutoTitleDiv{
     position: absolute;
-  width: auto;
-    height:auto;
-  left: 42%;
-  top:10%;
-  bottom: 10%;
+  left: 50%;
+  top:50%;
+  transform: translate(-50%,-50%); /* Pulls the element back by half of its own width */
 }
 #AutoFuelConainer{
   text-align: center;
@@ -175,26 +180,23 @@ z-index: -1000;
   top: 0%;
 }#AutoFuelTitle{
   position: absolute;
-  width: 100;
-    height: 100%;
-  left: 42%;
-  top:10%;
+  left: 50%;
+  transform: translate(-50%,-50%);/* Pulls the element back by half of its own width */
+  top:50%;
 }
 #RedAutoFuel{
-  height: 100%;
-  width: 33%;
   position: absolute;
   left: 10px;
   text-align: left;
-  top: 10%;
+  top: 50%;
+  transform: translatey(-50%); /* Pulls the element back by half of its own width */
 
 }#BlueAutoFuel{
-  height: 100%;
-  width: 33%;
   position: absolute;
   right: 10px;
     text-align: right;
-    top: 10%;
+    top: 50%;
+    transform: translatey(-50%); /* Pulls the element back by half of its own width */
 
 
 }#AutoTowerConainer{
@@ -206,26 +208,27 @@ z-index: -1000;
 
 }#AutoTowerTitle{
   position: absolute;
-  width: 100;
-    height: 100%;
-  left: 42%;
-  top:10%;
+  left: 50%;
+  top:50%;
+  transform: translate(-50%,-50%);/* Pulls the element back by half of its own width */
 }
 #RedAutoTower{
-  height: 100%;
-  width: 33%;
   position: absolute;
   left: 10px;
   text-align: left;
-  top: 10%;
+top: 50%;
+    transform: translatey(-50%); /* Pulls the element back by half of its own width */
+
+
 
 }#BlueAutoTower{
-  height: 100%;
-  width: 33%;
   position: absolute;
   right: 10px;
     text-align: right;
-    top: 10%;
+  top: 50%;
+    transform: translatey(-50%); /* Pulls the element back by half of its own width */
+
+
 
 
 }#TeleopTitleConainer{
@@ -237,10 +240,10 @@ z-index: -1000;
   background-color: #d9d9d9;
 }#TeleopTitleDiv{
   position: absolute;
-  width: 100;
-    height: 100%;
-  left: 42%;
-  top:10%;
+  left: 50%;
+  top:50%;
+      transform: translate(-50%,-50%); /* Pulls the element back by half of its own width */
+
 }
 #TeleopFuelConainer{
   text-align: center;
@@ -251,26 +254,26 @@ z-index: -1000;
 
   #TeleoFuelTitle{
   position: absolute;
-  width: 100;
-    height: 100%;
-  left: 42%;
-  top:10%;
+  left: 50%;
+  top:50%;
+  transform: translate(-50%,-50%); /* Pulls the element back by half of its own width */
+
 }
 #RedTeleoFuel{
-  height: 100%;
-  width: 33%;
   position: absolute;
   left: 10px;
   text-align: left;
-  top: 10%;
+  top: 50%;
+  transform: translatey(-50%); /* Pulls the element back by half of its own width */
+
 
 }#BlueTeleoFuel{
-  height: 100%;
-  width: 33%;
   position: absolute;
   right: 10px;
     text-align: right;
-    top: 10%;
+    top: 50%;
+    transform: translatey(-50%); /* Pulls the element back by half of its own width */
+
 
 
 }
@@ -283,26 +286,25 @@ z-index: -1000;
   top: 0%;}
     #TeleopTowerTitle{
   position: absolute;
-  width: 100;
-    height: 100%;
-  left: 42%;
-  top:10%;
+    left: 50%;
+  top:50%;
+      transform: translate(-50%,-50%); /* Pulls the element back by half of its own width */
+
 }
 #RedTeleopTower{
-  height: 100%;
-  width: 33%;
   position: absolute;
   left: 10px;
   text-align: left;
-  top: 10%;
+  top: 50%;
+      transform: translatey(-50%); /* Pulls the element back by half of its own width */
+
 
 }#BlueTeleopTower{
-  height: 100%;
-  width: 33%;
   position: absolute;
   right: 10px;
-    text-align: right;
-    top: 10%;
+  text-align: right;
+  top: 50%;
+  transform: translatey(-50%); /* Pulls the element back by half of its own width */
 
 
 }
@@ -315,26 +317,130 @@ z-index: -1000;
   background-color: #d9d9d9;}
       #FoulPointrTitle{
   position: absolute;
-  width: 100;
-    height: 100%;
-  left: 42%;
-  top:10%;
+  left: 50%;
+  top:50%;
+  transform: translate(-50%,-50%); /* Pulls the element back by half of its own width */
+
 }
 #RedFoulPoint{
-  height: 100%;
-  width: 33%;
   position: absolute;
   left: 10px;
   text-align: left;
-  top: 10%;
+  top: 50%;
+  transform: translatey(-50%); /* Pulls the element back by half of its own width */
+
 
 }#BlueFoulPoint{
-  height: 100%;
-  width: 33%;
   position: absolute;
   right: 10px;
     text-align: right;
-    top: 10%;
+    top: 50%;
+    transform: translatey(-50%); /* Pulls the element back by half of its own width */
 
 
+}
+#RedTeamContainer{
+  position: absolute;
+  left: 5%;
+  text-align: left;
+  top: 20%;
+  font-size: 64pt;
+}
+#BlueTeamContainer{
+  position: absolute;
+  right: 5%;
+  text-align: right;
+  top: 20%;
+  font-size: 64pt;
+}
+#red1{
+position: relative;
+background-color:#ed1d26 ;
+}
+#red2{
+position: relative;
+background-color:#ed1d26 ;
+}
+#red3{
+position: relative;
+background-color:#ed1d26 ;
+}
+#Blue1{
+  position: relative;
+background-color:#0166b3 ;
+}#Blue2{
+    position: relative;
+background-color:#0166b3 ;
+}#Blue3{
+    position: relative;
+background-color:#0166b3 ;
+}
+#TimerContainer{
+  background-color: black;
+  width: 300px;
+  height: 95px;
+  left: 50%;
+  transform: translatex(-50%); /* Pulls the element back by half of its own width */
+  color:white;
+  text-align: center;
+    position: absolute;
+}#TimerValue{
+  position: absolute;
+  top: 50%;
+  left: 50%;
+  transform: translate(-50%,-50%); /* Pulls the element back by half of its own width */
+  font-size: 60pt;
+}
+#bottomTextContainer{
+  text-align: center;
+  color: white;
+  font-size: 32pt;
+     font-family:   'Arial','Arial Narrow Bold', sans-serif;
+ font-weight: bold;
+}
+.teams{
+  height: 100px;
+  width: 400px;
+  margin: 10px;
+  padding:10px;
+  color:white;
+}
+/* HTML: <div class="arrow"></div> */
+.Larrow {
+  --t: 45%; /* control the tail part */
+  --h: 40%; /* control the head part */
+  
+  aspect-ratio: 3/2;
+  width: 250px;
+  background: #000000;
+  clip-path: polygon(100% calc(50% - var(--t)/2),var(--h) calc(50% - var(--t)/2),var(--h) 0,0 50%,var(--h) 100%,var(--h) calc(50% + var(--t)/2),100% calc(50% + var(--t)/2));
+}
+/* HTML: <div class="arrow"></div> */
+.Rarrow {
+  --t: 45%; /* control the tail part */
+  --h: 40%; /* control the head part */
+  
+  aspect-ratio: 3/2;
+  width: 250px;
+  background: #000000;
+  clip-path: polygon(0 calc(50% - var(--t)/2),calc(100% - var(--h)) calc(50% - var(--t)/2),calc(100% - var(--h)) 0,100% 50%,calc(100% - var(--h)) 100%,calc(100% - var(--h)) calc(50% + var(--t)/2),0 calc(50% + var(--t)/2));
+}
+#RedArrowContainer{
+  background-color: yellow;
+    width: fit-content;
+    position: absolute;
+    visibility: hidden;
+  left: 2%;
+}#BlueArrowContainer{
+      width: fit-content;
+      position: absolute;
+  Right: 2%;
+  visibility: hidden;
+}
+.ArrowContainer{
+  background-color: yellow;
+  width: fit-content;
+  padding: 20;
+  padding-left: 40;
+  padding-right: 40;
 }

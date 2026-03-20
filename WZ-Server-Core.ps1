@@ -124,9 +124,17 @@
             Add-PodeRoute -Method Get -Path "/matchstart" -ScriptBlock {Send-PodeWebSocket -name "CA" -Message @{"type"="startMatch";"data"=@{"muteMatchSounds"=$false}}}
             Add-PodeRoute -Method Get -Path "/abortmatch" -ScriptBlock {Send-PodeWebSocket -name "CA" -Message @{"type"="abortMatch"}}
             Add-PodeRoute -Method Get -Path "/AudianceDisplay" -FilePath "./module/arena/api/AudianceDisplay.ps1"
-             Add-PodeRoute -Method Get -Path "/Shifttiming" -scriptblock{
+            Add-PodeRoute -Method Get -Path "/FullScreenDisplay" -FilePath "./module/arena/api/AudianceDisplayFull.ps1"
+            Add-PodeRoute -Method Get -Path "/Shifttiming" -scriptblock{
                 $shifts = get-podestate -Name "Shifttiming"
-                $time = get-PodeState -name "timerData" | convertfrom-json 
+                $time = get-PodeState -name "timerData"
+                $gametiming = get-content -path "./module/Game2026/config/gametiming.json" |ConvertFrom-Json
+                if (($time.MatchTimeSec -ge 1) -and ($time.MatchTimeSec -lT ($gametiming.autoend))) {
+                    $currentShift = "Auto"
+                }
+                if (($time.MatchTimeSec -ge ($gametiming.autoend)) -and ($time.MatchTimeSec -lT ($gametiming.transtionshiftend))) {
+                    $currentShift = "Teleop"
+                }
                 if (($time.MatchTimeSec -ge ($gametiming.transtionshiftend)) -and ($time.MatchTimeSec -lT ($gametiming.endshift1))) {
                     $currentShift = "shift1"
                 }
