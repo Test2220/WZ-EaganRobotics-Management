@@ -1,5 +1,5 @@
 function connect() {
-    var url =  "ws://"+window.location.hostname+":81/"
+    var url =  "ws://"+window.location.hostname+":80/"
   var ws = new WebSocket(url);
   ws.onopen = function() {
     // subscribe to some channels

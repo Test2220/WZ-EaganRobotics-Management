@@ -5,7 +5,7 @@
     # Testing code - set mode to Query option on url (http://.../:team:/:score?mode={choose}), default to "tele"
 
     if ($webevent.method -eq "post") {
-        $gametiming = get-content -Path ./Game2026/config/gametiming.json | ConvertFrom-Json
+        $gametiming = get-content -Path ./module/Game2026/config/gametiming.json | ConvertFrom-Json
         Lock-PodeObject -Name "points" -ScriptBlock {
             $shifttiming = get-podestate -Name "Shifttiming"
             $pointState = Get-PodeState -Name "points" 
