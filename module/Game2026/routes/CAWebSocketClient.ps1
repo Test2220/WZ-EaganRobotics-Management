@@ -464,7 +464,7 @@
                     }elseif ($WSJSONPacket.data.MatchState -eq  "2") {
                         $newstate = "WarmupPeriod"
                     }elseif ($WSJSONPacket.data.MatchState -eq  "3") {
-                        #Invoke-RestMethod -uri "http://$podeServer/music/change-song" -Method Post -Body @{"player"="Gameon"} 
+                        Invoke-RestMethod -uri "http://localhost/music/change-song" -Method Post -Body @{"player"="Gameon"} 
 
                         $newstate = "AutoPeriod"
                         Lock-PodeObject -Name "FMSArenaStatusLock" -ScriptBlock {
@@ -476,7 +476,7 @@
                     }elseif ($WSJSONPacket.data.MatchState -eq  "5") {
                         $newstate = "TeleopPeriod"
                     }elseif ($WSJSONPacket.data.MatchState -eq  "6") {
-                        #Invoke-RestMethod -uri "http://$podeServer/music/change-song" -Method Post -Body @{"player"="Inbetween"}
+                        Invoke-RestMethod -uri "http://localhost/music/change-song" -Method Post -Body @{"player"="Inbetween"}
 
                         $newstate = "PostMatch"
                     }elseif ($WSJSONPacket.data.MatchState -eq  "7") {
