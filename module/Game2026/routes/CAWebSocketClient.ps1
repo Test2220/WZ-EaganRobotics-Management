@@ -182,7 +182,7 @@
         }elseif ($WSJSONPacket.type -match "ping") {
         Write-Debug "WSMadepingrequest"
         }elseif ($WSJSONPacket.type -match "matchTime") {
-            if ($serverstate.stacklight) {
+            if ($serverSettings.stacklight) {
                 Lock-PodeObject -name "StackState" -ScriptBlock {
                     $StackConfigData = Get-Content "./data/Stacklightconfig.json" | Convertfrom-Json
                     $StackStateMiddleIP = $StackConfigData.MiddleStack
