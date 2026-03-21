@@ -96,7 +96,7 @@ async function updateTagFromJson() {
        Topstring = "Test Match"
 
     }else{
-       Topstring = "Practice Match " + MatchID + " of 300" //hardcode match of data
+       Topstring = "Practice Match " + MatchID + " of 42" //hardcode match of data
 
 
     }document.getElementById('centerTBText').innerText = Topstring

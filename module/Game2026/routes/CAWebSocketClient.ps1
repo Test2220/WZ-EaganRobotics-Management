@@ -68,13 +68,13 @@
                     if (($WSJSONPacket.data.AllianceStations.B3.DSConn.RobotLinked -eq $true) -and ($WSJSONPacket.data.AllianceStations.B3.Bypass -eq $false)){
                         if ($StackStateBlue.mappings.ds_3 -notmatch "off") {
                             $FieldteamStatus.B3 = $true
-                            $url = "http://"+$StackConfigData.BlueSCC+":"+$StackConfigData.BlueSCCPort +"/set/1/off"
+                            $url = "http://"+$StackConfigData.BlueSCC+":"+$StackConfigData.BlueSCCPort +"/set/3/off"
                             Invoke-RestMethod -uri $url -Method Post
                         }
                     }elseif (($null -eq $WSJSONPacket.data.AllianceStations.B3.DSConn.RobotLinked) -or ($WSJSONPacket.data.AllianceStations.B3.Bypass -eq $true)){
                         if ($StackStateBlue.mappings.ds_3 -notmatch "blink") {
                             $FieldteamStatus.B3 = $false
-                            $url = "http://"+$StackConfigData.BlueSCC+":"+$StackConfigData.BlueSCCPort +"/set/1/blink"
+                            $url = "http://"+$StackConfigData.BlueSCC+":"+$StackConfigData.BlueSCCPort +"/set/3/blink"
                             Invoke-RestMethod -uri $url -Method Post
                         }
                     }elseif (($WSJSONPacket.data.AllianceStations.B3.DSConn.Enabled -eq $true) ){
