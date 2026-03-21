@@ -1,0 +1,12 @@
+<html>
+<head>
+    <link rel="stylesheet" type="text/css" href="/styles/driverstationDisplay.css" />
+    <script src="https://ajax.googleapis.com/ajax/libs/jquery/3.7.1/jquery.min.js"></script>
+    <script src="/js/driverstationDisplay.js"></script>
+</head>
+<body>
+<div id="mainview">
+    <div id="teamID">0000</div>
+</div>
+</body>
+</html>

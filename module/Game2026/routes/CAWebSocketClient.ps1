@@ -161,7 +161,7 @@
                         if ($StackStateMiddle.mappings.stack_red -notmatch "off") {
                             $url = ("http://"+$StackConfigData.MiddleStack+":"+$StackConfigData.MiddleStackPort +"/set/2/off") 
 
-                            Invoke-RestMethod -uri $url -Method Post  #get red Pin ID
+                            Invoke-RestMethod -uri ("http://"+$StackConfigData.MiddleStack+":"+$StackConfigData.MiddleStackPort +"/set/2/off") -Method Post  #get red Pin ID
                         }
                     }
 
