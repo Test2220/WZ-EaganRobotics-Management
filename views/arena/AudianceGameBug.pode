@@ -4,22 +4,28 @@
     <script src="https://ajax.googleapis.com/ajax/libs/jquery/3.7.1/jquery.min.js"></script>
     <script src="/js/AudienceGame.js"></script>
 </head>
-<body onload="main()">
+<body>
 <div id="mainview">
     <div id="Pointcontainer">
-        <div id="TimerContainer">0:00 </div>
-        <div id="LogoSpace"><img id="gamelogoPNG" src="./img/Gamelogo.png"/></div>
-        <div id="teamRight" class="Redteam BlueTeamReverse">
-        <div id="team1">Team1</div>
-        <div id="team2">Team2</div>
-        <div id="team3">Team3</div>
+        <div id="TimerContainer">
+        0:00
         </div>
-        <div id="pointsRight" class="Redpoints BluePointReverse">00</div>
-        <div id="pointsLeft" class="Bluepoints RedteamReverse">00</div>
+        <div id="LogoSpace"><img id="gamelogoPNG" src="../../../img/GameLogo.png"/></div>
+        <div id="teamRight" class="Redteam BlueTeamReverse">
+        <div id="R1">Team1</div>
+        <div id="R2">Team2</div>
+        <div id="R3">Team3</div>
+        </div>
+        <div id="pointsRightContainer" class="Redpoints BluePointReverse">
+            <div id="pointsRight" >00</div>
+        </div>
+        <div id="pointsLeftContainer" class="Bluepoints RedteamReverse">
+            <div id="pointsLeft" >00</div>
+        </div>
         <div id="teamLeft" class="Blueteam RedPointReverse">
-        <div id="team4">Team4</div>
-        <div id="team5">Team5</div>
-        <div id="team6">Team6</div>
+        <div id="B1">Team4</div>
+        <div id="B2">Team5</div>
+        <div id="B3">Team6</div>
         </div>
     </div>
 </div>

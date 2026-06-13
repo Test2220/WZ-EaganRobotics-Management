@@ -1,12 +1,27 @@
 <html>
 <head>
+
     <link rel="stylesheet" href="/styles/style.css" />
-    <link rel="stylesheet" href="/styles/scorekeeper.css" />
+    <link rel="stylesheet" href="/styles/testArena.css" />
     <script src="https://ajax.googleapis.com/ajax/libs/jquery/3.7.1/jquery.min.js"></script>
-    <script src="/js/scorekeeper.js"></script></head>
+    <script src="/js/testArena.js"></script>
+
+ 
+</head>
 <body>
 <div id="mainview">
-
+<div id="soundPlayback">
+    <button id="start" type="button" onclick="PlaySound(this.id)">Start</button>
+    <button id="resume" type="button" onclick="PlaySound(this.id)">resume</button>
+    <button id="powerup-force" type="button" onclick="PlaySound(this.id)">powerup_force</button>
+    <button id="match_boost" type="button" onclick="PlaySound(this.id)">match_boost</button>
+    <button id="warning" type="button" onclick="PlaySound(this.id)">warning</button>
+    <button id="end" type="button" onclick="PlaySound(this.id)">end</button>
+</div>
+<div id="testModecontainer">
+  Test Mode
+    <button id="Teston" type="button" value="True" onclick="TestMode(this.value)">On</button>
+    <button id="Testoff" type="button" value="False" onclick="TestMode(this.value)">Off</button>
 </div>
 <div id="ScoreStats">
 <table id="Scorematrix">
@@ -82,10 +97,57 @@
     <td class="PointLines">Total</td>
         <td class="blue"></td>
     <td id="blueTotalScore" class="blue">0</td>
+  </tr> 
+  <tr>
+    <td></td>
+    
+    <td class="PointLines">Arena State:</td>
+    <td id="arenaState" class="PointLines">ERR</td>
+        <td class="PointLines"></td>
+    <td ></td>
   </tr>
 </table>
+</div>
+<div id="FoulSection">
+  <div id="RedFouls">
+  Red Foul
+    <div id="RedFoulContainer">  
+      <button id="redFoulAdd" type="button" onclick="sendscore(this.id)">+</button>
+      Foul
+      <button id="redFoulMin" type="button" onclick="sendscore(this.id)">-</button>
+    </div>
+    <div id="RedTechFoulConainer">
+      <button id="redTFoulAdd" type="button" onclick="sendscore(this.id)">+</button>
+      Tech Foul
+      <button id="redTFoulMin" type="button" onclick="sendscore(this.id)">-</button>
+      </div>
+   <div id="redPointsContainer">
+      <button id="redPointsAdd" type="button" onclick="sendpointred(this.id)">+</button>
+      points
+      <button id="redPointsMin" type="button" onclick="sendpointred(this.id)">-</button>
+    
+    </div>
+  </div>
+    <div id="BlueFouls">
+    Blue Fouls
+    <div id="BluePointsContainer">
+      <button id="BluePointsAdd" type="button" onclick="sendpointblue(this.id)">+</button>
+      Points
+      <button id="bluePointsMin" type="button" onclick="sendpointblue(this.id)">-</button>
+    </div>
+    <div id="BlueFoulContainer">
+      <button id="blueFoulAdd" type="button" onclick="sendscore(this.id)">+</button>
+      Foul
+      <button id="blueFoulMin" type="button" onclick="sendscore(this.id)">-</button>
+    </div>
+    <div id="BlueTechFoulConainer">
+      <button id="blueTFoulAdd" type="button" onclick="sendscore(this.id)">+</button>
+      Tech Foul
+      <button id="blueTFoulMin" type="button" onclick="sendscore(this.id)">-</button>
+    </div>
+  </div>
 
 </div>
-
+</div>
 </body>
 </html>

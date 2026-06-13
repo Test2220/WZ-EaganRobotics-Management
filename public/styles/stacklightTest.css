@@ -1,0 +1,145 @@
+body{
+    width: auto;
+  height: auto;
+  overflow: hidden;
+  font-size: large;
+  font-family: "Trebuchet MS", Haettenschweiler, 'Arial Bold', sans-serif;
+
+}
+#mainview{
+  width: auto;
+  height: auto;
+ display: flex;
+}
+
+#redcontainer{
+    background-color: red;
+    position: absolute;
+ left: 0px;
+  width: 22%;
+  height: 355px;
+  border: 3px solid #73AD21;
+  margin: 2px;
+
+}#bluecontainer{
+    background-color: blue;
+    position: absolute;
+  right: 0px;
+  width: 22%;
+  height: 355px;
+  border: 3px solid #73AD21;
+  margin: 2px;
+}#FoulSection{
+    bottom: 15%;
+    width: auto;
+    height: 175;
+    position:absolute;
+    left: 20%;
+    right: 20%;
+    padding: 10px;
+    background-color: darkcyan;
+    text-align: center;
+
+}#RedFouls{
+width: 45%;
+left: 1%;
+height: 90%;
+position: absolute;
+background-color: coral;
+}#BlueFouls{
+width: 45%;
+height: 90%;
+right: 1%;
+position: absolute;
+background-color: cornflowerblue;
+}
+
+#RedFoulContainer{
+    left: 0%;
+    width: 49%;
+    position: absolute;
+}
+#RedTechFoulConainer{
+    right: 0%;
+    width: 49%;
+      position: absolute;
+}#BlueFoulContainer{
+    right: 0%;
+    width: 49%;
+    position: absolute;
+}
+#BlueTechFoulConainer{
+    left: 0%;
+    width: 49%;
+      position: absolute;
+}
+#blueTowerTable{
+    color: white;
+    right: 0px;
+    position: absolute;
+    text-align: center;
+    width: 100%;
+    font-size:  20;
+}#redTowerTable{
+    left: 0px;
+    position: absolute;
+    text-align: center;
+    width: 100%;
+    font-size:  20
+}
+#ScoreStats{
+     position: absolute;
+  left: 25%;
+  width: auto;
+  right: 25%;
+  text-align: center;
+}#Scorematrix{
+    width: 100%;
+    text-align: center;
+    font-size: xx-large;
+    border-top: 1px black;
+    border-bottom: 1px black;
+
+}
+.red{
+    background-color: red;
+
+
+}.blue{
+    background-color: blue;
+    color: white;
+}.pointlines{
+
+    background-color: brown;
+}
+
+
+/* CSS */
+button{
+    appearance: button;
+    backface-visibility: hidden;
+    background-color: #0beb4e;
+    border-radius: 6px;
+    border-width: 0;
+    box-shadow: rgba(50, 50, 93, .1) 0 0 0 1px inset,rgba(50, 50, 93, .1) 0 2px 5px 0,rgba(0, 0, 0, .07) 0 1px 1px 0;
+    box-sizing: border-box;
+    color: black;
+    cursor: pointer;
+    font-family: -apple-system,system-ui,"Segoe UI",Roboto,"Helvetica Neue",Ubuntu,sans-serif;
+    font-size: 100%;
+    height: 44px;
+    line-height: 1.15;
+    margin: 12px 0 0;
+    outline: none;
+    overflow: hidden;
+    padding: 0 25px;
+    position: relative;
+    text-align: center;
+    text-transform: none;
+    transform: translateZ(0);
+    transition: all .2s,box-shadow .08s ease-in;
+    user-select: none;
+    -webkit-user-select: none;
+    touch-action: manipulation;
+    width: 100%;
+}
